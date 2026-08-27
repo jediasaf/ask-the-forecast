@@ -105,6 +105,12 @@ def ask(question: str, client: Anthropic | None = None, model: str = MODEL) -> A
         )
     except anthropic.APIConnectionError as e:
         return AgentResult(None, list(tools.CALL_LOG), error=f"connection_error: {e}")
+    except TypeError:  # the SDK raises TypeError at request time when no credential resolves
+        return AgentResult(
+            None,
+            list(tools.CALL_LOG),
+            error="no_credentials: export ANTHROPIC_API_KEY or run `ant auth login`",
+        )
 
     call_log = list(tools.CALL_LOG)
 
