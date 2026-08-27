@@ -1,2 +1,5 @@
 anthropic>=1.1.0
 pydantic>=2.0
+
+# only needed to rebuild data/scale from raw M5
+datasetsforecast>=1.0

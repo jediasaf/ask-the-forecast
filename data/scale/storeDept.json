@@ -1,0 +1,422 @@
+[
+ {
+  "store": "CA_1",
+  "dept": "HOBBIES_1",
+  "volume_units": 121662,
+  "naive_fa_pct": 79.3
+ },
+ {
+  "store": "CA_1",
+  "dept": "HOBBIES_2",
+  "volume_units": 6227,
+  "naive_fa_pct": 54.9
+ },
+ {
+  "store": "CA_1",
+  "dept": "HOUSEHOLD_1",
+  "volume_units": 163737,
+  "naive_fa_pct": 87.8
+ },
+ {
+  "store": "CA_1",
+  "dept": "HOUSEHOLD_2",
+  "volume_units": 45480,
+  "naive_fa_pct": 86.6
+ },
+ {
+  "store": "CA_1",
+  "dept": "FOODS_1",
+  "volume_units": 86718,
+  "naive_fa_pct": 82.2
+ },
+ {
+  "store": "CA_1",
+  "dept": "FOODS_2",
+  "volume_units": 113746,
+  "naive_fa_pct": 80.2
+ },
+ {
+  "store": "CA_1",
+  "dept": "FOODS_3",
+  "volume_units": 615655,
+  "naive_fa_pct": 87.1
+ },
+ {
+  "store": "CA_2",
+  "dept": "HOBBIES_1",
+  "volume_units": 88784,
+  "naive_fa_pct": 78.5
+ },
+ {
+  "store": "CA_2",
+  "dept": "HOBBIES_2",
+  "volume_units": 8362,
+  "naive_fa_pct": 64.0
+ },
+ {
+  "store": "CA_2",
+  "dept": "HOUSEHOLD_1",
+  "volume_units": 173472,
+  "naive_fa_pct": 88.5
+ },
+ {
+  "store": "CA_2",
+  "dept": "HOUSEHOLD_2",
+  "volume_units": 64664,
+  "naive_fa_pct": 87.3
+ },
+ {
+  "store": "CA_2",
+  "dept": "FOODS_1",
+  "volume_units": 111306,
+  "naive_fa_pct": 83.6
+ },
+ {
+  "store": "CA_2",
+  "dept": "FOODS_2",
+  "volume_units": 30447,
+  "naive_fa_pct": 83.2
+ },
+ {
+  "store": "CA_2",
+  "dept": "FOODS_3",
+  "volume_units": 348139,
+  "naive_fa_pct": 88.5
+ },
+ {
+  "store": "CA_3",
+  "dept": "HOBBIES_1",
+  "volume_units": 139089,
+  "naive_fa_pct": 83.6
+ },
+ {
+  "store": "CA_3",
+  "dept": "HOBBIES_2",
+  "volume_units": 8147,
+  "naive_fa_pct": 61.8
+ },
+ {
+  "store": "CA_3",
+  "dept": "HOUSEHOLD_1",
+  "volume_units": 336541,
+  "naive_fa_pct": 89.6
+ },
+ {
+  "store": "CA_3",
+  "dept": "HOUSEHOLD_2",
+  "volume_units": 79968,
+  "naive_fa_pct": 88.1
+ },
+ {
+  "store": "CA_3",
+  "dept": "FOODS_1",
+  "volume_units": 108240,
+  "naive_fa_pct": 81.4
+ },
+ {
+  "store": "CA_3",
+  "dept": "FOODS_2",
+  "volume_units": 150818,
+  "naive_fa_pct": 80.6
+ },
+ {
+  "store": "CA_3",
+  "dept": "FOODS_3",
+  "volume_units": 854575,
+  "naive_fa_pct": 86.8
+ },
+ {
+  "store": "CA_4",
+  "dept": "HOBBIES_1",
+  "volume_units": 81104,
+  "naive_fa_pct": 78.7
+ },
+ {
+  "store": "CA_4",
+  "dept": "HOBBIES_2",
+  "volume_units": 2618,
+  "naive_fa_pct": 40.4
+ },
+ {
+  "store": "CA_4",
+  "dept": "HOUSEHOLD_1",
+  "volume_units": 80224,
+  "naive_fa_pct": 86.9
+ },
+ {
+  "store": "CA_4",
+  "dept": "HOUSEHOLD_2",
+  "volume_units": 25211,
+  "naive_fa_pct": 83.0
+ },
+ {
+  "store": "CA_4",
+  "dept": "FOODS_1",
+  "volume_units": 52091,
+  "naive_fa_pct": 82.6
+ },
+ {
+  "store": "CA_4",
+  "dept": "FOODS_2",
+  "volume_units": 65654,
+  "naive_fa_pct": 84.0
+ },
+ {
+  "store": "CA_4",
+  "dept": "FOODS_3",
+  "volume_units": 306332,
+  "naive_fa_pct": 88.3
+ },
+ {
+  "store": "TX_1",
+  "dept": "HOBBIES_1",
+  "volume_units": 56778,
+  "naive_fa_pct": 79.6
+ },
+ {
+  "store": "TX_1",
+  "dept": "HOBBIES_2",
+  "volume_units": 4318,
+  "naive_fa_pct": 52.6
+ },
+ {
+  "store": "TX_1",
+  "dept": "HOUSEHOLD_1",
+  "volume_units": 165453,
+  "naive_fa_pct": 87.1
+ },
+ {
+  "store": "TX_1",
+  "dept": "HOUSEHOLD_2",
+  "volume_units": 33149,
+  "naive_fa_pct": 81.3
+ },
+ {
+  "store": "TX_1",
+  "dept": "FOODS_1",
+  "volume_units": 51901,
+  "naive_fa_pct": 81.4
+ },
+ {
+  "store": "TX_1",
+  "dept": "FOODS_2",
+  "volume_units": 77352,
+  "naive_fa_pct": 76.4
+ },
+ {
+  "store": "TX_1",
+  "dept": "FOODS_3",
+  "volume_units": 415682,
+  "naive_fa_pct": 85.7
+ },
+ {
+  "store": "TX_2",
+  "dept": "HOBBIES_1",
+  "volume_units": 93663,
+  "naive_fa_pct": 79.4
+ },
+ {
+  "store": "TX_2",
+  "dept": "HOBBIES_2",
+  "volume_units": 9303,
+  "naive_fa_pct": 58.3
+ },
+ {
+  "store": "TX_2",
+  "dept": "HOUSEHOLD_1",
+  "volume_units": 196495,
+  "naive_fa_pct": 87.1
+ },
+ {
+  "store": "TX_2",
+  "dept": "HOUSEHOLD_2",
+  "volume_units": 41169,
+  "naive_fa_pct": 84.7
+ },
+ {
+  "store": "TX_2",
+  "dept": "FOODS_1",
+  "volume_units": 75079,
+  "naive_fa_pct": 84.0
+ },
+ {
+  "store": "TX_2",
+  "dept": "FOODS_2",
+  "volume_units": 101035,
+  "naive_fa_pct": 79.5
+ },
+ {
+  "store": "TX_2",
+  "dept": "FOODS_3",
+  "volume_units": 591401,
+  "naive_fa_pct": 86.7
+ },
+ {
+  "store": "TX_3",
+  "dept": "HOBBIES_1",
+  "volume_units": 64172,
+  "naive_fa_pct": 76.4
+ },
+ {
+  "store": "TX_3",
+  "dept": "HOBBIES_2",
+  "volume_units": 7321,
+  "naive_fa_pct": 56.5
+ },
+ {
+  "store": "TX_3",
+  "dept": "HOUSEHOLD_1",
+  "volume_units": 162383,
+  "naive_fa_pct": 85.3
+ },
+ {
+  "store": "TX_3",
+  "dept": "HOUSEHOLD_2",
+  "volume_units": 30519,
+  "naive_fa_pct": 84.3
+ },
+ {
+  "store": "TX_3",
+  "dept": "FOODS_1",
+  "volume_units": 58745,
+  "naive_fa_pct": 79.9
+ },
+ {
+  "store": "TX_3",
+  "dept": "FOODS_2",
+  "volume_units": 92069,
+  "naive_fa_pct": 75.0
+ },
+ {
+  "store": "TX_3",
+  "dept": "FOODS_3",
+  "volume_units": 417860,
+  "naive_fa_pct": 85.5
+ },
+ {
+  "store": "WI_1",
+  "dept": "HOBBIES_1",
+  "volume_units": 83064,
+  "naive_fa_pct": 77.5
+ },
+ {
+  "store": "WI_1",
+  "dept": "HOBBIES_2",
+  "volume_units": 6169,
+  "naive_fa_pct": 56.5
+ },
+ {
+  "store": "WI_1",
+  "dept": "HOUSEHOLD_1",
+  "volume_units": 108589,
+  "naive_fa_pct": 85.5
+ },
+ {
+  "store": "WI_1",
+  "dept": "HOUSEHOLD_2",
+  "volume_units": 26973,
+  "naive_fa_pct": 81.5
+ },
+ {
+  "store": "WI_1",
+  "dept": "FOODS_1",
+  "volume_units": 71845,
+  "naive_fa_pct": 81.8
+ },
+ {
+  "store": "WI_1",
+  "dept": "FOODS_2",
+  "volume_units": 86970,
+  "naive_fa_pct": 81.0
+ },
+ {
+  "store": "WI_1",
+  "dept": "FOODS_3",
+  "volume_units": 364301,
+  "naive_fa_pct": 86.6
+ },
+ {
+  "store": "WI_2",
+  "dept": "HOBBIES_1",
+  "volume_units": 54065,
+  "naive_fa_pct": 74.0
+ },
+ {
+  "store": "WI_2",
+  "dept": "HOBBIES_2",
+  "volume_units": 5538,
+  "naive_fa_pct": 55.1
+ },
+ {
+  "store": "WI_2",
+  "dept": "HOUSEHOLD_1",
+  "volume_units": 179177,
+  "naive_fa_pct": 78.8
+ },
+ {
+  "store": "WI_2",
+  "dept": "HOUSEHOLD_2",
+  "volume_units": 27236,
+  "naive_fa_pct": 79.6
+ },
+ {
+  "store": "WI_2",
+  "dept": "FOODS_1",
+  "volume_units": 82465,
+  "naive_fa_pct": 75.6
+ },
+ {
+  "store": "WI_2",
+  "dept": "FOODS_2",
+  "volume_units": 158272,
+  "naive_fa_pct": 61.4
+ },
+ {
+  "store": "WI_2",
+  "dept": "FOODS_3",
+  "volume_units": 502618,
+  "naive_fa_pct": 74.7
+ },
+ {
+  "store": "WI_3",
+  "dept": "HOBBIES_1",
+  "volume_units": 56886,
+  "naive_fa_pct": 75.1
+ },
+ {
+  "store": "WI_3",
+  "dept": "HOBBIES_2",
+  "volume_units": 4021,
+  "naive_fa_pct": 54.0
+ },
+ {
+  "store": "WI_3",
+  "dept": "HOUSEHOLD_1",
+  "volume_units": 135587,
+  "naive_fa_pct": 81.7
+ },
+ {
+  "store": "WI_3",
+  "dept": "HOUSEHOLD_2",
+  "volume_units": 23197,
+  "naive_fa_pct": 81.5
+ },
+ {
+  "store": "WI_3",
+  "dept": "FOODS_1",
+  "volume_units": 45678,
+  "naive_fa_pct": 77.1
+ },
+ {
+  "store": "WI_3",
+  "dept": "FOODS_2",
+  "volume_units": 85143,
+  "naive_fa_pct": 67.4
+ },
+ {
+  "store": "WI_3",
+  "dept": "FOODS_3",
+  "volume_units": 478019,
+  "naive_fa_pct": 80.2
+ }
+]

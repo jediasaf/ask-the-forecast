@@ -1,0 +1,62 @@
+[
+ {
+  "store": "CA_3",
+  "state": "CA",
+  "volume_units": 1677378,
+  "naive_fa_pct": 90.2
+ },
+ {
+  "store": "CA_1",
+  "state": "CA",
+  "volume_units": 1153225,
+  "naive_fa_pct": 89.6
+ },
+ {
+  "store": "TX_2",
+  "state": "TX",
+  "volume_units": 1108145,
+  "naive_fa_pct": 89.4
+ },
+ {
+  "store": "WI_2",
+  "state": "WI",
+  "volume_units": 1009371,
+  "naive_fa_pct": 79.0
+ },
+ {
+  "store": "TX_3",
+  "state": "TX",
+  "volume_units": 833069,
+  "naive_fa_pct": 87.8
+ },
+ {
+  "store": "WI_3",
+  "state": "WI",
+  "volume_units": 828531,
+  "naive_fa_pct": 83.0
+ },
+ {
+  "store": "CA_2",
+  "state": "CA",
+  "volume_units": 825174,
+  "naive_fa_pct": 91.2
+ },
+ {
+  "store": "TX_1",
+  "state": "TX",
+  "volume_units": 804633,
+  "naive_fa_pct": 88.7
+ },
+ {
+  "store": "WI_1",
+  "state": "WI",
+  "volume_units": 747911,
+  "naive_fa_pct": 87.8
+ },
+ {
+  "store": "CA_4",
+  "state": "CA",
+  "volume_units": 613234,
+  "naive_fa_pct": 91.1
+ }
+]

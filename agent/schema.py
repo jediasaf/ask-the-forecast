@@ -14,13 +14,20 @@ from pydantic import BaseModel, ConfigDict
 
 
 class FigureCited(BaseModel):
-    """One number the answer relies on, traced to a tool return."""
+    """One number the answer relies on, traced to a tool return.
+
+    ``value`` is strictly numeric; a date that supports the answer goes in
+    ``date`` (ISO string). This split exists because the first hard-set run
+    showed the model shoehorning 2013-12-25 into ``value`` as 20131225.0 —
+    a schema that only offers a float field invites dates-as-numbers.
+    """
 
     model_config = ConfigDict(extra="forbid")
 
     metric: str
     dept: Optional[str]  # null for pooled/overall figures
     value: float
+    date: Optional[str] = None  # ISO date this figure belongs to, if any
 
 
 class AnswerReport(BaseModel):

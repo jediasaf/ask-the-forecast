@@ -107,7 +107,8 @@ def score_question(q: dict, result: AgentResult, universe: set[float]) -> dict:
     for exp in q.get("expect_values", []):
         exp_dept = exp["dept"].upper() if exp["dept"] else None
         hit = any(
-            dept == exp_dept and abs(value - exp["value"]) <= _tol(exp["value"])
+            (exp_dept == "ANY" or dept == exp_dept)
+            and abs(value - exp["value"]) <= _tol(exp["value"])
             for dept, value, _ in cited
         )
         if not hit:

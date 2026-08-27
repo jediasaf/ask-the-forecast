@@ -447,6 +447,129 @@ def get_worst_days(dept: str, n: int) -> str:
     )
 
 
+# ------------------------------------------------- scale layer (raw M5 data)
+
+_SCALE_DIR = DATA_DIR / "scale"
+_STORES = _load("scale/storeSummary")
+_STORE_DEPT = _load("scale/storeDept")
+_SKUS = _load("scale/skuIndex")
+_SKU_INDEX = {row["item"]: row for row in _SKUS}
+VALID_STORES = sorted({r["store"] for r in _STORES})
+
+_SCALE_NOTE = (
+    "scale-layer metric computed from raw M5 data; the portfolio's model "
+    "forecasts do not exist at this level, so only actuals and the "
+    "seasonal-naive baseline are available"
+)
+
+
+@beta_tool(strict=True)
+def list_stores() -> str:
+    """All ten M5 stores with volume and seasonal-naive accuracy.
+
+    Naive accuracy is computed on each store's aggregated daily series over
+    the backtest window — comparable to the department-level planning
+    numbers, NOT to SKU-level accuracy. The model's own forecasts exist only
+    for CA_1; other stores carry baseline metrics only.
+    """
+    _log("list_stores")
+    return _dumps_logged({"stores": _STORES, "note": _SCALE_NOTE})
+
+
+@beta_tool(strict=True)
+def compare_stores(dept: str) -> str:
+    """Seasonal-naive accuracy for one department across all ten stores.
+
+    Ranked best first, computed on aggregated store-department daily series.
+
+    Args:
+        dept: Department name, e.g. FOODS_3.
+    """
+    _log("compare_stores", dept=dept)
+    rows = [r for r in _STORE_DEPT if r["dept"] == dept]
+    if not rows:
+        return _dumps_logged(_unknown_dept(dept))
+    ranked = sorted(rows, key=lambda r: -r["naive_fa_pct"])
+    return _dumps_logged(
+        {
+            "dept": dept,
+            "order": "highest naive accuracy first",
+            "stores": [
+                {"store": r["store"], "naive_fa_pct": r["naive_fa_pct"], "volume_units": r["volume_units"]}
+                for r in ranked
+            ],
+            "note": _SCALE_NOTE,
+        }
+    )
+
+
+@beta_tool(strict=True)
+def find_skus(dept: str, sort_by: str, top_n: int, min_volume: int) -> str:
+    """Rank the individual SKUs of one CA_1 department.
+
+    SKU-level naive accuracy is computed on each item's own daily series;
+    intermittent items routinely have WAPE above 100% (negative accuracy),
+    so these figures are NOT comparable to department-level accuracy.
+
+    Args:
+        dept: Department name, e.g. FOODS_3, or ALL for every department.
+        sort_by: One of "volume" (biggest sellers first), "intermittency"
+            (highest share of zero-sale days first), or "worst_naive_fa"
+            (lowest naive accuracy first).
+        top_n: How many SKUs to return, between 1 and 10.
+        min_volume: Ignore SKUs that sold fewer total units than this
+            (use 0 for no floor; 100+ recommended for intermittency and
+            accuracy rankings so near-dead items don't dominate).
+    """
+    _log("find_skus", dept=dept, sort_by=sort_by, top_n=top_n, min_volume=min_volume)
+    if not 1 <= top_n <= 10:
+        return _dumps_logged({"error": "top_n must be between 1 and 10"})
+    pool = _SKUS if dept == "ALL" else [r for r in _SKUS if r["dept"] == dept]
+    if not pool:
+        return _dumps_logged(_unknown_dept(dept))
+    pool = [r for r in pool if r["volume_units"] >= min_volume]
+    if sort_by == "volume":
+        ranked = sorted(pool, key=lambda r: -r["volume_units"])
+    elif sort_by == "intermittency":
+        ranked = sorted(pool, key=lambda r: -r["zero_day_pct"])
+    elif sort_by == "worst_naive_fa":
+        ranked = sorted(
+            [r for r in pool if r["naive_fa_pct"] is not None],
+            key=lambda r: r["naive_fa_pct"],
+        )
+    else:
+        return _dumps_logged(
+            {"error": f"Unknown sort_by '{sort_by}'.", "valid": ["volume", "intermittency", "worst_naive_fa"]}
+        )
+    return _dumps_logged(
+        {
+            "dept": dept,
+            "sort_by": sort_by,
+            "min_volume": min_volume,
+            "matched": len(pool),
+            "skus": ranked[:top_n],
+            "note": _SCALE_NOTE,
+        }
+    )
+
+
+@beta_tool(strict=True)
+def get_sku(item: str) -> str:
+    """Stats for one CA_1 SKU: volume, zero-day share, naive accuracy.
+
+    Args:
+        item: Full item id, e.g. FOODS_3_090.
+    """
+    _log("get_sku", item=item)
+    row = _SKU_INDEX.get(item)
+    if row is None:
+        return _dumps_logged(
+            {"error": f"Unknown item '{item}' (2,652 SKUs traded at CA_1 in the window).",
+             "hint": "use find_skus to locate items"}
+        )
+    return _dumps_logged({**row, "note": _SCALE_NOTE})
+
+
 ALL_TOOLS = [
     list_departments,
     get_overall,
@@ -461,4 +584,8 @@ ALL_TOOLS = [
     get_window_accuracy,
     get_fold_accuracy,
     get_worst_days,
+    list_stores,
+    compare_stores,
+    find_skus,
+    get_sku,
 ]

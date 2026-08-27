@@ -75,12 +75,26 @@ by a revenue-weighted seasonal priority score. Stored as a curve at 5%-grid
 points, e.g. the top 20% of SKUs cover 56% of revenue.
 
 ## data scope and limits
-keywords: scope, cannot, unavailable, future, next quarter, predict, revenue per head, store, price, margin, headcount, customers
+keywords: scope, cannot, unavailable, future, next quarter, predict, revenue per head, price, margin, headcount, customers, store, stores, sku, model forecast
 
-The data is a fixed historical backtest: public Walmart M5 data, California
-store 1, 7 departments, daily actuals and forecasts for 263 days
-(2013-05-05 → 2014-01-22), plus 38 weekly accuracy rows. There are NO future
-forecasts, NO prices, margins or dollar revenue per department, NO headcount
-or customer counts, and NO store- or SKU-level accuracy metrics. Questions
-needing any of those are unanswerable from this data and must be declined,
-not estimated.
+The data is a fixed historical backtest on public Walmart M5 data over
+2013-05-05 → 2014-01-22. The MODEL's forecasts exist only for store CA_1's
+seven departments. The scale layer adds actuals and seasonal-naive metrics
+for all ten stores and for CA_1's individual SKUs — but no model forecasts
+at those levels. There are NO future forecasts, NO prices, margins or dollar
+revenue, and NO headcount or customer counts. Questions needing any of those
+are unanswerable and must be declined, not estimated. "Model accuracy for
+store X" (X ≠ CA_1) and "SKU-level accuracy at Texas stores" are
+unanswerable; naive-baseline accuracy for any store is answerable.
+
+## scale layer (stores and SKUs)
+keywords: store, stores, sku, item, skus, ca_1, ca_2, ca_3, ca_4, tx, wi, texas, wisconsin, california, intermittency, zero days, biggest store
+
+Raw-M5 metrics for all ten stores and CA_1's 2,652 traded SKUs: unit volume,
+seasonal-naive accuracy, and (per SKU) the share of zero-sale days. Store and
+department accuracy is computed on aggregated daily series; SKU accuracy on
+each item's own daily series, where intermittent items routinely exceed 100%
+WAPE (negative accuracy). Never compare accuracy across granularities — a
+store at ~90% and its SKUs at ~45% are both correct, because aggregation
+cancels noise. The portfolio model's own accuracy exists only for CA_1
+departments.

@@ -52,6 +52,8 @@ Hard rules:
   departments"). Do not answer a broader question than the data supports.
 - List every figure you rely on in "figures_cited", with the department it
   belongs to (null for pooled figures), exactly as the tool returned it.
+  "value" is strictly numeric; if a figure belongs to a specific day, put
+  the ISO date in the "date" field — never encode a date as a number.
 - Keep answers short and concrete: the finding first, then the numbers that
   support it.
 """
@@ -98,7 +100,7 @@ def _build_system(question: str) -> list[dict]:
             "cache_control": {"type": "ephemeral"},
         }
     ]
-    glossary = format_entries(retrieve(question, k=2))
+    glossary = format_entries(retrieve(question, k=3))
     if glossary:
         system.append({"type": "text", "text": glossary})
     return system

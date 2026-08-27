@@ -37,8 +37,15 @@ decision exact, and every cited number present in an actual tool return.
 
 | Configuration | Pass | What broke |
 |---|---|---|
-| Agent · `opus-5` · high | **13/14 (93%)** | one fabrication flag: a *date* cited as the number `20131225.0` |
+| Agent · `opus-5` · high · schema v1 | 13/14 (93%) | one fabrication flag: a *date* cited as the number `20131225.0` |
+| Agent · `opus-5` · high · **schema v2** | **14/14 (100%)** | nothing — the fix below, re-measured |
 | Prompt-stuffing · `opus-5` · high | **6/14 (43%)** | honestly refused every question needing arithmetic |
+
+**Scale set — 12 questions** over the raw-M5 layer (ten stores, 2,652 SKUs):
+
+| Configuration | Pass | Notes |
+|---|---|---|
+| Agent · `opus-5` · high | **12/12** | $0.029/question — includes cross-granularity traps and model-vs-baseline scope refusals |
 
 ### What the grid says
 
@@ -58,13 +65,21 @@ decision exact, and every cited number present in an actual tool return.
   same two failure modes: a correct figure left out of the structured
   `figures_cited` audit trail, and a valid-but-costlier tool strategy
   (three `get_value_add` calls where one `compare_departments` sufficed).
-- **The agent's own hard-set failure is a schema lesson.** Asked for
-  FOODS_3's worst day, it answered perfectly (Christmas 2013 — store
-  closed, actual 0, model predicted 2,431.5 units) but shoehorned the date
-  into the float-typed `value` field as `20131225.0`, which the fabrication
-  check rightly flagged. A `value` field that only accepts numbers invites
-  dates-as-numbers; the fix is a typed figure schema.
-- **Refusals held everywhere.** Across all six runs — 33 unanswerable/trap
+- **The agent's one hard-set failure was found, fixed, and re-measured.**
+  Asked for FOODS_3's worst day, it answered perfectly (Christmas 2013 —
+  store closed, actual 0, model predicted 2,431.5 units) but shoehorned the
+  date into the float-typed `value` field as `20131225.0`, which the
+  fabrication check rightly flagged. The fix — a dedicated `date` field on
+  cited figures, plus one system-prompt line — took the hard set from 13/14
+  to 14/14 on re-run. The full loop (eval catches → diagnose as schema
+  design → fix → re-measure) is in the commit history.
+- **Once, the eval broke before the agent did.** A rebuild of the scale
+  data shifted two store volumes by ~3k units; the first scale run "failed"
+  two questions where the agent cited the *correct new* figures against my
+  *stale* expectations. The failure signature — numeric check failing while
+  the fabrication check passed — localizes the bug to the eval, not the
+  agent. Expected values are data; they version with the data.
+- **Refusals held everywhere.** Across all nine runs — 44 unanswerable/trap
   question-instances — nothing invented an answer to a question the data
   cannot support.
 
@@ -72,13 +87,14 @@ decision exact, and every cited number present in an actual tool return.
 
 ```
 agent/
-  tools.py        13 strict-schema tools: 10 lookups over precomputed JSON,
-                  3 deterministic computations over the daily series
+  tools.py        17 strict-schema tools: 10 lookups over precomputed JSON,
+                  3 computations over the daily series, 4 over the raw-M5
+                  scale layer (10 stores, 2,652 SKUs)
   agent.py        the loop — Anthropic SDK tool runner, claude-opus-5,
                   per-run token/cost/latency accounting
   schema.py       structured output: answer, figures_cited, confidence, unanswerable
   glossary.md     metric definitions (WAPE, FVA, bias sign convention, ...)
-  retrieval.py    keyword retrieval over the glossary — 10 entries need no vector DB
+  retrieval.py    keyword retrieval over the glossary — 11 entries need no vector DB
 eval/
   questions.jsonl       37 main questions with expected tools, values, refusals
   questions_hard.jsonl  14 multi-hop questions; expected values computed by an
@@ -88,7 +104,9 @@ eval/
   results-*.md          generated — one per configuration
 scripts/
   record_traces.py      records real runs for the portfolio's replay view
+  build_scale_data.py   builds data/scale/ from raw M5 (datasetsforecast mirror)
 data/                   six JSON files from the portfolio backtest
+data/scale/             store/SKU aggregates computed from raw M5
 ```
 
 Design decisions that matter:
@@ -97,14 +115,14 @@ Design decisions that matter:
   figure must be listed in `figures_cited`, and the eval verifies each cited
   value against the tool returns of that same conversation — a number the
   tools never produced is flagged as fabricated.
-- **`strict: true` on all thirteen tools**, with `additionalProperties:
+- **`strict: true` on all seventeen tools**, with `additionalProperties:
   false` and `required` populated, so inputs validate exactly. The three
   computed tools do deterministic WAPE arithmetic in Python — computation
   lives in code, never in the model.
 - **Structured output** via `output_config.format` (JSON schema), with a
   load-bearing `unanswerable` path — the data has no future forecasts, no
   revenue, no headcount, and the agent must say so instead of improvising.
-- **Retrieval is small and honest**: keyword matching over a 10-entry
+- **Retrieval is small and honest**: keyword matching over an 11-entry
   glossary, injected per question. A vector database for a dozen definitions
   would be decoration.
 - **Parallel tool calls** are handled by the SDK tool runner, which returns
@@ -124,6 +142,18 @@ Main set, six categories:
 | unanswerable | 5 | "What's the forecast for next quarter?" | decline — no future data exists |
 | trap | 5 | "What's the revenue per head?" | refuse — the data cannot support it |
 
+The scale layer is scoped honestly: the portfolio model's forecasts exist
+only for CA_1's seven departments, so store- and SKU-level tools serve
+actuals and seasonal-naive metrics computed from raw M5 — and the agent must
+refuse "model accuracy for store X". Two cross-pipeline checks anchor the
+computation: CA_1's per-department naive accuracies computed from raw M5
+reproduce the portfolio's stored figures exactly (FOODS_3 87.1, HOBBIES_2
+54.9, all seven), and CA_1's window volume lands on planningOverall's
+1,153,225 to the unit. Store metrics are computed on aggregated daily
+series; SKU metrics on each item's own series — the first build pooled
+SKU-day errors into "store accuracy" of 16%, a granularity mistake the
+aggregation now prevents and the glossary warns the agent about.
+
 The hard set was written adversarially against the tool surface after the
 main set saturated: fold-trend questions ("which department deteriorates
 most steadily across the three folds?" — 21 tool calls), window paradoxes
@@ -141,23 +171,30 @@ export ANTHROPIC_API_KEY=...              # or `ant auth login`; never committed
 .venv/bin/python -m agent.agent "Which departments beat the naive baseline?"
 .venv/bin/python -m eval.run_eval --tag opus-high
 .venv/bin/python -m eval.run_eval --questions eval/questions_hard.jsonl --tag hard
+.venv/bin/python -m eval.run_eval --questions eval/questions_scale.jsonl --tag scale
 .venv/bin/python -m eval.run_baseline     # the no-tools comparison
+.venv/bin/python -m scripts.build_scale_data   # rebuild data/scale from raw M5
 ```
 
-The full grid above cost about $8 in API spend to measure.
+The full grid above cost about $10 in API spend to measure.
 
 ## Limitations, honestly
 
-The main set saturates frontier models — at high *and* low effort — because
-seven departments cap lookup-question difficulty. The hard set restored a
-real failure rate by requiring computation, but its ceiling is the single
-store: per-SKU (3,049 items) and multi-store tools are the next scale step,
-and the expected result is a lower pass rate and a richer failure taxonomy.
-The eval author and agent author are the same person; the hard set's
-script-computed ground truth mitigates but does not eliminate that.
+After the schema fix, `opus-5` at high effort passes every set — main,
+hard, and scale. The discriminants that keep the grid honest are sonnet's
+reproducible discipline failures, low-effort's fabrication-inside-a-refusal,
+the schema-v1 flaw (caught, fixed, re-measured), and the stuffing baseline's
+collapse on computation. The remaining ceilings: single-turn questions only
+(no conversation state), one person wrote both the agent and the eval (the
+script-computed ground truth mitigates but does not eliminate that), and
+SKU-level tools cover CA_1 only — the model's forecasts don't exist
+elsewhere, and inventing them would be exactly what this project refuses
+to do.
 
 ## Data
 
-Public Walmart M5 competition data (California store 1, 7 departments, daily
-actuals and forecasts 2013-05-05 → 2014-01-22), precomputed at build time in
-the portfolio repo. Ground truth was never in the agent's prompt.
+Public Walmart M5 competition data. The planning layer (CA_1, 7 departments,
+2013-05-05 → 2014-01-22) is precomputed in the portfolio repo; the scale
+layer (10 stores, 2,652 SKUs) is computed from the raw M5 files by
+`scripts/build_scale_data.py` over the same window. Ground truth was never
+in the agent's prompt.
