@@ -1,0 +1,82 @@
+[
+ {
+  "itemsPct": 5,
+  "revenuePct": 29.8
+ },
+ {
+  "itemsPct": 10,
+  "revenuePct": 40.8
+ },
+ {
+  "itemsPct": 15,
+  "revenuePct": 49.4
+ },
+ {
+  "itemsPct": 20,
+  "revenuePct": 56.0
+ },
+ {
+  "itemsPct": 25,
+  "revenuePct": 61.7
+ },
+ {
+  "itemsPct": 30,
+  "revenuePct": 66.4
+ },
+ {
+  "itemsPct": 35,
+  "revenuePct": 70.8
+ },
+ {
+  "itemsPct": 40,
+  "revenuePct": 74.5
+ },
+ {
+  "itemsPct": 45,
+  "revenuePct": 77.5
+ },
+ {
+  "itemsPct": 50,
+  "revenuePct": 80.5
+ },
+ {
+  "itemsPct": 55,
+  "revenuePct": 83.0
+ },
+ {
+  "itemsPct": 60,
+  "revenuePct": 85.3
+ },
+ {
+  "itemsPct": 65,
+  "revenuePct": 88.0
+ },
+ {
+  "itemsPct": 70,
+  "revenuePct": 90.0
+ },
+ {
+  "itemsPct": 75,
+  "revenuePct": 92.8
+ },
+ {
+  "itemsPct": 80,
+  "revenuePct": 94.8
+ },
+ {
+  "itemsPct": 85,
+  "revenuePct": 96.3
+ },
+ {
+  "itemsPct": 90,
+  "revenuePct": 97.8
+ },
+ {
+  "itemsPct": 95,
+  "revenuePct": 99.1
+ },
+ {
+  "itemsPct": 100,
+  "revenuePct": 100.0
+ }
+]

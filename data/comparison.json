@@ -1,0 +1,44 @@
+[
+ {
+  "dept": "FOODS_1",
+  "prophetWape": 24.99,
+  "elasticWape": 6.96,
+  "meanDaily": 327.7
+ },
+ {
+  "dept": "FOODS_2",
+  "prophetWape": 20.55,
+  "elasticWape": 5.31,
+  "meanDaily": 432.8
+ },
+ {
+  "dept": "FOODS_3",
+  "prophetWape": 19.81,
+  "elasticWape": 4.86,
+  "meanDaily": 2336.8
+ },
+ {
+  "dept": "HOBBIES_1",
+  "prophetWape": 18.57,
+  "elasticWape": 4.32,
+  "meanDaily": 458.3
+ },
+ {
+  "dept": "HOBBIES_2",
+  "prophetWape": 34.32,
+  "elasticWape": 58.96,
+  "meanDaily": 23.6
+ },
+ {
+  "dept": "HOUSEHOLD_1",
+  "prophetWape": 21.56,
+  "elasticWape": 3.26,
+  "meanDaily": 622.2
+ },
+ {
+  "dept": "HOUSEHOLD_2",
+  "prophetWape": 20.94,
+  "elasticWape": 8.99,
+  "meanDaily": 173.7
+ }
+]

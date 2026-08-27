@@ -1,0 +1,58 @@
+[
+ {
+  "dept": "FOODS_3",
+  "fa": 80.1,
+  "naiveFa": 87.1,
+  "fva": -7.0,
+  "bias": -0.7,
+  "volume": 615655
+ },
+ {
+  "dept": "HOUSEHOLD_1",
+  "fa": 78.3,
+  "naiveFa": 87.8,
+  "fva": -9.4,
+  "bias": 4.1,
+  "volume": 163737
+ },
+ {
+  "dept": "HOBBIES_1",
+  "fa": 82.2,
+  "naiveFa": 79.3,
+  "fva": 2.8,
+  "bias": 1.4,
+  "volume": 121662
+ },
+ {
+  "dept": "FOODS_2",
+  "fa": 79.3,
+  "naiveFa": 80.2,
+  "fva": -0.9,
+  "bias": -4.2,
+  "volume": 113746
+ },
+ {
+  "dept": "FOODS_1",
+  "fa": 75.0,
+  "naiveFa": 82.2,
+  "fva": -7.3,
+  "bias": -3.9,
+  "volume": 86718
+ },
+ {
+  "dept": "HOUSEHOLD_2",
+  "fa": 79.0,
+  "naiveFa": 86.6,
+  "fva": -7.6,
+  "bias": 3.0,
+  "volume": 45480
+ },
+ {
+  "dept": "HOBBIES_2",
+  "fa": 65.6,
+  "naiveFa": 54.9,
+  "fva": 10.6,
+  "bias": -7.5,
+  "volume": 6227
+ }
+]
