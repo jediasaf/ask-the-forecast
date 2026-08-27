@@ -73,7 +73,14 @@ def _build_system(question: str) -> list[dict]:
 
 
 def ask(question: str, client: Anthropic | None = None, model: str = MODEL) -> AgentResult:
-    client = client or Anthropic()  # resolves ANTHROPIC_API_KEY / ant auth profile
+    if client is None:
+        try:
+            client = Anthropic()  # resolves ANTHROPIC_API_KEY / ant auth profile
+        except TypeError:  # the SDK raises TypeError when no credential source exists
+            return AgentResult(
+                None,
+                error="no_credentials: export ANTHROPIC_API_KEY or run `ant auth login`",
+            )
     tools.reset_call_log()
 
     try:
