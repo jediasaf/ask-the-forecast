@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from dataclasses import dataclass, field
 
 import anthropic
@@ -22,6 +23,13 @@ from .retrieval import format_entries, retrieve
 from .schema import AnswerReport, output_format
 
 MODEL = "claude-opus-5"  # exact string, no date suffix
+
+# USD per million tokens: (input, output). Cache reads bill at 0.1x input,
+# cache writes at 1.25x input.
+PRICING = {
+    "claude-opus-5": (5.00, 25.00),
+    "claude-sonnet-5": (2.00, 10.00),
+}
 MAX_TOKENS = 16000
 MAX_ITERATIONS = 8
 
@@ -56,6 +64,30 @@ class AgentResult:
     error: str | None = None
     stop_reason: str | None = None
     raw_text: str | None = None
+    usage: dict | None = None  # tokens, cost_usd, seconds, iterations
+
+
+def _accumulate_usage(totals: dict, usage) -> None:
+    totals["input_tokens"] += usage.input_tokens or 0
+    totals["output_tokens"] += usage.output_tokens or 0
+    totals["cache_read_tokens"] += getattr(usage, "cache_read_input_tokens", 0) or 0
+    totals["cache_write_tokens"] += getattr(usage, "cache_creation_input_tokens", 0) or 0
+
+
+def _cost_usd(totals: dict, model: str) -> float | None:
+    if model not in PRICING:
+        return None
+    in_price, out_price = PRICING[model]
+    return round(
+        (
+            totals["input_tokens"] * in_price
+            + totals["cache_read_tokens"] * in_price * 0.1
+            + totals["cache_write_tokens"] * in_price * 1.25
+            + totals["output_tokens"] * out_price
+        )
+        / 1_000_000,
+        4,
+    )
 
 
 def _build_system(question: str) -> list[dict]:
@@ -87,6 +119,9 @@ def ask(
                 error="no_credentials: export ANTHROPIC_API_KEY or run `ant auth login`",
             )
     tools.reset_call_log()
+    totals = {"input_tokens": 0, "output_tokens": 0, "cache_read_tokens": 0, "cache_write_tokens": 0}
+    iterations = 0
+    started = time.monotonic()
 
     try:
         runner = client.beta.messages.tool_runner(
@@ -99,7 +134,14 @@ def ask(
             tools=tools.ALL_TOOLS,
             messages=[{"role": "user", "content": question}],
         )
-        final = runner.until_done()
+        final = None
+        for message in runner:  # equivalent to until_done, but captures per-turn usage
+            final = message
+            iterations += 1
+            if message.usage is not None:
+                _accumulate_usage(totals, message.usage)
+        if final is None:
+            return AgentResult(None, list(tools.CALL_LOG), error="runner_returned_nothing")
     except anthropic.NotFoundError as e:
         return AgentResult(None, list(tools.CALL_LOG), error=f"not_found: {e.message}")
     except anthropic.RateLimitError as e:
@@ -118,14 +160,20 @@ def ask(
         )
 
     call_log = list(tools.CALL_LOG)
+    usage = {
+        **totals,
+        "cost_usd": _cost_usd(totals, model),
+        "seconds": round(time.monotonic() - started, 1),
+        "iterations": iterations,
+    }
 
     if final.stop_reason == "refusal":
-        return AgentResult(None, call_log, error="refusal", stop_reason="refusal")
+        return AgentResult(None, call_log, error="refusal", stop_reason="refusal", usage=usage)
 
     text = next((b.text for b in final.content if b.type == "text"), None)
     if text is None:
         return AgentResult(
-            None, call_log, error="no_text_block", stop_reason=final.stop_reason
+            None, call_log, error="no_text_block", stop_reason=final.stop_reason, usage=usage
         )
 
     try:
@@ -137,9 +185,10 @@ def ask(
             error=f"schema_invalid: {e}",
             stop_reason=final.stop_reason,
             raw_text=text,
+            usage=usage,
         )
 
-    return AgentResult(report, call_log, stop_reason=final.stop_reason, raw_text=text)
+    return AgentResult(report, call_log, stop_reason=final.stop_reason, raw_text=text, usage=usage)
 
 
 def main() -> None:

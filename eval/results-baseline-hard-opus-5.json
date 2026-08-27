@@ -1,0 +1,427 @@
+[
+ {
+  "id": "hard-01",
+  "category": "multi_hop",
+  "q": "Across the three walk-forward folds, is FOODS_1's forecast value add improving or deteriorating?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": false,
+   "refusal": false,
+   "fabrication": true
+  },
+  "failures": [
+   "numeric: expected fva_fold1=-16.3 for FOODS_1, not cited",
+   "numeric: expected fva_fold3=4.3 for FOODS_1, not cited",
+   "refusal: refused an answerable question"
+  ],
+  "pass": false,
+  "usage": {
+   "input_tokens": 38,
+   "output_tokens": 714,
+   "cache_read_tokens": 101124,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0686,
+   "seconds": 9.9,
+   "iterations": 1
+  },
+  "trace": [],
+  "answer": "Not answerable from this data. Forecast value add for FOODS_1 exists only as a single backtest-wide figure (fva -7.3, with fa 75.0 vs naiveFa 82.2); there is no fold-level accuracy or FVA breakdown. The daily series does carry fold labels (folds 1-3, with FOODS_1 model levels of 258.2, 388.9 and 298.6) but converting those into per-fold FVA would require computing accuracy metrics, which I can't do. The weekly planningTrend series is pooled across all seven departments, not FOODS_1-specific, so it can't substitute either. Missing input: per-fold (or per-department-per-week) fa/naiveFa/fva values for FOODS_1.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-02",
+  "category": "multi_hop",
+  "q": "Which department's forecast value add deteriorates most steadily across the three backtest folds?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": false,
+   "refusal": false,
+   "fabrication": true
+  },
+  "failures": [
+   "numeric: expected fva_fold1=-5.0 for HOUSEHOLD_1, not cited",
+   "numeric: expected fva_fold3=-12.3 for HOUSEHOLD_1, not cited",
+   "numeric: HOUSEHOLD_1 not in departments_referenced",
+   "refusal: refused an answerable question"
+  ],
+  "pass": false,
+  "usage": {
+   "input_tokens": 31,
+   "output_tokens": 502,
+   "cache_read_tokens": 101124,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0633,
+   "seconds": 8.7,
+   "iterations": 1
+  },
+  "trace": [],
+  "answer": "Unanswerable as posed. The data reports forecast value add (fva) only once per department, pooled over the whole 263-day backtest (planningDepts.json), and once overall (planningOverall.json). There is no fold-level FVA, forecast-accuracy or naive-accuracy breakdown anywhere in the data \u2014 the only fold labels appear in deptSeries.json as per-day actual/model/naive/err rows, and turning those into per-fold FVA would require computation, which I can't do. So there is no verbatim figure showing whether any department's FVA declines steadily from fold 1 to fold 3. To answer, I'd need FVA (or fa and naiveFa) reported separately for fold 1, fold 2 and fold 3 by department.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-03",
+  "category": "multi_hop",
+  "q": "In December 2013, which departments actually beat the naive baseline?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": false,
+   "refusal": false,
+   "fabrication": true
+  },
+  "failures": [
+   "numeric: expected fva_dec=10.2 for FOODS_1, not cited",
+   "numeric: expected fva_dec=4.2 for HOBBIES_1, not cited",
+   "numeric: expected fva_dec=6.3 for HOBBIES_2, not cited",
+   "numeric: FOODS_1 not in departments_referenced",
+   "numeric: HOBBIES_1 not in departments_referenced",
+   "numeric: HOBBIES_2 not in departments_referenced",
+   "refusal: refused an answerable question"
+  ],
+  "pass": false,
+  "usage": {
+   "input_tokens": 24,
+   "output_tokens": 841,
+   "cache_read_tokens": 101124,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0717,
+   "seconds": 12.1,
+   "iterations": 1
+  },
+  "trace": [],
+  "answer": "Unanswerable as asked. The data has no December-only, department-level accuracy comparison. Department-level model-vs-naive figures (planningDepts fa vs naiveFa, and comparison.json WAPEs) are pooled over the entire 263-day backtest, not broken out by month; the only December-resolution comparison (planningTrend weekly fa vs naiveFa) is pooled across all 7 departments and cannot be attributed to individual departments. Deriving December per-department winners would require aggregating the daily deptSeries errors, which is arithmetic I am not permitted to do. Missing: a per-department, per-month (or December-window) model vs naive accuracy metric.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-04",
+  "category": "multi_hop",
+  "q": "What was FOODS_3's single worst forecast day, and would the naive baseline have done better on that day?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 36,
+   "output_tokens": 924,
+   "cache_read_tokens": 101124,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0738,
+   "seconds": 12.3,
+   "iterations": 1
+  },
+  "trace": [],
+  "answer": "FOODS_3's worst day was 2013-12-25 (Christmas, fold 3): actual sales were 0 units while the model forecast 2431.5, giving an error of 2431.5 units \u2014 the largest single-day error in the FOODS_3 series (next worst: 1544.5 on 2013-08-25 and 1462.5 on 2013-09-08). Yes, the seasonal-naive baseline would have been closer that day: it forecast 1755.0 against the same actual of 0, so its forecast sat below the model's 2431.5. Note the naive's own error value for that day is not given in the data, so I'm comparing the two forecasts against the actual of 0 rather than quoting a naive error figure. The store was closed (actual 0), which neither method anticipated.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-05",
+  "category": "multi_hop",
+  "q": "Which department had the largest single-day absolute forecast error anywhere in the backtest, and what happened that day?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 38,
+   "output_tokens": 862,
+   "cache_read_tokens": 101124,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0723,
+   "seconds": 10.7,
+   "iterations": 1
+  },
+  "trace": [],
+  "answer": "FOODS_3 owns the single largest daily absolute error in the backtest: 2431.5 units on 2013-12-25. That day is the Christmas closure \u2014 actual sales were 0, while the model forecast a flat 2431.5 units (the naive baseline also missed, carrying 1755.0 from the prior week). Every department shows its worst day on 2013-12-25 for the same reason (e.g. HOUSEHOLD_1 err 646.9, HOBBIES_1 err 481.3, FOODS_2 err 382.2), but FOODS_3's error is the biggest in absolute units because it is by far the highest-volume department (mean daily 2336.8). Scope: comparing the per-day 'err' values in deptSeries.json across all 7 departments.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-06",
+  "category": "multi_hop",
+  "q": "FOODS_1 loses to the naive baseline over the whole backtest \u2014 was that also true in December 2013?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": false,
+   "refusal": false,
+   "fabrication": true
+  },
+  "failures": [
+   "numeric: expected fva_dec=10.2 for FOODS_1, not cited",
+   "refusal: refused an answerable question"
+  ],
+  "pass": false,
+  "usage": {
+   "input_tokens": 38,
+   "output_tokens": 766,
+   "cache_read_tokens": 101124,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0699,
+   "seconds": 11.8,
+   "iterations": 1
+  },
+  "trace": [],
+  "answer": "Can't be answered from this data. The only FOODS_1 accuracy-vs-naive figures are whole-backtest: forecast accuracy 75.0 vs naive 87.2... (correction: naive 82.2), i.e. FVA -7.3, confirming the full-period loss. There is no December-only, department-level accuracy figure: the weekly accuracy trend (which does cover December weeks) is pooled across all 7 departments, not split by department, and the FOODS_1 daily series lists a model error column but no naive error, so a December FOODS_1 vs naive comparison would require computing figures the data does not state. What's missing: department-by-month (or department-by-week) accuracy for FOODS_1 and its naive baseline.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-07",
+  "category": "multi_hop",
+  "q": "Does FOODS_1 ever beat the naive baseline in any single backtest fold?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": false,
+   "refusal": false,
+   "fabrication": true
+  },
+  "failures": [
+   "numeric: expected fva_fold3=4.3 for FOODS_1, not cited",
+   "refusal: refused an answerable question"
+  ],
+  "pass": false,
+  "usage": {
+   "input_tokens": 32,
+   "output_tokens": 857,
+   "cache_read_tokens": 101124,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0721,
+   "seconds": 11.9,
+   "iterations": 1
+  },
+  "trace": [],
+  "answer": "Not answerable from this data. The daily series for FOODS_1 is tagged with folds 1\u20133, but it only carries the model's absolute error (\"err\") \u2014 there is no naive error, no per-fold accuracy, and no per-fold fold-vs-baseline metric anywhere in the data, so a fold-level win/loss verdict cannot be established without computing it (which I can't do). The only baseline comparison available for FOODS_1 is over the whole 263-day backtest, not by fold: forecast accuracy 75.0 vs naive 82.2, FVA -7.3 (and WAPE 24.99 vs the elastic-net figure 6.96). Those are whole-period figures and do not answer whether any individual fold beat the baseline.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-08",
+  "category": "multi_hop",
+  "q": "Several departments share the same worst forecast day. What date is it, and what does the data show happened?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 32,
+   "output_tokens": 1927,
+   "cache_read_tokens": 101124,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0989,
+   "seconds": 20.6,
+   "iterations": 1
+  },
+  "trace": [],
+  "answer": "The shared worst day is 2013-12-25 (Christmas Day). On that date the actual sales are 0 in every department \u2014 the store was closed \u2014 while the model kept issuing its flat fold-3 forecast, so the error equals the forecast itself. It is the single largest daily error for 5 of the 7 departments: FOODS_3 (err 2431.5, next-largest 1544.5), HOUSEHOLD_1 (646.9, next 427.3), HOBBIES_1 (481.3, next 311.3), FOODS_2 (382.2, next 317.8) and HOUSEHOLD_2 (159.9, next 113.1). Two departments peak elsewhere: FOODS_1's 12-25 error is 298.6 but its worst day is 2013-12-21 (326.4), and HOBBIES_2's 12-25 error is 27.6 versus its worst day 2013-09-08 (50.4). The knock-on effect also shows in the baseline: on 2014-01-01 the seasonal-naive value is 0.0 in every department, because it carries the closed-day zero forward.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-09",
+  "category": "multi_hop",
+  "q": "Is HOBBIES_2's edge over the naive baseline consistent across the three folds, and what happens to its raw accuracy over the same period?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": false,
+   "refusal": false,
+   "fabrication": true
+  },
+  "failures": [
+   "numeric: expected fva_fold1=11.7 for HOBBIES_2, not cited",
+   "numeric: expected fva_fold3=12.3 for HOBBIES_2, not cited",
+   "numeric: expected fa_fold3=60.6 for HOBBIES_2, not cited",
+   "refusal: refused an answerable question"
+  ],
+  "pass": false,
+  "usage": {
+   "input_tokens": 50,
+   "output_tokens": 1190,
+   "cache_read_tokens": 101124,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0806,
+   "seconds": 16.5,
+   "iterations": 1
+  },
+  "trace": [],
+  "answer": "Fold-level answer isn't possible: the data contains no per-fold accuracy or WAPE figures for HOBBIES_2 (deptSeries carries daily actual/model/naive/err values tagged by fold, but no fold-level metric is stated, and I can't compute one). The weekly planningTrend series is pooled across all seven departments, so it can't be read as HOBBIES_2's accuracy path either.\n\nWhat the data does state, pooled over the full 263-day backtest, is that HOBBIES_2 beats the naive baseline while remaining the least accurate department in absolute terms: forecast accuracy 65.6 vs naive 54.9, FVA +10.6 \u2014 the largest positive FVA of any department \u2014 on volume of just 6,227 units and mean daily demand of 23.6. Missing for the question as asked: per-fold (or per-window) accuracy/error metrics for HOBBIES_2 and its baseline.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-10",
+  "category": "multi_hop",
+  "q": "What's HOUSEHOLD_2's value add in fold 2, and is that better or worse than its overall figure?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": false,
+   "refusal": false,
+   "fabrication": true
+  },
+  "failures": [
+   "numeric: expected fva_fold2=-13.0 for HOUSEHOLD_2, not cited",
+   "refusal: refused an answerable question"
+  ],
+  "pass": false,
+  "usage": {
+   "input_tokens": 40,
+   "output_tokens": 581,
+   "cache_read_tokens": 101124,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0653,
+   "seconds": 8.7,
+   "iterations": 1
+  },
+  "trace": [],
+  "answer": "Not answerable as asked: the data contains no fold-level forecast value add. FVA is only reported at the whole-backtest level (HOUSEHOLD_2: -7.6, i.e. 79.0 forecast accuracy vs 86.6 seasonal-naive), and the daily series for HOUSEHOLD_2 carries fold labels but no fold-2 accuracy or FVA figure \u2014 deriving one would require computation I can't do. So the fold-2 vs overall comparison can't be made from this data.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-11",
+  "category": "multi_hop",
+  "q": "Of the departments that beat the naive baseline in December 2013, which one has the highest total volume over the backtest?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": false,
+   "fabrication": true
+  },
+  "failures": [
+   "refusal: refused an answerable question"
+  ],
+  "pass": false,
+  "usage": {
+   "input_tokens": 39,
+   "output_tokens": 883,
+   "cache_read_tokens": 101124,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0728,
+   "seconds": 13.1,
+   "iterations": 1
+  },
+  "trace": [],
+  "answer": "Unanswerable as asked. The data has no department-by-month accuracy breakdown, so I cannot identify which departments beat the naive baseline specifically in December 2013 \u2014 the only naive comparison split by department (planningDepts) covers the whole 263-day backtest, and the only December-level view (planningTrend weekly fa vs naiveFa) is pooled across all 7 departments, not per department. For reference on a different scope (full backtest, not December): the departments with positive forecast value added versus naive are HOBBIES_1 (fva 2.8, volume 121,662) and HOBBIES_2 (fva 10.6, volume 6,227) \u2014 but this is not a December-only result and should not be read as answering the question.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-12",
+  "category": "ambiguous",
+  "q": "Is the model getting better over time?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 14,
+   "output_tokens": 925,
+   "cache_read_tokens": 101124,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0738,
+   "seconds": 12.7,
+   "iterations": 1
+  },
+  "trace": [],
+  "answer": "No \u2014 there's no sign of improvement over the backtest. Scoped to the pooled weekly forecast-accuracy trend (all 7 departments combined, 38 weeks from 2013-05-06 to 2014-01-20): model FA starts at 82.3 in the first week, reaches its high of 89.5 in the week of 2013-07-22, and ends at 68.8 in the final week of 2014-01-20 \u2014 the second-lowest value in the series after 66.3 (week of 2013-12-23). The baseline in that final week is 89.9, so the gap to seasonal-naive is at its widest late in the horizon, not narrowing. Over the whole window the pooled model FA is 79.5 vs naive FA 85.2 (FVA -5.7), and only 2 of 7 departments beat the baseline. Caveat: this is a within-backtest time trend, not a statement about model versions or retraining improvements, which the data does not cover.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-13",
+  "category": "unanswerable",
+  "q": "What was the forecast accuracy in February 2014?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 20,
+   "output_tokens": 292,
+   "cache_read_tokens": 101124,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.058,
+   "seconds": 6.7,
+   "iterations": 1
+  },
+  "trace": [],
+  "answer": "The backtest window ends on 2014-01-22 \u2014 the last weekly point in the trend data is the week of 2014-01-20 (model FA 68.8%, naive FA 89.9%), and the last daily observation in every department series is 2014-01-22. There is no February 2014 data in this backtest, so forecast accuracy for that month cannot be reported. Answering it would require forecast/actual data beyond the evaluation window.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-14",
+  "category": "unanswerable",
+  "q": "What caused the spike in FOODS_1 sales on December 21st 2013?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 29,
+   "output_tokens": 556,
+   "cache_read_tokens": 101124,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0646,
+   "seconds": 9.0,
+   "iterations": 1
+  },
+  "trace": [],
+  "answer": "Not answerable from this backtest. The data contains only actuals, model forecasts, seasonal-naive forecasts and absolute errors per day \u2014 no promotion, price, event, holiday or store/SKU driver fields \u2014 so nothing here can attribute a cause. For context only (not an explanation): FOODS_1 actual on 2013-12-21 was 625 against a model forecast of 298.6, an absolute error of 326.4, the largest single-day error in the FOODS_1 series. Identifying the driver would require promo/price/calendar data that is not in this dataset.",
+  "unanswerable": true,
+  "confidence": "high"
+ }
+]

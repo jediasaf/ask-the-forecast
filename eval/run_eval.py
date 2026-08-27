@@ -83,6 +83,7 @@ def score_question(q: dict, result: AgentResult, universe: set[float]) -> dict:
         row["checks"] = {k: False for k in ("tool_selection", "numeric", "refusal", "fabrication")}
         row["failures"].append(f"agent error: {result.error}")
         row["pass"] = False
+        row["usage"] = result.usage
         return row
 
     report = result.report
@@ -126,11 +127,17 @@ def score_question(q: dict, result: AgentResult, universe: set[float]) -> dict:
         verb = "refused an answerable" if report.unanswerable else "answered an unanswerable"
         row["failures"].append(f"refusal: {verb} question")
 
-    # --- fabrication: every cited value must exist somewhere in the data
+    # --- fabrication: every cited value must appear in a tool return from
+    # this conversation (strongest check), or failing that in the raw data
+    returned: set[float] = set()
+    for call in result.tool_calls:
+        if call.get("output") is not None:
+            _collect_numbers(call["output"], returned)
+    provenance = returned | universe
     fabricated = [
         f"{metric}={value} ({dept or 'overall'})"
         for dept, value, metric in cited
-        if not any(abs(value - u) <= _tol(value) for u in universe)
+        if not any(abs(value - u) <= _tol(value) for u in provenance)
     ]
     fabrication_ok = not fabricated
     if fabricated:
@@ -143,6 +150,8 @@ def score_question(q: dict, result: AgentResult, universe: set[float]) -> dict:
         "fabrication": fabrication_ok,
     }
     row["pass"] = all(row["checks"].values())
+    row["usage"] = result.usage
+    row["trace"] = result.tool_calls
     row["answer"] = report.answer
     row["unanswerable"] = report.unanswerable
     row["confidence"] = report.confidence
@@ -168,7 +177,23 @@ def pct(num: int, den: int) -> str:
     return f"{100 * num / den:.0f}%" if den else "n/a"
 
 
-def write_results(rows: list[dict], model: str, effort: str) -> None:
+def _usage_summary(rows: list[dict]) -> dict | None:
+    used = [r["usage"] for r in rows if r.get("usage")]
+    if not used:
+        return None
+    n = len(used)
+    total_cost = sum(u["cost_usd"] or 0 for u in used)
+    return {
+        "questions_with_usage": n,
+        "total_cost_usd": round(total_cost, 2),
+        "mean_cost_usd": round(total_cost / n, 4),
+        "mean_seconds": round(sum(u["seconds"] for u in used) / n, 1),
+        "mean_output_tokens": round(sum(u["output_tokens"] for u in used) / n),
+        "mean_iterations": round(sum(u["iterations"] for u in used) / n, 1),
+    }
+
+
+def write_results(rows: list[dict], model: str, effort: str, tag: str = "") -> None:
     n = len(rows)
     checks = ("tool_selection", "numeric", "refusal", "fabrication")
     totals = {c: sum(r["checks"][c] for r in rows) for c in checks}
@@ -193,6 +218,18 @@ def write_results(rows: list[dict], model: str, effort: str) -> None:
         f"| Refusal accuracy | {pct(totals['refusal'], n)} |",
         f"| No fabricated figures | {pct(totals['fabrication'], n)} |",
         "",
+        *(
+            [
+                "## Cost and latency",
+                "",
+                "| Total cost | Mean cost / question | Mean latency | Mean output tokens | Mean tool-loop turns |",
+                "|---|---|---|---|---|",
+                f"| ${u['total_cost_usd']} | ${u['mean_cost_usd']} | {u['mean_seconds']}s | {u['mean_output_tokens']} | {u['mean_iterations']} |",
+                "",
+            ]
+            if (u := _usage_summary(rows))
+            else []
+        ),
         "## By category",
         "",
         "| Category | Passed | Tool | Numeric | Refusal |",
@@ -224,9 +261,10 @@ def write_results(rows: list[dict], model: str, effort: str) -> None:
             lines.append(f"- answer given: {r['answer']}")
         lines.append("")
 
-    (EVAL_DIR / "results.md").write_text("\n".join(lines) + "\n")
-    (EVAL_DIR / "results.json").write_text(json.dumps(rows, indent=1))
-    print(f"\nwrote eval/results.md and eval/results.json — {passed}/{n} passed")
+    suffix = f"-{tag}" if tag else ""
+    (EVAL_DIR / f"results{suffix}.md").write_text("\n".join(lines) + "\n")
+    (EVAL_DIR / f"results{suffix}.json").write_text(json.dumps(rows, indent=1))
+    print(f"\nwrote eval/results{suffix}.md and eval/results{suffix}.json — {passed}/{n} passed")
 
 
 def main() -> None:
@@ -235,9 +273,12 @@ def main() -> None:
     parser.add_argument("--only", default=None, help="question id or category")
     parser.add_argument("--model", default=MODEL)
     parser.add_argument("--effort", default="high", choices=["low", "medium", "high", "xhigh", "max"])
+    parser.add_argument("--questions", default=None, help="path to a questions .jsonl (default: eval/questions.jsonl)")
+    parser.add_argument("--tag", default="", help="suffix for the results files, e.g. opus-high")
     args = parser.parse_args()
 
-    questions = [json.loads(line) for line in QUESTIONS.read_text().splitlines() if line.strip()]
+    qpath = Path(args.questions) if args.questions else QUESTIONS
+    questions = [json.loads(line) for line in qpath.read_text().splitlines() if line.strip()]
     if args.only:
         questions = [q for q in questions if args.only in (q["id"], q["category"])]
     if args.limit:
@@ -253,7 +294,7 @@ def main() -> None:
         print(f"  {status}")
         rows.append(row)
 
-    write_results(rows, args.model, args.effort)
+    write_results(rows, args.model, args.effort, args.tag)
 
 
 if __name__ == "__main__":

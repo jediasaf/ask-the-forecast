@@ -9,84 +9,101 @@ and held to the same standard: it reports its own failure modes, measured.
 > *"Which departments is the model losing to the naive baseline, and why?"*
 
 The agent calls `compare_departments("fva")`, reads the ranking the tool
-returned, and answers with the real figures — the pooled −5.7pp value add, the
-five departments losing to seasonal naive, the two (HOBBIES_1 +2.8pp,
-HOBBIES_2 +10.6pp) that beat it. Every number in the answer traces to a tool
-return, and the eval harness checks that mechanically.
+returned, and answers with the real figures — the pooled −5.7pp value add,
+the five departments losing to seasonal naive, the two that beat it. Every
+number in the answer traces to a tool return, and the eval harness checks
+that mechanically. A [live replay of recorded runs](https://jediasaf.vercel.app)
+is on the portfolio site.
 
-## Measured results
+## The experiment grid
 
-37 questions, four checks per question, measured 2026-08-27 by
-[`eval/run_eval.py`](eval/run_eval.py) — never restated by hand:
+Two question sets, two architectures, measured 2026-08-27 by
+[`eval/run_eval.py`](eval/run_eval.py) and
+[`eval/run_baseline.py`](eval/run_baseline.py) — never restated by hand.
+Four checks per question: right tools called, cited figures correct, refusal
+decision exact, and every cited number present in an actual tool return.
 
-| Run | Overall | Tool selection | Numeric | Refusal | Fabricated figures |
-|---|---|---|---|---|---|
-| `claude-opus-5` · effort high | **37/37 (100%)** | 100% | 100% | 100% | 0 |
-| `claude-sonnet-5` · effort high | 35/37 (95%) | 97% | 97% | 100% | 0 |
-| `claude-opus-5` · effort low | 37/37 (100%) | 100% | 100% | 100% | 0 |
+**Main set — 37 questions** (lookups, comparisons, 2-hop chains, refusals):
 
-Full breakdowns: [opus/high](eval/results-opus.md) ·
-[sonnet/high](eval/results-sonnet.md) · [opus/low](eval/results-opus-low.md).
+| Configuration | Pass | Cost / question | Latency | Failure modes |
+|---|---|---|---|---|
+| Agent · `opus-5` · high | **37/37** | $0.037 | 16.9s | none |
+| Agent · `opus-5` · low | 36/37 | $0.024 | 11.2s | fabricated a figure *inside a correct refusal* |
+| Agent · `sonnet-5` · high | 35/37 | $0.012 | 10.3s | citation discipline; costlier tool path — **reproduced exactly across two runs** |
+| Prompt-stuffing · `opus-5` · high | 37/37 | $0.082 | 8.5s | none — but see below |
 
-### Failure analysis
+**Hard set — 14 questions** needing computation over the daily series
+(fold-over-fold trends, date-window accuracy, worst-day analysis):
 
-The headline run is perfect, which is why the comparison rows exist — a
-perfect score is only meaningful if the harness can be shown to fail things.
-It can:
+| Configuration | Pass | What broke |
+|---|---|---|
+| Agent · `opus-5` · high | **13/14 (93%)** | one fabrication flag: a *date* cited as the number `20131225.0` |
+| Prompt-stuffing · `opus-5` · high | **6/14 (43%)** | honestly refused every question needing arithmetic |
 
-- **Citation discipline** (`sonnet-5`, single-08): asked for Prophet's WAPE on
-  HOBBIES_2, the model gave the correct figure *and* the Elastic Net caveat in
-  prose — but left the second figure out of the structured `figures_cited`.
-  The number was right; the audit trail was incomplete. That distinction is
-  exactly what the structured-output contract exists to catch.
-- **Valid-but-unexpected tool paths** (`sonnet-5`, comp-05): asked to rank the
-  three FOODS departments, it called `get_value_add` three times instead of
-  `compare_departments` once. The answer was correct; the tool-selection
-  metric scores strategy, not just correctness, and flags the costlier path.
-- **Effort is not the binding constraint** (`opus-5` at effort low): dropping
-  reasoning effort to minimum changed nothing — still 37/37. The eval's
-  difficulty ceiling, not model capability, is what saturates.
-- The **mocked-failure tests** used to develop the scorer (wrong tool, wrong
-  value, fabricated figure, wrongly-answered unanswerable) are all caught —
-  the harness was proven able to fail answers before any live run.
+### What the grid says
 
-The honest limitation: at high effort, this eval no longer separates frontier
-models. Seven departments and ten tools give a two-hop ceiling on question
-difficulty. The next iteration that would restore a meaningful failure rate is
-a larger tool surface — per-SKU accuracy, multi-store comparison — where
-chains get long enough to break.
+- **Tools are not about correctness on small data — they're about cost and
+  reach.** On the main set, stuffing all 180KB of data into a (cached)
+  prompt matches the agent's 37/37, at 2.2× the cost. On the hard set the
+  architectures diverge completely: the stuffing baseline, correctly
+  forbidden from doing arithmetic, can only refuse — the agent's computed
+  tools (`get_window_accuracy`, `get_fold_accuracy`, `get_worst_days`)
+  convert those refusals into answered questions. Tools moved half the hard
+  set from *unanswerable* to *answered*.
+- **Effort buys discipline at the margins, not capability.** Low-effort opus
+  still passes 36/37, but its one failure is telling: it refused an
+  unanswerable question correctly *and fabricated a supporting figure while
+  doing so* — a sloppiness mode high effort doesn't show.
+- **Sonnet's failures are stable, not noise.** Two runs, same two questions,
+  same two failure modes: a correct figure left out of the structured
+  `figures_cited` audit trail, and a valid-but-costlier tool strategy
+  (three `get_value_add` calls where one `compare_departments` sufficed).
+- **The agent's own hard-set failure is a schema lesson.** Asked for
+  FOODS_3's worst day, it answered perfectly (Christmas 2013 — store
+  closed, actual 0, model predicted 2,431.5 units) but shoehorned the date
+  into the float-typed `value` field as `20131225.0`, which the fabrication
+  check rightly flagged. A `value` field that only accepts numbers invites
+  dates-as-numbers; the fix is a typed figure schema.
+- **Refusals held everywhere.** Across all six runs — 33 unanswerable/trap
+  question-instances — nothing invented an answer to a question the data
+  cannot support.
 
 ## How it works
 
 ```
 agent/
-  tools.py        10 strict-schema tools over the backtest JSON — pure lookups
-  agent.py        the loop — Anthropic SDK tool runner, claude-opus-5
+  tools.py        13 strict-schema tools: 10 lookups over precomputed JSON,
+                  3 deterministic computations over the daily series
+  agent.py        the loop — Anthropic SDK tool runner, claude-opus-5,
+                  per-run token/cost/latency accounting
   schema.py       structured output: answer, figures_cited, confidence, unanswerable
   glossary.md     metric definitions (WAPE, FVA, bias sign convention, ...)
   retrieval.py    keyword retrieval over the glossary — 10 entries need no vector DB
 eval/
-  questions.jsonl 37 questions with expected tools, values, and refusals
-  run_eval.py     scores tool selection, numeric accuracy, refusals, fabrication
-  results*.md     generated — one per model × effort configuration
-data/             six JSON files from the portfolio backtest (ground truth)
+  questions.jsonl       37 main questions with expected tools, values, refusals
+  questions_hard.jsonl  14 multi-hop questions; expected values computed by an
+                        independent script, not by the agent path
+  run_eval.py           scores tool selection, numerics, refusals, fabrication
+  run_baseline.py       the same questions with prompt-stuffing instead of tools
+  results-*.md          generated — one per configuration
+scripts/
+  record_traces.py      records real runs for the portfolio's replay view
+data/                   six JSON files from the portfolio backtest
 ```
 
 Design decisions that matter:
 
 - **The model never does arithmetic.** The system prompt forbids it, every
-  figure must be listed in `figures_cited`, and the eval cross-checks each
-  cited value against the data files — a number that exists nowhere in the
-  data is flagged as fabricated.
-- **`strict: true` on all ten tools**, with `additionalProperties: false` and
-  `required` populated, so tool inputs validate exactly. Inputs are parsed
-  from the `tool_use` blocks by the SDK — never string-matched.
-- **Structured output** via `output_config.format` (JSON schema): `answer`,
-  `departments_referenced`, `figures_cited`, `confidence`, `unanswerable`.
-  The `unanswerable` path is load-bearing — the data has no future forecasts,
-  no revenue, no headcount, and the agent must say so instead of improvising.
-  Both models refused all 10 unanswerable/trap questions, and invented
-  nothing on any run.
+  figure must be listed in `figures_cited`, and the eval verifies each cited
+  value against the tool returns of that same conversation — a number the
+  tools never produced is flagged as fabricated.
+- **`strict: true` on all thirteen tools**, with `additionalProperties:
+  false` and `required` populated, so inputs validate exactly. The three
+  computed tools do deterministic WAPE arithmetic in Python — computation
+  lives in code, never in the model.
+- **Structured output** via `output_config.format` (JSON schema), with a
+  load-bearing `unanswerable` path — the data has no future forecasts, no
+  revenue, no headcount, and the agent must say so instead of improvising.
 - **Retrieval is small and honest**: keyword matching over a 10-entry
   glossary, injected per question. A vector database for a dozen definitions
   would be decoration.
@@ -96,32 +113,51 @@ Design decisions that matter:
 
 ## The eval
 
+Main set, six categories:
+
 | Category | N | Example | Required behaviour |
 |---|---|---|---|
 | single lookup | 9 | "What's the bias on FOODS_3?" | cite the exact tool-returned figure |
 | comparison | 7 | "Which departments beat naive?" | rank via tools, name the departments |
-| multi-hop | 7 | "Of the departments losing to naive, which has the highest volume?" | chain calls across tools |
+| multi-hop | 7 | "Of the departments losing to naive, which has the highest volume?" | chain calls |
 | ambiguous | 4 | "How's the forecast doing?" | scope explicitly, then answer |
 | unanswerable | 5 | "What's the forecast for next quarter?" | decline — no future data exists |
 | trap | 5 | "What's the revenue per head?" | refuse — the data cannot support it |
 
-Four checks per question: were the expected tools called; does every expected
-figure appear in `figures_cited` for the right department; was the refusal
-decision exactly right; and does every cited number exist in the data at all.
+The hard set was written adversarially against the tool surface after the
+main set saturated: fold-trend questions ("which department deteriorates
+most steadily across the three folds?" — 21 tool calls), window paradoxes
+("FOODS_1 loses overall — was that true in December?": no, +10.2pp), and
+worst-day forensics (five departments share the same worst day: Christmas,
+store closed, model predicting thousands of units). Expected answers were
+computed by an independent script over the raw series, so the eval's ground
+truth never came from the agent being evaluated.
 
 ## Running it
 
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
-export ANTHROPIC_API_KEY=...             # or `ant auth login`; never committed
+export ANTHROPIC_API_KEY=...              # or `ant auth login`; never committed
 .venv/bin/python -m agent.agent "Which departments beat the naive baseline?"
-.venv/bin/python -m eval.run_eval        # full eval → eval/results.md
-.venv/bin/python -m eval.run_eval --model claude-sonnet-5 --effort low
+.venv/bin/python -m eval.run_eval --tag opus-high
+.venv/bin/python -m eval.run_eval --questions eval/questions_hard.jsonl --tag hard
+.venv/bin/python -m eval.run_baseline     # the no-tools comparison
 ```
+
+The full grid above cost about $8 in API spend to measure.
+
+## Limitations, honestly
+
+The main set saturates frontier models — at high *and* low effort — because
+seven departments cap lookup-question difficulty. The hard set restored a
+real failure rate by requiring computation, but its ceiling is the single
+store: per-SKU (3,049 items) and multi-store tools are the next scale step,
+and the expected result is a lower pass rate and a richer failure taxonomy.
+The eval author and agent author are the same person; the hard set's
+script-computed ground truth mitigates but does not eliminate that.
 
 ## Data
 
 Public Walmart M5 competition data (California store 1, 7 departments, daily
-actuals and forecasts 2013-05-05 → 2014-01-22), with all metrics precomputed
-at build time in the portfolio repo. The agent's tools are lookups over those
-files; ground truth was never in the prompt.
+actuals and forecasts 2013-05-05 → 2014-01-22), precomputed at build time in
+the portfolio repo. Ground truth was never in the agent's prompt.

@@ -61,6 +61,13 @@ def _log(name: str, **inputs) -> None:
     CALL_LOG.append({"tool": name, "input": inputs})
 
 
+def _dumps_logged(payload: dict | list) -> str:
+    out = json.dumps(payload)
+    if CALL_LOG:
+        CALL_LOG[-1]["output"] = payload
+    return out
+
+
 # ------------------------------------------------------------------- helpers
 
 
@@ -87,7 +94,7 @@ def list_departments() -> str:
     know what departments exist or to resolve a partial department name.
     """
     _log("list_departments")
-    return _dumps(
+    return _dumps_logged(
         {
             "departments": [
                 {"dept": row["dept"], "volume_units": row["volume"]} for row in _DEPTS
@@ -106,7 +113,7 @@ def get_overall() -> str:
     departments beat the naive baseline.
     """
     _log("get_overall")
-    return _dumps(
+    return _dumps_logged(
         {
             "forecast_accuracy_pct": _OVERALL["fa"],
             "naive_accuracy_pct": _OVERALL["naiveFa"],
@@ -130,8 +137,8 @@ def get_accuracy(dept: str) -> str:
     _log("get_accuracy", dept=dept)
     row = _DEPT_INDEX.get(dept)
     if row is None:
-        return _dumps(_unknown_dept(dept))
-    return _dumps(
+        return _dumps_logged(_unknown_dept(dept))
+    return _dumps_logged(
         {
             "dept": dept,
             "forecast_accuracy_pct": row["fa"],
@@ -153,8 +160,8 @@ def get_value_add(dept: str) -> str:
     _log("get_value_add", dept=dept)
     row = _DEPT_INDEX.get(dept)
     if row is None:
-        return _dumps(_unknown_dept(dept))
-    return _dumps(
+        return _dumps_logged(_unknown_dept(dept))
+    return _dumps_logged(
         {
             "dept": dept,
             "forecast_value_add_pp": row["fva"],
@@ -176,8 +183,8 @@ def get_bias(dept: str) -> str:
     _log("get_bias", dept=dept)
     row = _DEPT_INDEX.get(dept)
     if row is None:
-        return _dumps(_unknown_dept(dept))
-    return _dumps(
+        return _dumps_logged(_unknown_dept(dept))
+    return _dumps_logged(
         {
             "dept": dept,
             "bias_pct": row["bias"],
@@ -197,11 +204,11 @@ def get_series(dept: str, days: int) -> str:
     _log("get_series", dept=dept, days=days)
     rows = _SERIES.get(dept)
     if rows is None:
-        return _dumps(_unknown_dept(dept))
+        return _dumps_logged(_unknown_dept(dept))
     if not 1 <= days <= 60:
-        return _dumps({"error": "days must be between 1 and 60"})
+        return _dumps_logged({"error": "days must be between 1 and 60"})
     recent = rows[-days:]
-    return _dumps(
+    return _dumps_logged(
         {
             "dept": dept,
             "days_returned": len(recent),
@@ -232,7 +239,7 @@ def compare_departments(metric: str) -> str:
     """
     _log("compare_departments", metric=metric)
     if metric not in _RANKABLE_METRICS:
-        return _dumps(
+        return _dumps_logged(
             {
                 "error": f"Unknown metric '{metric}'.",
                 "valid_metrics": sorted(_RANKABLE_METRICS),
@@ -243,7 +250,7 @@ def compare_departments(metric: str) -> str:
         ranked = sorted(_DEPTS, key=lambda r: abs(r[key]))
     else:
         ranked = sorted(_DEPTS, key=lambda r: r[key], reverse=True)
-    return _dumps(
+    return _dumps_logged(
         {
             "metric": metric,
             "metric_description": _RANKABLE_METRICS[metric],
@@ -264,9 +271,9 @@ def get_weekly_trend(weeks: int) -> str:
     """
     _log("get_weekly_trend", weeks=weeks)
     if not 1 <= weeks <= 38:
-        return _dumps({"error": "weeks must be between 1 and 38"})
+        return _dumps_logged({"error": "weeks must be between 1 and 38"})
     recent = _TREND[-weeks:]
-    return _dumps(
+    return _dumps_logged(
         {
             "weeks_returned": len(recent),
             "rows": [
@@ -295,8 +302,8 @@ def get_model_comparison(dept: str) -> str:
     _log("get_model_comparison", dept=dept)
     row = _COMPARISON_INDEX.get(dept)
     if row is None:
-        return _dumps(_unknown_dept(dept))
-    return _dumps(
+        return _dumps_logged(_unknown_dept(dept))
+    return _dumps_logged(
         {
             "dept": dept,
             "prophet_wape_pct_daily": row["prophetWape"],
@@ -321,17 +328,121 @@ def get_revenue_concentration(top_items_pct: int) -> str:
     _log("get_revenue_concentration", top_items_pct=top_items_pct)
     for point in _PARETO:
         if point["itemsPct"] == top_items_pct:
-            return _dumps(
+            return _dumps_logged(
                 {
                     "top_items_pct": top_items_pct,
                     "revenue_pct": point["revenuePct"],
                     "total_skus": 3049,
                 }
             )
-    return _dumps(
+    return _dumps_logged(
         {
             "error": f"No stored grid point at {top_items_pct}%.",
             "valid_values": [p["itemsPct"] for p in _PARETO],
+        }
+    )
+
+
+def _window_metrics(rows: list[dict]) -> dict:
+    total_actual = sum(r["actual"] for r in rows)
+    if total_actual == 0:
+        return {"error": "no sales in this window; accuracy is undefined"}
+    wape_model = 100 * sum(abs(r["actual"] - r["model"]) for r in rows) / total_actual
+    wape_naive = 100 * sum(abs(r["actual"] - r["naive"]) for r in rows) / total_actual
+    fa = round(100 - wape_model, 1)
+    naive_fa = round(100 - wape_naive, 1)
+    return {
+        "days": len(rows),
+        "forecast_accuracy_pct": fa,
+        "naive_accuracy_pct": naive_fa,
+        "forecast_value_add_pp": round(fa - naive_fa, 1),
+    }
+
+
+@beta_tool(strict=True)
+def get_window_accuracy(dept: str, start_date: str, end_date: str) -> str:
+    """Forecast accuracy vs the naive baseline for one department in a date window.
+
+    Computed deterministically from the stored daily series (WAPE over the
+    window). The data covers 2013-05-05 to 2014-01-22; windows outside that
+    range return an error rather than an estimate.
+
+    Args:
+        dept: Department name, e.g. FOODS_3.
+        start_date: Window start, ISO format YYYY-MM-DD (inclusive).
+        end_date: Window end, ISO format YYYY-MM-DD (inclusive).
+    """
+    _log("get_window_accuracy", dept=dept, start_date=start_date, end_date=end_date)
+    rows = _SERIES.get(dept)
+    if rows is None:
+        return _dumps_logged(_unknown_dept(dept))
+    window = [r for r in rows if start_date <= r["date"] <= end_date]
+    if not window:
+        return _dumps_logged(
+            {
+                "error": f"No data in {start_date}..{end_date}.",
+                "data_range": {"from": rows[0]["date"], "to": rows[-1]["date"]},
+            }
+        )
+    result = _window_metrics(window)
+    result.update({"dept": dept, "window": {"from": window[0]["date"], "to": window[-1]["date"]}})
+    return _dumps_logged(result)
+
+
+@beta_tool(strict=True)
+def get_fold_accuracy(dept: str, fold: int) -> str:
+    """Forecast accuracy vs naive for one walk-forward backtest fold.
+
+    The backtest has three sequential folds (1, 2, 3); comparing them shows
+    whether the model's edge grows or shrinks as the backtest advances.
+
+    Args:
+        dept: Department name, e.g. FOODS_3.
+        fold: Fold number: 1, 2, or 3.
+    """
+    _log("get_fold_accuracy", dept=dept, fold=fold)
+    rows = _SERIES.get(dept)
+    if rows is None:
+        return _dumps_logged(_unknown_dept(dept))
+    if fold not in (1, 2, 3):
+        return _dumps_logged({"error": "fold must be 1, 2, or 3"})
+    subset = [r for r in rows if r["fold"] == fold]
+    result = _window_metrics(subset)
+    result.update(
+        {"dept": dept, "fold": fold, "window": {"from": subset[0]["date"], "to": subset[-1]["date"]}}
+    )
+    return _dumps_logged(result)
+
+
+@beta_tool(strict=True)
+def get_worst_days(dept: str, n: int) -> str:
+    """The n days with the largest absolute forecast error for one department.
+
+    Args:
+        dept: Department name, e.g. FOODS_3.
+        n: How many days to return, between 1 and 10.
+    """
+    _log("get_worst_days", dept=dept, n=n)
+    rows = _SERIES.get(dept)
+    if rows is None:
+        return _dumps_logged(_unknown_dept(dept))
+    if not 1 <= n <= 10:
+        return _dumps_logged({"error": "n must be between 1 and 10"})
+    worst = sorted(rows, key=lambda r: -r["err"])[:n]
+    return _dumps_logged(
+        {
+            "dept": dept,
+            "worst_days": [
+                {
+                    "date": r["date"],
+                    "actual_units": r["actual"],
+                    "model_units": r["model"],
+                    "naive_units": r["naive"],
+                    "abs_error_units": r["err"],
+                    "naive_abs_error_units": round(abs(r["actual"] - r["naive"]), 1),
+                }
+                for r in worst
+            ],
         }
     )
 
@@ -347,4 +458,7 @@ ALL_TOOLS = [
     get_weekly_trend,
     get_model_comparison,
     get_revenue_concentration,
+    get_window_accuracy,
+    get_fold_accuracy,
+    get_worst_days,
 ]
