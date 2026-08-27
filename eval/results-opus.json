@@ -1,0 +1,792 @@
+[
+ {
+  "id": "single-01",
+  "category": "single_lookup",
+  "q": "What's the bias on FOODS_3?",
+  "tools_called": [
+   "get_accuracy",
+   "get_bias"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "FOODS_3 runs a slight under-forecast: bias is -0.7% over the 263-day backtest, i.e. the model predicts marginally fewer units than actually sold. That is close to neutral, so there's no meaningful systematic over- or under-stocking signal. Read it alongside accuracy though \u2014 near-zero bias can mask offsetting daily errors, and FOODS_3's forecast accuracy is 80.1% versus 87.1% for the seasonal-naive baseline, so the daily errors are real even though they roughly cancel out in the aggregate.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "single-02",
+  "category": "single_lookup",
+  "q": "What is the forecast accuracy for HOUSEHOLD_1?",
+  "tools_called": [
+   "get_accuracy",
+   "get_value_add"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "HOUSEHOLD_1's forecast accuracy is 78.3%, but that number only makes sense next to its baseline: the seasonal-naive accuracy is 87.8%, so the model's value add is -9.4 pp and it does not beat the baseline. In other words, simply repeating last week's same weekday would have been more accurate for this department.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "single-03",
+  "category": "single_lookup",
+  "q": "What's the forecast value add on HOBBIES_2?",
+  "tools_called": [
+   "get_accuracy",
+   "get_value_add",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "HOBBIES_2 has a forecast value add of +10.6 pp \u2014 the model beats the seasonal-naive baseline, with forecast accuracy of 65.6% vs 54.9% for the naive. Caveat: this is the smallest department in the backtest at 6,227 units over 263 days, so a large FVA here moves very little total volume.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "single-04",
+  "category": "single_lookup",
+  "q": "What's the overall forecast value add, pooled across all departments?",
+  "tools_called": [
+   "get_overall"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "Pooled across all seven departments, forecast value add is -5.7 pp \u2014 the model is destroying accuracy versus the seasonal-naive baseline. Model FA is 79.5% against a naive baseline of 85.2%, over 1,153,225 units. Only 2 of 7 departments beat the naive baseline. Pooled bias is small at -0.3% (slight under-forecast), so the problem is error magnitude, not systematic direction.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "single-05",
+  "category": "single_lookup",
+  "q": "How many units did FOODS_1 sell over the whole backtest window?",
+  "tools_called": [
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "FOODS_1 sold 86,718 units over the 263-day backtest window. That makes it the fifth-largest of the seven departments by volume (FOODS_3 leads with 615,655 units).",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "single-06",
+  "category": "single_lookup",
+  "q": "Is the model over-forecasting or under-forecasting HOUSEHOLD_2, and by how much?",
+  "tools_called": [
+   "get_accuracy",
+   "get_bias"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "HOUSEHOLD_2 is over-forecast: signed bias is +3.0% over the 263-day backtest, i.e. the model predicts about 3% more units than actually sold. Context: its forecast accuracy is 79.0% versus a seasonal-naive baseline of 86.6%, so the bias is mild but the model trails the naive baseline on accuracy here.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "single-07",
+  "category": "single_lookup",
+  "q": "What share of revenue do the top 20% of SKUs account for?",
+  "tools_called": [
+   "get_revenue_concentration"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "The top 20% of SKUs account for 56.0% of realised revenue (610 of the 3,049 SKUs' share, per the stored Pareto curve at the 20% grid point). This is a classic Pareto-style concentration: a fifth of the assortment carries just over half the revenue.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "single-08",
+  "category": "single_lookup",
+  "q": "What was Prophet's WAPE on HOBBIES_2?",
+  "tools_called": [
+   "get_model_comparison",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "Prophet's WAPE on HOBBIES_2 was 34.32% (daily data). For context, Elastic Net's WAPE on the same department was 58.96%, but that was fit on monthly aggregates, so the two figures are not directly comparable head-to-head. Note also that HOBBIES_2 is the smallest department in the backtest (6,227 units over 263 days, mean 23.6 units/day), so its error rates are noisy relative to the larger departments.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "single-09",
+  "category": "single_lookup",
+  "q": "How many units did FOODS_1 actually sell on the last day of the backtest, and what did the model predict?",
+  "tools_called": [
+   "get_series"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "On the final backtest day (2014-01-22), FOODS_1 sold 180 units while the model predicted 298.6 units \u2014 an over-forecast of 118.6 units in absolute error. The seasonal-naive baseline predicted 200.0 units that day, so it was much closer than the model on this single day.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "comp-01",
+  "category": "comparison",
+  "q": "Which departments beat the seasonal naive baseline?",
+  "tools_called": [
+   "compare_departments",
+   "get_overall",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "Only 2 of the 7 departments beat the seasonal-naive baseline: HOBBIES_2 (+10.6 pp FVA) and HOBBIES_1 (+2.8 pp FVA). The other five have negative FVA \u2014 FOODS_2 -0.9 pp, FOODS_3 -7.0 pp, FOODS_1 -7.3 pp, HOUSEHOLD_2 -7.6 pp, HOUSEHOLD_1 -9.4 pp. Worth noting the two winners are the low-volume end: HOBBIES_2 is the smallest department at 6,227 units and HOBBIES_1 at 121,662 units, while the biggest department, FOODS_3 (615,655 units), loses to the baseline. Pooled across all departments the model is behind at -5.7 pp (79.5% accuracy vs 85.2% naive).",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "comp-02",
+  "category": "comparison",
+  "q": "Which department has the worst forecast value add?",
+  "tools_called": [
+   "compare_departments",
+   "get_accuracy",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "HOUSEHOLD_1 has the worst forecast value add at -9.4 pp \u2014 the model scored 78.3% forecast accuracy versus 87.8% for the seasonal-naive baseline, so repeating last week's same weekday would have been more accurate. It matters: HOUSEHOLD_1 is the second-largest department by volume (163,737 units over the 263-day window). The next worst are HOUSEHOLD_2 (-7.6 pp) and FOODS_1 (-7.3 pp).",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "comp-03",
+  "category": "comparison",
+  "q": "Which department has the highest standalone forecast accuracy?",
+  "tools_called": [
+   "compare_departments",
+   "get_accuracy"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "HOBBIES_1 has the highest standalone forecast accuracy at 82.2%, ahead of FOODS_3 (80.1%) and FOODS_2 (79.3%). Read it against the baseline, though: HOBBIES_1 is also genuinely adding value, beating its seasonal-naive accuracy of 79.3% for an FVA of +2.8 pp. By contrast, second-place FOODS_3 looks good standalone but its naive baseline is 87.1%, so the model is destroying accuracy there (FVA -7.0 pp). Highest FA and best FVA are not the same ranking \u2014 HOBBIES_2 has the worst FA (65.6%) but the best FVA (+10.6 pp).",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "comp-04",
+  "category": "comparison",
+  "q": "Which department has the biggest bias problem in either direction?",
+  "tools_called": [
+   "compare_departments",
+   "get_accuracy"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "By raw magnitude, HOBBIES_2 has the largest bias: -7.5% (under-forecasting), versus the next-largest FOODS_2 at -4.2% and HOUSEHOLD_1 at +4.1%. But HOBBIES_2 is the smallest department at 6,227 units over the window, so the practical impact is small; its accuracy is also the weakest at 65.6% FA (naive 54.9%). Weighted by volume, the bias that actually matters most is FOODS_2: -4.2% under-forecast on 113,746 units, and it is a department where the model (79.3% FA) already trails the seasonal-naive baseline (80.2%). Scoping note: 'biggest' read as largest absolute signed bias, with a volume caveat.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "comp-05",
+  "category": "comparison",
+  "q": "Rank the three FOODS departments by forecast value add.",
+  "tools_called": [
+   "compare_departments",
+   "get_accuracy",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "All three FOODS departments have negative forecast value add \u2014 the seasonal-naive baseline beat the model in every one. Ranked best to worst: 1) FOODS_2 at -0.9 pp (FA 79.3% vs naive 80.2%), 2) FOODS_3 at -7.0 pp (FA 80.1% vs naive 87.1%), 3) FOODS_1 at -7.3 pp (FA 75.0% vs naive 82.2%). FOODS_2 is essentially a tie with the baseline; FOODS_3 matters most in practice because it is the largest department by volume (615,655 units over the 263-day window), so its -7.0 pp shortfall carries the most weight.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "comp-06",
+  "category": "comparison",
+  "q": "Compare the forecast accuracy of FOODS_1 and FOODS_2 against their naive baselines.",
+  "tools_called": [
+   "get_accuracy",
+   "get_value_add",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "Both departments lose to the seasonal-naive baseline, but FOODS_1 loses far more badly.\n\nFOODS_1: forecast accuracy 75.0% vs naive 82.2% \u2014 forecast value add of -7.3 pp (does not beat naive), on 86,718 units.\nFOODS_2: forecast accuracy 79.3% vs naive 80.2% \u2014 forecast value add of -0.9 pp (does not beat naive), on 113,746 units.\n\nSo FOODS_2's model is roughly at parity with simply repeating last week's same weekday, while FOODS_1's model is clearly worse than the free baseline despite the baseline being the easier series of the two to predict (82.2% vs 80.2% naive accuracy). FOODS_1 is the priority fix.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "comp-07",
+  "category": "comparison",
+  "q": "On which department did Elastic Net do worse than Prophet?",
+  "tools_called": [
+   "get_model_comparison",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "HOBBIES_2 is the only department where Elastic Net's WAPE is higher than Prophet's: Elastic Net 58.96% (monthly) vs Prophet 34.32% (daily). In the other six departments the Elastic Net figure is the lower of the two (e.g. FOODS_3 4.86% vs 19.81%, HOUSEHOLD_1 3.26% vs 21.56%, HOBBIES_1 4.32% vs 18.57%, FOODS_2 5.31% vs 20.55%, FOODS_1 6.96% vs 24.99%, HOUSEHOLD_2 8.99% vs 20.94%). Important caveat: Prophet was scored on daily data and Elastic Net on monthly aggregates, so the two WAPEs are not directly comparable \u2014 the ordering is indicative, not a like-for-like win/loss. What stands out is that HOBBIES_2, the smallest department (23.6 mean daily units, 6,227 units over the window), is the one place where Elastic Net degrades badly despite the aggregation advantage.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "multi-01",
+  "category": "multi_hop",
+  "q": "Of the departments losing to the naive baseline, which has the highest volume?",
+  "tools_called": [
+   "compare_departments",
+   "get_accuracy"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "FOODS_3. Five of the seven departments lose to the seasonal-naive baseline (FOODS_2 -0.9pp, FOODS_3 -7.0pp, FOODS_1 -7.3pp, HOUSEHOLD_2 -7.6pp, HOUSEHOLD_1 -9.4pp), and FOODS_3 is by far the largest of them at 615,655 units over the 263-day window \u2014 the biggest department in the store. Its forecast accuracy is 80.1% versus 87.1% for the naive baseline, so the single largest volume block in the backtest would have been more accurately served by simply repeating last week's same weekday. HOUSEHOLD_1 is the next-largest loser at 163,737 units with the worst FVA (-9.4pp).",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "multi-02",
+  "category": "multi_hop",
+  "q": "Which departments is the model losing to the naive baseline, and why might that be?",
+  "tools_called": [
+   "compare_departments",
+   "get_overall",
+   "get_weekly_trend",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "Five of the seven departments have negative forecast value add \u2014 the model is losing to the seasonal-naive baseline in: HOUSEHOLD_1 (-9.4 pp), HOUSEHOLD_2 (-7.6 pp), FOODS_1 (-7.3 pp), FOODS_3 (-7.0 pp) and FOODS_2 (-0.9 pp). Only HOBBIES_2 (+10.6 pp) and HOBBIES_1 (+2.8 pp) add value, and pooled FVA is -5.7 pp (model 79.5% vs naive 85.2%).\n\nWhy: the losses line up almost exactly with how strong the baseline already is. The three worst FVA departments are the three where naive accuracy is highest \u2014 HOUSEHOLD_1 87.8%, FOODS_3 87.1%, HOUSEHOLD_2 86.6% \u2014 i.e. stable, strongly weekly-seasonal demand that 'repeat last week's same weekday' captures nearly perfectly, leaving almost no headroom. The model's only clear win is HOBBIES_2, where the naive baseline is weakest (54.9%). Note the damage is concentrated in volume: FOODS_3 (615,655 units) and HOUSEHOLD_1 (163,737 units) are the two largest departments and both lose to naive.\n\nA secondary contributor is level bias in some of these departments \u2014 HOUSEHOLD_1 over-forecasts by 4.1% and FOODS_2 under-forecasts by 4.2%, while pooled bias is only -0.3%, so errors are department-specific rather than a global offset. The weekly trend also shows the model trailing naive in most recent weeks (e.g. week of 2014-01-20: 68.8% vs 89.9%), suggesting it reacts to noise the baseline ignores. Note this is diagnosis from the metrics available; the tools expose no driver/feature-level detail to confirm the mechanism.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "multi-03",
+  "category": "multi_hop",
+  "q": "Take the department with the worst forecast value add \u2014 is its bias over or under, and how big?",
+  "tools_called": [
+   "compare_departments",
+   "get_accuracy",
+   "get_bias",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "Worst FVA is HOUSEHOLD_1 at -9.4 pp, and it over-forecasts by +4.1% (predicting more than sold, so the risk is excess stock rather than stock-outs). Context: its forecast accuracy is 78.3% versus 87.8% for the seasonal-naive baseline, so the model is actively costing accuracy in that department. Note the modest bias hides bigger daily errors \u2014 read it alongside the accuracy gap, not instead of it. HOUSEHOLD_1 is also the second-largest department by volume (163,737 units over the 263-day window), so this gap matters.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "multi-04",
+  "category": "multi_hop",
+  "q": "For the only department where the model beats naive by double digits, what does its last week of daily actuals vs model look like?",
+  "tools_called": [
+   "compare_departments",
+   "get_accuracy",
+   "get_bias",
+   "get_series",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "HOBBIES_2 is the only department with double-digit forecast value add: +10.6 pp (65.6% forecast accuracy vs 54.9% seasonal-naive). Its last seven days (2014-01-16 to 2014-01-22) show a flat model line of 27.6 units every day against volatile actuals:\n\n- Jan 16: actual 19, model 27.6, naive 23.0 (abs err 8.6)\n- Jan 17: actual 13, model 27.6, naive 28.0 (abs err 14.6)\n- Jan 18: actual 20, model 27.6, naive 42.0 (abs err 7.6)\n- Jan 19: actual 19, model 27.6, naive 21.0 (abs err 8.6)\n- Jan 20: actual 28, model 27.6, naive 12.0 (abs err 0.4)\n- Jan 21: actual 21, model 27.6, naive 12.0 (abs err 6.6)\n- Jan 22: actual 12, model 27.6, naive 19.0 (abs err 15.6)\n\nReading: the model is essentially predicting a constant level and captures no day-of-week shape, but on this tiny-volume department (6,227 units over 263 days) that flat line still beats the naive baseline, which swings wildly (12 to 42 units). In this particular week the model sits above actuals on six of seven days, even though the full-window bias is -7.5% (under-forecasting) \u2014 so this week is not representative of the overall bias direction.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "multi-05",
+  "category": "multi_hop",
+  "q": "Is the model's weekly accuracy getting better or worse toward the end of the backtest, compared to the naive baseline?",
+  "tools_called": [
+   "get_overall",
+   "get_weekly_trend"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "Worse. Relative to the seasonal-naive baseline, the model's weekly gap widens over the backtest window. In the first weeks the two are close (week of 2013-05-06: model 82.3% vs naive 84.4%; 2013-05-13: 85.0% vs 86.4%), whereas the last weeks show the model well below a strong baseline (2014-01-13: 76.0% vs 87.4%; final week 2014-01-20: 68.8% vs 89.9%, the widest shortfall in the series and the model's second-lowest weekly accuracy). The model's own accuracy also trends down late (76.5% on 2013-12-16, 66.3% on 2013-12-23, 68.8% on 2014-01-20) while naive accuracy recovers to 87-90% in January. The only weeks the model clearly wins are holiday-disruption weeks when the naive baseline breaks: 2013-12-02 (83.0% vs 72.7%) and 2013-12-30 (84.1% vs 73.9%). This is consistent with the pooled result of 79.5% model vs 85.2% naive, FVA -5.7 pp, with only 2 of 7 departments beating naive. Scope: pooled across all seven departments, weekly granularity, 38 weeks returned.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "multi-06",
+  "category": "multi_hop",
+  "q": "Of the two departments that beat the naive baseline, which one has more volume, and what is its forecast accuracy?",
+  "tools_called": [
+   "compare_departments",
+   "get_accuracy",
+   "get_overall"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "HOBBIES_1 is the larger of the two departments that beat the baseline, with 121,662 units over the backtest window versus 6,227 for HOBBIES_2. Its forecast accuracy is 82.2%, against a seasonal-naive accuracy of 79.3% \u2014 a value add of +2.8pp. (HOBBIES_2 has the bigger edge, +10.6pp, but on trivial volume.)",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "multi-07",
+  "category": "multi_hop",
+  "q": "Does the department with the worst Prophet WAPE also have the worst forecast value add?",
+  "tools_called": [
+   "compare_departments",
+   "get_model_comparison",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "No \u2014 they are opposite ends. The worst Prophet daily WAPE is HOBBIES_2 at 34.32% (next worst FOODS_1 at 24.99%), but HOBBIES_2 has the *best* forecast value add of the seven, +10.6 pp. The worst FVA is HOUSEHOLD_1 at -9.4 pp, and its Prophet WAPE (21.56%) is mid-pack. The reason is that FVA is relative: HOBBIES_2 is a tiny, erratic department (23.6 mean daily units) where the seasonal-naive baseline does very badly too, so even a high-error model adds value; HOUSEHOLD_1 is a much more repeatable series where the naive baseline is hard to beat. Caveat: the Prophet/Elastic Net benchmark is a separate study from the planning FA/FVA metrics and is not directly comparable to them.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "ambig-01",
+  "category": "ambiguous",
+  "q": "How's the forecast doing?",
+  "tools_called": [
+   "compare_departments",
+   "get_accuracy",
+   "get_overall",
+   "get_weekly_trend",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "Poorly, in the way that matters: the model is losing to the seasonal-naive baseline. Pooled across all 7 departments over the 263-day window, forecast accuracy is 79.5% against 85.2% for the naive baseline \u2014 a forecast value add of -5.7pp. Only 2 of 7 departments beat naive, and they are the small ones: HOBBIES_2 (+10.6pp, but just 6,227 units) and HOBBIES_1 (+2.8pp, 121,662 units). The volume is where the losses are: FOODS_3, over half of all units at 615,655, runs 80.1% FA vs 87.1% naive (-7.0pp), and HOUSEHOLD_1 is worst at -9.4pp. Bias is not the problem \u2014 pooled bias is only -0.3%, so errors are day-to-day noise, not a systematic over- or under-forecast. The recent weekly trend is no better: in the last 8 weeks the model trailed naive in 6 of them, ending the week of 2014-01-20 at 68.8% vs 89.9% naive. Scoped as: pooled backtest performance, all departments, with department detail where it drives the total.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "ambig-02",
+  "category": "ambiguous",
+  "q": "Is the model any good?",
+  "tools_called": [
+   "compare_departments",
+   "get_overall"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "No \u2014 on this backtest the model is not good enough to ship as-is. Pooled across all seven departments it scores 79.5% forecast accuracy versus 85.2% for a seasonal-naive baseline (repeat last week's same weekday), i.e. forecast value add of -5.7pp. Only 2 of 7 departments beat the baseline: HOBBIES_2 (+10.6pp) and HOBBIES_1 (+2.8pp). The wins are in the wrong places: HOBBIES_2 is the smallest department at 6,227 units, while the largest, FOODS_3 (615,655 units), loses -7.0pp and HOUSEHOLD_1 (163,737 units) is worst at -9.4pp. One redeeming point: pooled bias is small at -0.3%, so the errors are noise rather than a systematic over- or under-forecast. HOBBIES_1 (82.2% accuracy, +2.8pp, 121,662 units) is the one meaningful-volume department where the model genuinely adds value.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "ambig-03",
+  "category": "ambiguous",
+  "q": "What's the accuracy?",
+  "tools_called": [
+   "compare_departments",
+   "get_overall"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "Scoped as overall accuracy pooled across all 7 departments over the 263-day backtest: forecast accuracy is 79.5%. But read next to the baseline it's poor \u2014 the seasonal-naive baseline scored 85.2%, so the model's value add is -5.7 percentage points, and only 2 of 7 departments beat naive. Bias is essentially neutral at -0.3% (slight under-forecast). By department, FA ranges from HOBBIES_1 at 82.2% down to HOBBIES_2 at 65.6% (FOODS_3 80.1%, FOODS_2 79.3%, HOUSEHOLD_2 79.0%, HOUSEHOLD_1 78.3%, FOODS_1 75.0%). Ask if you want per-department value add, which is the more decision-relevant view.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "ambig-04",
+  "category": "ambiguous",
+  "q": "Where should we focus?",
+  "tools_called": [
+   "compare_departments",
+   "get_accuracy",
+   "get_overall",
+   "get_weekly_trend",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "Scoped as: where to focus forecast-improvement effort across the 7 departments in this 263-day backtest (units, not revenue).\n\nHeadline: the model is losing to the seasonal-naive baseline overall \u2014 79.5% accuracy vs 85.2% naive, i.e. -5.7pp value add, with only 2 of 7 departments beating naive. So the first focus is the model itself, not a niche department.\n\nPriority 1 \u2014 FOODS_3. It is 615,655 of 1,153,225 total units (over half the store) and the model destroys value there: 80.1% vs 87.1% naive, -7.0pp FVA. Fixing or simply falling back to the naive baseline here moves the pooled number most.\n\nPriority 2 \u2014 HOUSEHOLD_1. Second-largest at 163,737 units and the worst value add of any department: 78.3% vs 87.8% naive, -9.4pp, plus a +4.1% over-forecast bias.\n\nDeprioritise HOBBIES_2: it has the best value add (+10.6pp) but only 6,227 units, so it barely moves the total; its 65.6% accuracy and -7.5% bias are the worst in the store but low-stakes. HOBBIES_1 (+2.8pp, 82.2% accuracy) is the only other department beating naive \u2014 worth studying as the template for what works.\n\nTiming note: the recent weekly trend shows the gap widening, e.g. week of 2014-01-20 at 68.8% forecast vs 89.9% naive \u2014 this is a current problem, not a historical one.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "unans-01",
+  "category": "unanswerable",
+  "q": "What's the forecast for next quarter?",
+  "tools_called": [
+   "get_overall",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "I can't answer this. Everything here is a backtest evaluation of a historical 263-day window across 7 departments \\u2014 there are no forward-looking forecast values, no future dates, and no quarterly projections in the data. What is available is retrospective performance only: pooled forecast accuracy of 79.5% against a seasonal-naive baseline of 85.2% (FVA -5.7pp, with only 2 of 7 departments beating naive) over 1,153,225 units. That describes how the model performed, not what it predicts for next quarter. To answer your question I'd need the model's out-of-sample future forecast output, which no tool here exposes.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "unans-02",
+  "category": "unanswerable",
+  "q": "How much revenue did FOODS_3 generate last month?",
+  "tools_called": [
+   "get_revenue_concentration",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "Not answerable from this backtest. There is no revenue-by-department or revenue-by-time-period data here \u2014 the only revenue figure available is a concentration curve giving the share of realised revenue covered by the top N% of SKUs (e.g. top 20% of the 3,049 SKUs = 56% of revenue), which is a store-wide share, not a currency amount, and it is not broken out by department or by month. For FOODS_3 the backtest only reports units: 615,655 units over the full 263-day window, with no monthly split. To answer your question you would need SKU-level prices or a revenue series by department and month.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "unans-03",
+  "category": "unanswerable",
+  "q": "Which individual SKUs have the worst forecast accuracy?",
+  "tools_called": [
+   "get_overall",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "I can't answer this \u2014 the backtest exposes accuracy only at department level (7 departments), not per SKU. There is no tool that returns forecast accuracy, bias, or error for individual items; the only SKU-level data available is a revenue-concentration curve (share of revenue by top N% of the 3,049 SKUs), which says nothing about forecast quality. What's missing: SKU-level actual-vs-forecast records. If a department-level view is useful, I can rank the seven departments on accuracy or forecast value add instead \u2014 for context, the pooled model accuracy is 79.5% versus 85.2% for the seasonal-naive baseline (FVA -5.7 pp), with only 2 of 7 departments beating naive.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "unans-04",
+  "category": "unanswerable",
+  "q": "Will HOBBIES_2 keep beating the naive baseline next year?",
+  "tools_called": [
+   "get_accuracy",
+   "get_bias",
+   "get_value_add",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "I can't answer that \u2014 the backtest only covers a fixed 263-day historical window, and no tool produces forward-looking forecasts or projections of future FVA. Nothing here supports a claim about next year.\n\nWhat the data does say (backtest window only): HOBBIES_2 did beat the seasonal-naive baseline, with 65.6% forecast accuracy vs 54.9% naive \u2014 an FVA of +10.6pp. Two caveats on how much weight to put on that: it is by far the smallest department at 6,227 units over 263 days, so its accuracy figures are noisy, and the model under-forecasts it by 7.5%.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "unans-05",
+  "category": "unanswerable",
+  "q": "How does this store's forecast accuracy compare to the other California stores?",
+  "tools_called": [
+   "get_overall",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "I can't answer this \u2014 the backtest covers only this one store (7 departments, 263 days, 1,153,225 units). There is no data for any other store, in California or elsewhere, so no cross-store comparison is possible. For context on this store alone: pooled forecast accuracy is 79.5% against a seasonal-naive baseline of 85.2%, i.e. forecast value add of -5.7 pp, with only 2 of 7 departments beating the naive baseline. What's missing is store-level results for the other stores.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "trap-01",
+  "category": "trap",
+  "q": "What's the revenue per head?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "Can't answer this one. The backtest holds unit-level demand data only \u2014 daily actuals, model and seasonal-naive forecasts for 7 departments over 263 days. There are no headcount or customer-count figures, and no dollar revenue or prices per department (revenue appears only as a normalised concentration curve, i.e. share of realised revenue by SKU decile, not dollars). Revenue per head therefore can't be derived from anything here.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "trap-02",
+  "category": "trap",
+  "q": "What's the average profit margin across the seven departments?",
+  "tools_called": [],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "Not answerable from this backtest. The dataset contains only unit-level demand actuals, forecasts and naive baselines for 7 departments over 263 days \u2014 there are no prices, costs, margins or dollar revenue per department, so no profit margin (average or otherwise) can be reported. I can cover forecast accuracy, value add vs the seasonal-naive baseline, bias, and unit volumes if that helps.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "trap-03",
+  "category": "trap",
+  "q": "Given the -5.7pp value add, how many dollars is the model costing us per year?",
+  "tools_called": [
+   "get_overall",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "I can't put a dollar figure on it. The backtest carries only unit-based accuracy metrics \\u2014 no prices, margins, revenue, or cost-of-error assumptions \\u2014 and it covers 263 days, not a full year, so there's no basis to convert accuracy into annual dollars. What the data does confirm: pooled across all 7 departments the model scores 79.5% forecast accuracy vs 85.2% for the seasonal-naive baseline, i.e. -5.7pp value add, on 1,153,225 units over the 263-day window, with only 2 of 7 departments beating naive. To dollarise this you'd need unit costs/prices and an explicit cost-per-unit-of-error model (e.g. holding vs stockout cost), neither of which is in this dataset.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "trap-04",
+  "category": "trap",
+  "q": "What was the forecast accuracy in March 2014?",
+  "tools_called": [
+   "get_overall",
+   "get_weekly_trend"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "No data for March 2014 \u2014 it falls outside the backtest window. The 38 weeks available run from the week starting 2013-05-06 to the week starting 2014-01-20, so the series ends in late January 2014 and there is no March 2014 period to report. (For reference, pooled accuracy across the whole 263-day window was 79.5% vs 85.2% for the seasonal-naive baseline, but that is not a March 2014 figure.)",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "trap-05",
+  "category": "trap",
+  "q": "Since Elastic Net's WAPE is 4x better than Prophet's, should we switch all departments to Elastic Net?",
+  "tools_called": [
+   "get_model_comparison",
+   "get_overall",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "answer": "The premise doesn't hold, so the switch isn't supported by this backtest. Two problems.\n\n1) The two WAPEs aren't comparable. Prophet forecast daily units; Elastic Net forecast monthly aggregates, and monthly aggregation cancels day-to-day noise. The study reports both side by side and explicitly flags that they are not directly comparable \u2014 the gap is largely a difference in forecast granularity, not model skill. So \"4x better\" isn't a finding you can read off these numbers.\n\n2) Even taken at face value, the gap is not universal. Elastic Net's monthly WAPE is lower in six departments (FOODS_3 4.86 vs 19.81, HOUSEHOLD_1 3.26 vs 21.56, HOBBIES_1 4.32 vs 18.57, FOODS_2 5.31 vs 20.55, FOODS_1 6.96 vs 24.99, HOUSEHOLD_2 8.99 vs 20.94), but in HOBBIES_2 it is worse: 58.96 vs Prophet's 34.32. HOBBIES_2 is the thinnest department (23.6 mean daily units, 6,227 units over the window), which is exactly where a sparse-series model struggles. Any \"all departments\" move would degrade that one.\n\nAlso worth noting for the decision: if you need daily replenishment signals, a monthly-aggregate model doesn't serve that use case at all, regardless of its WAPE. To make this call properly you'd need both models scored on the same horizon and granularity \u2014 that comparison isn't in this backtest.",
+  "unanswerable": false,
+  "confidence": "high"
+ }
+]
