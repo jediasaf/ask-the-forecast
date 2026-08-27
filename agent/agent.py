@@ -72,7 +72,12 @@ def _build_system(question: str) -> list[dict]:
     return system
 
 
-def ask(question: str, client: Anthropic | None = None, model: str = MODEL) -> AgentResult:
+def ask(
+    question: str,
+    client: Anthropic | None = None,
+    model: str = MODEL,
+    effort: str = "high",
+) -> AgentResult:
     if client is None:
         try:
             client = Anthropic()  # resolves ANTHROPIC_API_KEY / ant auth profile
@@ -88,7 +93,7 @@ def ask(question: str, client: Anthropic | None = None, model: str = MODEL) -> A
             model=model,
             max_tokens=MAX_TOKENS,
             thinking={"type": "adaptive"},
-            output_config={"effort": "high", **output_format()},
+            output_config={"effort": effort, **output_format()},
             max_iterations=MAX_ITERATIONS,
             system=_build_system(question),
             tools=tools.ALL_TOOLS,
