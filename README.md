@@ -12,7 +12,7 @@ The agent calls `compare_departments("fva")`, reads the ranking the tool
 returned, and answers with the real figures — the pooled −5.7pp value add,
 the five departments losing to seasonal naive, the two that beat it. Every
 number in the answer traces to a tool return, and the eval harness checks
-that mechanically. A [live replay of recorded runs](https://portfolio-two-zeta-4jh6qlra3g.vercel.app)
+that mechanically. A [live replay of recorded runs](https://jediasaf.vercel.app)
 is on the portfolio site.
 
 ## The experiment grid
