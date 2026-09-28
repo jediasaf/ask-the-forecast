@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: forecast
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - deployment.yaml
+  - service.yaml
+images:
+  # CI rewrites the tag to the commit it just built, so the cluster is tested
+  # against that exact image rather than whatever "latest" happens to be.
+  - name: ghcr.io/jediasaf/ask-the-forecast-mcp
+    newTag: latest
