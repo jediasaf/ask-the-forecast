@@ -252,32 +252,47 @@ that edge.
 
 ## Use the tools from any MCP client
 
-The seventeen tools are also exposed over the [Model Context
-Protocol](https://modelcontextprotocol.io), so an MCP host can call them
-directly and bring its own model. The adapter reads `ALL_TOOLS` and forwards
-each tool's name, description and schema unchanged, so there is no second
-implementation to drift.
+The seventeen tools are served over the [Model Context
+Protocol](https://modelcontextprotocol.io), so any MCP host can call them and
+bring its own model. **No API key is needed to run the server** — every tool is
+a lookup over bundled data, and the model lives on the client side.
 
-```bash
-.venv/bin/python -m mcp_server.server        # stdio transport
-```
-
-Register it with Claude Desktop in `claude_desktop_config.json`:
+Add this to `claude_desktop_config.json` (Claude Desktop → Settings → Developer
+→ Edit Config), restart, and the tools appear:
 
 ```json
 {
   "mcpServers": {
     "ask-the-forecast": {
-      "command": "python",
-      "args": ["-m", "mcp_server.server"],
-      "cwd": "/path/to/ask-the-forecast"
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/jediasaf/ask-the-forecast",
+               "ask-the-forecast-mcp"]
     }
   }
 }
 ```
 
-No API key is needed to serve them: every tool is a lookup over the JSON in
-`data/`, and the model lives on the client side of the protocol.
+Nothing to clone and nothing to build: `uvx` fetches and runs it. The same
+command works for any MCP client that speaks stdio.
+
+Then ask it things like:
+
+- *Which departments beat the naive baseline?*
+- *What's the bias on FOODS_3, and is it getting worse across the folds?*
+- *Which SKUs at CA_1 have the worst accuracy at meaningful volume?*
+
+It will refuse questions the data cannot answer — there is no forward forecast
+in here, and it will say so rather than produce one.
+
+If you would rather install it properly:
+
+```bash
+pip install git+https://github.com/jediasaf/ask-the-forecast
+ask-the-forecast-mcp        # stdio
+```
+
+The adapter reads `ALL_TOOLS` and forwards each tool's name, description and
+schema, so the MCP contract and the agent's own contract cannot drift apart.
 
 ## CI
 
