@@ -178,6 +178,58 @@ export ANTHROPIC_API_KEY=...              # or `ant auth login`; never committed
 
 The full grid above cost about $10 in API spend to measure.
 
+## Use the tools from any MCP client
+
+The seventeen tools are also exposed over the [Model Context
+Protocol](https://modelcontextprotocol.io), so an MCP host can call them
+directly and bring its own model. The adapter reads `ALL_TOOLS` and forwards
+each tool's name, description and schema unchanged, so there is no second
+implementation to drift.
+
+```bash
+.venv/bin/python -m mcp_server.server        # stdio transport
+```
+
+Register it with Claude Desktop in `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "ask-the-forecast": {
+      "command": "python",
+      "args": ["-m", "mcp_server.server"],
+      "cwd": "/path/to/ask-the-forecast"
+    }
+  }
+}
+```
+
+No API key is needed to serve them: every tool is a lookup over the JSON in
+`data/`, and the model lives on the client side of the protocol.
+
+## CI
+
+Two workflows, split by what they cost.
+
+`ci.yml` runs on every push and pull request and is free and deterministic: no
+API key, no model call, nothing that can flake. It runs the tool contract tests,
+asserts the MCP adapter still advertises every agent tool, and runs the eval
+regression gate.
+
+```bash
+.venv/bin/python -m pytest tests/ -q
+.venv/bin/python -m eval.check_regression
+```
+
+The gate reads `eval/baselines.json`, a floor for each committed results file,
+and fails if any run drops below it **or if a question set shrinks** — a
+shrinking eval is how a score improves by accident. Raise a floor only when a
+live run has genuinely beaten it (`--update` rewrites them).
+
+`eval-live.yml` is the real thing and is manual only, because it calls a paid
+API. Trigger it after a change to the agent, the prompt or the tools; it needs
+the `ANTHROPIC_API_KEY` repository secret.
+
 ## Limitations, honestly
 
 After the schema fix, `opus-5` at high effort passes every set — main,

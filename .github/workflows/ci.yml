@@ -1,0 +1,52 @@
+name: CI
+
+# Runs on every push and pull request. Deliberately free and deterministic:
+# no API key, no model call, nothing that can flake or cost money. The live
+# eval is a separate, manually triggered workflow.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: tools, MCP adapter, eval floors
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install "mcp>=2" pytest
+
+      - name: Unit tests
+        # The agent's honesty guarantee rests on the tools: the model is
+        # forbidden from doing arithmetic, so every figure it cites is a figure
+        # a tool returned. These assert the tool contracts without a model.
+        run: python -m pytest tests/ -q
+
+      - name: Eval regression gate
+        # Fails if any committed eval run has dropped below its recorded floor,
+        # or if an eval set has shrunk. A shrinking question set is how a score
+        # improves by accident.
+        run: python -m eval.check_regression
+
+      - name: MCP server starts and advertises every tool
+        run: |
+          python - <<'PY'
+          import asyncio
+          from agent.tools import ALL_TOOLS
+          from mcp_server.server import build_server
+          listed = asyncio.run(build_server().list_tools())
+          assert {t.name for t in listed} == {t.name for t in ALL_TOOLS}, "MCP drifted from the agent"
+          print(f"MCP server advertises {len(listed)} tools")
+          PY

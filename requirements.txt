@@ -3,3 +3,9 @@ pydantic>=2.0
 
 # only needed to rebuild data/scale from raw M5
 datasetsforecast>=1.0
+
+# MCP server (exposes the agent's tools to any MCP client; no API key needed)
+mcp>=2.0
+
+# CI: tool contracts and the eval regression gate
+pytest>=8.0

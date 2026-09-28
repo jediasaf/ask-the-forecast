@@ -1,0 +1,66 @@
+{
+  "results-baseline-hard-opus-5.json": {
+    "questions": 14,
+    "passed": 6,
+    "tool_selection": 14,
+    "numeric": 7,
+    "refusal": 6,
+    "fabrication": 14
+  },
+  "results-baseline-opus-5.json": {
+    "questions": 37,
+    "passed": 37,
+    "tool_selection": 37,
+    "numeric": 37,
+    "refusal": 37,
+    "fabrication": 37
+  },
+  "results-hard-opus-high-v2.json": {
+    "questions": 14,
+    "passed": 14,
+    "tool_selection": 14,
+    "numeric": 14,
+    "refusal": 14,
+    "fabrication": 14
+  },
+  "results-hard-opus-high.json": {
+    "questions": 14,
+    "passed": 13,
+    "tool_selection": 14,
+    "numeric": 14,
+    "refusal": 14,
+    "fabrication": 13
+  },
+  "results-opus-high.json": {
+    "questions": 37,
+    "passed": 37,
+    "tool_selection": 37,
+    "numeric": 37,
+    "refusal": 37,
+    "fabrication": 37
+  },
+  "results-opus-low.json": {
+    "questions": 37,
+    "passed": 36,
+    "tool_selection": 37,
+    "numeric": 37,
+    "refusal": 37,
+    "fabrication": 36
+  },
+  "results-scale-opus-high.json": {
+    "questions": 12,
+    "passed": 12,
+    "tool_selection": 12,
+    "numeric": 12,
+    "refusal": 12,
+    "fabrication": 12
+  },
+  "results-sonnet-high.json": {
+    "questions": 37,
+    "passed": 35,
+    "tool_selection": 36,
+    "numeric": 36,
+    "refusal": 37,
+    "fabrication": 37
+  }
+}
