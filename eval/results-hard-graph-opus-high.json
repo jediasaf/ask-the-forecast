@@ -1,0 +1,3277 @@
+[
+ {
+  "id": "hard-01",
+  "category": "multi_hop",
+  "q": "Across the three walk-forward folds, is FOODS_1's forecast value add improving or deteriorating?",
+  "tools_called": [
+   "get_fold_accuracy",
+   "get_value_add"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 1532,
+   "output_tokens": 1127,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0407,
+   "seconds": 13.5,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_1",
+     "fold": 1
+    },
+    "output": {
+     "days": 83,
+     "forecast_accuracy_pct": 71.5,
+     "naive_accuracy_pct": 87.8,
+     "forecast_value_add_pp": -16.3,
+     "dept": "FOODS_1",
+     "fold": 1,
+     "window": {
+      "from": "2013-05-05",
+      "to": "2013-07-26"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_1",
+     "fold": 2
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 77.5,
+     "naive_accuracy_pct": 85.9,
+     "forecast_value_add_pp": -8.4,
+     "dept": "FOODS_1",
+     "fold": 2,
+     "window": {
+      "from": "2013-07-27",
+      "to": "2013-10-24"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_1",
+     "fold": 3
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 75.9,
+     "naive_accuracy_pct": 71.6,
+     "forecast_value_add_pp": 4.3,
+     "dept": "FOODS_1",
+     "fold": 3,
+     "window": {
+      "from": "2013-10-25",
+      "to": "2014-01-22"
+     }
+    }
+   },
+   {
+    "tool": "get_value_add",
+    "input": {
+     "dept": "FOODS_1"
+    },
+    "output": {
+     "dept": "FOODS_1",
+     "forecast_value_add_pp": -7.3,
+     "beats_naive": false
+    }
+   }
+  ],
+  "answer": "Improving, monotonically across the three folds \u2014 but mostly because the baseline got worse, not because the model got better. FOODS_1 FVA: fold 1 (2013-05-05 to 2013-07-26) -16.3 pp, fold 2 (2013-07-27 to 2013-10-24) -8.4 pp, fold 3 (2013-10-25 to 2014-01-22) +4.3 pp, so it only clears the baseline in the final fold. Caveat: the model's own accuracy actually dipped in fold 3 (71.5% \u2192 77.5% \u2192 75.9%); the swing came from seasonal-naive accuracy collapsing from 87.8% to 85.9% to 71.6% as the holiday period made last-week repetition unreliable. Over the full 263 days FOODS_1 still has FVA of -7.3 pp and does not beat naive.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-02",
+  "category": "multi_hop",
+  "q": "Which department's forecast value add deteriorates most steadily across the three backtest folds?",
+  "tools_called": [
+   "get_fold_accuracy",
+   "get_overall",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 6703,
+   "output_tokens": 3524,
+   "cache_read_tokens": 14565,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.1289,
+   "seconds": 33.3,
+   "iterations": 3,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "list_departments",
+    "input": {},
+    "output": {
+     "departments": [
+      {
+       "dept": "FOODS_3",
+       "volume_units": 615655
+      },
+      {
+       "dept": "HOUSEHOLD_1",
+       "volume_units": 163737
+      },
+      {
+       "dept": "HOBBIES_1",
+       "volume_units": 121662
+      },
+      {
+       "dept": "FOODS_2",
+       "volume_units": 113746
+      },
+      {
+       "dept": "FOODS_1",
+       "volume_units": 86718
+      },
+      {
+       "dept": "HOUSEHOLD_2",
+       "volume_units": 45480
+      },
+      {
+       "dept": "HOBBIES_2",
+       "volume_units": 6227
+      }
+     ],
+     "note": "volume_units is total units sold over the 263-day backtest window"
+    }
+   },
+   {
+    "tool": "get_overall",
+    "input": {},
+    "output": {
+     "forecast_accuracy_pct": 79.5,
+     "naive_accuracy_pct": 85.2,
+     "forecast_value_add_pp": -5.7,
+     "bias_pct": -0.3,
+     "total_units": 1153225,
+     "departments_beating_naive": 2,
+     "departments_total": 7
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_3",
+     "fold": 1
+    },
+    "output": {
+     "days": 83,
+     "forecast_accuracy_pct": 81.8,
+     "naive_accuracy_pct": 87.8,
+     "forecast_value_add_pp": -6.0,
+     "dept": "FOODS_3",
+     "fold": 1,
+     "window": {
+      "from": "2013-05-05",
+      "to": "2013-07-26"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_3",
+     "fold": 2
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 80.4,
+     "naive_accuracy_pct": 88.1,
+     "forecast_value_add_pp": -7.7,
+     "dept": "FOODS_3",
+     "fold": 2,
+     "window": {
+      "from": "2013-07-27",
+      "to": "2013-10-24"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_3",
+     "fold": 3
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 78.2,
+     "naive_accuracy_pct": 85.3,
+     "forecast_value_add_pp": -7.1,
+     "dept": "FOODS_3",
+     "fold": 3,
+     "window": {
+      "from": "2013-10-25",
+      "to": "2014-01-22"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_1",
+     "fold": 1
+    },
+    "output": {
+     "days": 83,
+     "forecast_accuracy_pct": 83.8,
+     "naive_accuracy_pct": 88.8,
+     "forecast_value_add_pp": -5.0,
+     "dept": "HOUSEHOLD_1",
+     "fold": 1,
+     "window": {
+      "from": "2013-05-05",
+      "to": "2013-07-26"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_1",
+     "fold": 2
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 77.3,
+     "naive_accuracy_pct": 88.4,
+     "forecast_value_add_pp": -11.1,
+     "dept": "HOUSEHOLD_1",
+     "fold": 2,
+     "window": {
+      "from": "2013-07-27",
+      "to": "2013-10-24"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_1",
+     "fold": 3
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 73.6,
+     "naive_accuracy_pct": 85.9,
+     "forecast_value_add_pp": -12.3,
+     "dept": "HOUSEHOLD_1",
+     "fold": 3,
+     "window": {
+      "from": "2013-10-25",
+      "to": "2014-01-22"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOBBIES_1",
+     "fold": 1
+    },
+    "output": {
+     "days": 83,
+     "forecast_accuracy_pct": 82.2,
+     "naive_accuracy_pct": 81.6,
+     "forecast_value_add_pp": 0.6,
+     "dept": "HOBBIES_1",
+     "fold": 1,
+     "window": {
+      "from": "2013-05-05",
+      "to": "2013-07-26"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOBBIES_1",
+     "fold": 2
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 82.7,
+     "naive_accuracy_pct": 76.9,
+     "forecast_value_add_pp": 5.8,
+     "dept": "HOBBIES_1",
+     "fold": 2,
+     "window": {
+      "from": "2013-07-27",
+      "to": "2013-10-24"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOBBIES_1",
+     "fold": 3
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 81.6,
+     "naive_accuracy_pct": 79.5,
+     "forecast_value_add_pp": 2.1,
+     "dept": "HOBBIES_1",
+     "fold": 3,
+     "window": {
+      "from": "2013-10-25",
+      "to": "2014-01-22"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_2",
+     "fold": 1
+    },
+    "output": {
+     "days": 83,
+     "forecast_accuracy_pct": 82.2,
+     "naive_accuracy_pct": 81.9,
+     "forecast_value_add_pp": 0.3,
+     "dept": "FOODS_2",
+     "fold": 1,
+     "window": {
+      "from": "2013-05-05",
+      "to": "2013-07-26"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_2",
+     "fold": 2
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 79.0,
+     "naive_accuracy_pct": 78.7,
+     "forecast_value_add_pp": 0.3,
+     "dept": "FOODS_2",
+     "fold": 2,
+     "window": {
+      "from": "2013-07-27",
+      "to": "2013-10-24"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_2",
+     "fold": 3
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 76.8,
+     "naive_accuracy_pct": 80.0,
+     "forecast_value_add_pp": -3.2,
+     "dept": "FOODS_2",
+     "fold": 3,
+     "window": {
+      "from": "2013-10-25",
+      "to": "2014-01-22"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_1",
+     "fold": 1
+    },
+    "output": {
+     "days": 83,
+     "forecast_accuracy_pct": 71.5,
+     "naive_accuracy_pct": 87.8,
+     "forecast_value_add_pp": -16.3,
+     "dept": "FOODS_1",
+     "fold": 1,
+     "window": {
+      "from": "2013-05-05",
+      "to": "2013-07-26"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_1",
+     "fold": 2
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 77.5,
+     "naive_accuracy_pct": 85.9,
+     "forecast_value_add_pp": -8.4,
+     "dept": "FOODS_1",
+     "fold": 2,
+     "window": {
+      "from": "2013-07-27",
+      "to": "2013-10-24"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_1",
+     "fold": 3
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 75.9,
+     "naive_accuracy_pct": 71.6,
+     "forecast_value_add_pp": 4.3,
+     "dept": "FOODS_1",
+     "fold": 3,
+     "window": {
+      "from": "2013-10-25",
+      "to": "2014-01-22"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_2",
+     "fold": 1
+    },
+    "output": {
+     "days": 83,
+     "forecast_accuracy_pct": 83.1,
+     "naive_accuracy_pct": 87.9,
+     "forecast_value_add_pp": -4.8,
+     "dept": "HOUSEHOLD_2",
+     "fold": 1,
+     "window": {
+      "from": "2013-05-05",
+      "to": "2013-07-26"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_2",
+     "fold": 2
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 75.4,
+     "naive_accuracy_pct": 88.4,
+     "forecast_value_add_pp": -13.0,
+     "dept": "HOUSEHOLD_2",
+     "fold": 2,
+     "window": {
+      "from": "2013-07-27",
+      "to": "2013-10-24"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_2",
+     "fold": 3
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 78.2,
+     "naive_accuracy_pct": 83.2,
+     "forecast_value_add_pp": -5.0,
+     "dept": "HOUSEHOLD_2",
+     "fold": 3,
+     "window": {
+      "from": "2013-10-25",
+      "to": "2014-01-22"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOBBIES_2",
+     "fold": 1
+    },
+    "output": {
+     "days": 83,
+     "forecast_accuracy_pct": 72.3,
+     "naive_accuracy_pct": 60.6,
+     "forecast_value_add_pp": 11.7,
+     "dept": "HOBBIES_2",
+     "fold": 1,
+     "window": {
+      "from": "2013-05-05",
+      "to": "2013-07-26"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOBBIES_2",
+     "fold": 2
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 65.8,
+     "naive_accuracy_pct": 57.6,
+     "forecast_value_add_pp": 8.2,
+     "dept": "HOBBIES_2",
+     "fold": 2,
+     "window": {
+      "from": "2013-07-27",
+      "to": "2013-10-24"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOBBIES_2",
+     "fold": 3
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 60.6,
+     "naive_accuracy_pct": 48.3,
+     "forecast_value_add_pp": 12.3,
+     "dept": "HOBBIES_2",
+     "fold": 3,
+     "window": {
+      "from": "2013-10-25",
+      "to": "2014-01-22"
+     }
+    }
+   }
+  ],
+  "answer": "HOUSEHOLD_1. It is the only department whose forecast value add falls in every fold and by the widest margin: FVA -5.0 pp in fold 1 (2013-05-05 to 2013-07-26), -11.1 pp in fold 2 (2013-07-27 to 2013-10-24), and -12.3 pp in fold 3 (2013-10-25 to 2014-01-22), with model accuracy sliding 83.8% -> 77.3% -> 73.6% while the naive baseline stayed far above it (88.8% / 88.4% / 85.9%). The only other monotone decline is FOODS_2 (+0.3, +0.3, -3.2 pp), which is flat then slips just below the baseline in fold 3. Other departments move non-monotonically: FOODS_3 (-6.0, -7.7, -7.1), HOUSEHOLD_2 (-4.8, -13.0, -5.0), HOBBIES_1 (+0.6, +5.8, +2.1), HOBBIES_2 (+11.7, +8.2, +12.3), and FOODS_1 actually improves (-16.3, -8.4, +4.3).",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-03",
+  "category": "multi_hop",
+  "q": "In December 2013, which departments actually beat the naive baseline?",
+  "tools_called": [
+   "get_overall",
+   "get_window_accuracy",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 3595,
+   "output_tokens": 2508,
+   "cache_read_tokens": 14565,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.088,
+   "seconds": 25.0,
+   "iterations": 3,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "list_departments",
+    "input": {},
+    "output": {
+     "departments": [
+      {
+       "dept": "FOODS_3",
+       "volume_units": 615655
+      },
+      {
+       "dept": "HOUSEHOLD_1",
+       "volume_units": 163737
+      },
+      {
+       "dept": "HOBBIES_1",
+       "volume_units": 121662
+      },
+      {
+       "dept": "FOODS_2",
+       "volume_units": 113746
+      },
+      {
+       "dept": "FOODS_1",
+       "volume_units": 86718
+      },
+      {
+       "dept": "HOUSEHOLD_2",
+       "volume_units": 45480
+      },
+      {
+       "dept": "HOBBIES_2",
+       "volume_units": 6227
+      }
+     ],
+     "note": "volume_units is total units sold over the 263-day backtest window"
+    }
+   },
+   {
+    "tool": "get_overall",
+    "input": {},
+    "output": {
+     "forecast_accuracy_pct": 79.5,
+     "naive_accuracy_pct": 85.2,
+     "forecast_value_add_pp": -5.7,
+     "bias_pct": -0.3,
+     "total_units": 1153225,
+     "departments_beating_naive": 2,
+     "departments_total": 7
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "FOODS_3",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 80.8,
+     "naive_accuracy_pct": 81.1,
+     "forecast_value_add_pp": -0.3,
+     "dept": "FOODS_3",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_1",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 72.6,
+     "naive_accuracy_pct": 83.8,
+     "forecast_value_add_pp": -11.2,
+     "dept": "HOUSEHOLD_1",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "HOBBIES_1",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 81.5,
+     "naive_accuracy_pct": 77.3,
+     "forecast_value_add_pp": 4.2,
+     "dept": "HOBBIES_1",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "FOODS_2",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 78.7,
+     "naive_accuracy_pct": 79.6,
+     "forecast_value_add_pp": -0.9,
+     "dept": "FOODS_2",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "FOODS_1",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 72.0,
+     "naive_accuracy_pct": 61.8,
+     "forecast_value_add_pp": 10.2,
+     "dept": "FOODS_1",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_2",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 79.7,
+     "naive_accuracy_pct": 80.8,
+     "forecast_value_add_pp": -1.1,
+     "dept": "HOUSEHOLD_2",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "HOBBIES_2",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 59.2,
+     "naive_accuracy_pct": 52.9,
+     "forecast_value_add_pp": 6.3,
+     "dept": "HOBBIES_2",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   }
+  ],
+  "answer": "Scoped to the 31 days 2013-12-01 to 2013-12-31, computed per department. Three of seven departments beat the seasonal-naive baseline in December 2013:\n\n- FOODS_1: FA 72.0% vs naive 61.8% \u2192 FVA +10.2pp (largest edge)\n- HOBBIES_2: FA 59.2% vs naive 52.9% \u2192 FVA +6.3pp (tiny department, 6,227 units over the full backtest, so treat as noisy)\n- HOBBIES_1: FA 81.5% vs naive 77.3% \u2192 FVA +4.2pp\n\nThe other four lost to the baseline: HOUSEHOLD_1 \u221211.2pp (72.6% vs 83.8%), HOUSEHOLD_2 \u22121.1pp (79.7% vs 80.8%), FOODS_2 \u22120.9pp (78.7% vs 79.6%), and FOODS_3 \u22120.3pp (80.8% vs 81.1%). Note that FOODS_3 is the volume driver (615,655 of 1,153,225 units in the backtest), so its near-tie dominates the pooled December picture; the three winners are the smaller departments.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-04",
+  "category": "multi_hop",
+  "q": "What was FOODS_3's single worst forecast day, and would the naive baseline have done better on that day?",
+  "tools_called": [
+   "get_accuracy",
+   "get_worst_days"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 1403,
+   "output_tokens": 646,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.028,
+   "seconds": 9.2,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "FOODS_3",
+     "n": 3
+    },
+    "output": {
+     "dept": "FOODS_3",
+     "worst_days": [
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 2431.5,
+       "naive_units": 1755.0,
+       "abs_error_units": 2431.5,
+       "naive_abs_error_units": 1755.0
+      },
+      {
+       "date": "2013-08-25",
+       "actual_units": 4042,
+       "model_units": 2497.5,
+       "naive_units": 3400.0,
+       "abs_error_units": 1544.5,
+       "naive_abs_error_units": 642.0
+      },
+      {
+       "date": "2013-09-08",
+       "actual_units": 3960,
+       "model_units": 2497.5,
+       "naive_units": 3751.0,
+       "abs_error_units": 1462.5,
+       "naive_abs_error_units": 209.0
+      }
+     ]
+    }
+   },
+   {
+    "tool": "get_accuracy",
+    "input": {
+     "dept": "FOODS_3"
+    },
+    "output": {
+     "dept": "FOODS_3",
+     "forecast_accuracy_pct": 80.1,
+     "naive_accuracy_pct": 87.1
+    }
+   }
+  ],
+  "answer": "FOODS_3's worst day was Christmas Day, 2013-12-25, when the store sold 0 units but the model predicted 2,431.5 \u2014 an absolute error of 2,431.5 units. The naive baseline would have done better that day, but only relatively: it predicted 1,755.0 units, an error of 1,755.0 units. Both missed the closure entirely; the naive was simply less wrong by construction. (For context over the full 263-day window, FOODS_3 runs 80.1% forecast accuracy vs 87.1% for the seasonal naive.)",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-05",
+  "category": "multi_hop",
+  "q": "Which department had the largest single-day absolute forecast error anywhere in the backtest, and what happened that day?",
+  "tools_called": [
+   "get_worst_days",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 4897,
+   "output_tokens": 1652,
+   "cache_read_tokens": 14565,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0731,
+   "seconds": 18.6,
+   "iterations": 3,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "list_departments",
+    "input": {},
+    "output": {
+     "departments": [
+      {
+       "dept": "FOODS_3",
+       "volume_units": 615655
+      },
+      {
+       "dept": "HOUSEHOLD_1",
+       "volume_units": 163737
+      },
+      {
+       "dept": "HOBBIES_1",
+       "volume_units": 121662
+      },
+      {
+       "dept": "FOODS_2",
+       "volume_units": 113746
+      },
+      {
+       "dept": "FOODS_1",
+       "volume_units": 86718
+      },
+      {
+       "dept": "HOUSEHOLD_2",
+       "volume_units": 45480
+      },
+      {
+       "dept": "HOBBIES_2",
+       "volume_units": 6227
+      }
+     ],
+     "note": "volume_units is total units sold over the 263-day backtest window"
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "FOODS_3",
+     "n": 3
+    },
+    "output": {
+     "dept": "FOODS_3",
+     "worst_days": [
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 2431.5,
+       "naive_units": 1755.0,
+       "abs_error_units": 2431.5,
+       "naive_abs_error_units": 1755.0
+      },
+      {
+       "date": "2013-08-25",
+       "actual_units": 4042,
+       "model_units": 2497.5,
+       "naive_units": 3400.0,
+       "abs_error_units": 1544.5,
+       "naive_abs_error_units": 642.0
+      },
+      {
+       "date": "2013-09-08",
+       "actual_units": 3960,
+       "model_units": 2497.5,
+       "naive_units": 3751.0,
+       "abs_error_units": 1462.5,
+       "naive_abs_error_units": 209.0
+      }
+     ]
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "HOUSEHOLD_1",
+     "n": 3
+    },
+    "output": {
+     "dept": "HOUSEHOLD_1",
+     "worst_days": [
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 646.9,
+       "naive_units": 392.0,
+       "abs_error_units": 646.9,
+       "naive_abs_error_units": 392.0
+      },
+      {
+       "date": "2013-07-21",
+       "actual_units": 1038,
+       "model_units": 610.7,
+       "naive_units": 930.0,
+       "abs_error_units": 427.3,
+       "naive_abs_error_units": 108.0
+      },
+      {
+       "date": "2013-06-02",
+       "actual_units": 1018,
+       "model_units": 610.7,
+       "naive_units": 679.0,
+       "abs_error_units": 407.3,
+       "naive_abs_error_units": 339.0
+      }
+     ]
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "HOBBIES_1",
+     "n": 3
+    },
+    "output": {
+     "dept": "HOBBIES_1",
+     "worst_days": [
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 481.3,
+       "naive_units": 392.0,
+       "abs_error_units": 481.3,
+       "naive_abs_error_units": 392.0
+      },
+      {
+       "date": "2013-11-28",
+       "actual_units": 170,
+       "model_units": 481.3,
+       "naive_units": 353.0,
+       "abs_error_units": 311.3,
+       "naive_abs_error_units": 183.0
+      },
+      {
+       "date": "2013-12-02",
+       "actual_units": 741,
+       "model_units": 481.3,
+       "naive_units": 461.0,
+       "abs_error_units": 259.7,
+       "naive_abs_error_units": 280.0
+      }
+     ]
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "FOODS_2",
+     "n": 3
+    },
+    "output": {
+     "dept": "FOODS_2",
+     "worst_days": [
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 382.2,
+       "naive_units": 326.0,
+       "abs_error_units": 382.2,
+       "naive_abs_error_units": 326.0
+      },
+      {
+       "date": "2013-11-10",
+       "actual_units": 700,
+       "model_units": 382.2,
+       "naive_units": 648.0,
+       "abs_error_units": 317.8,
+       "naive_abs_error_units": 52.0
+      },
+      {
+       "date": "2013-06-09",
+       "actual_units": 704,
+       "model_units": 399.5,
+       "naive_units": 632.0,
+       "abs_error_units": 304.5,
+       "naive_abs_error_units": 72.0
+      }
+     ]
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "FOODS_1",
+     "n": 3
+    },
+    "output": {
+     "dept": "FOODS_1",
+     "worst_days": [
+      {
+       "date": "2013-12-21",
+       "actual_units": 625,
+       "model_units": 298.6,
+       "naive_units": 443.0,
+       "abs_error_units": 326.4,
+       "naive_abs_error_units": 182.0
+      },
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 298.6,
+       "naive_units": 436.0,
+       "abs_error_units": 298.6,
+       "naive_abs_error_units": 436.0
+      },
+      {
+       "date": "2013-12-22",
+       "actual_units": 571,
+       "model_units": 298.6,
+       "naive_units": 342.0,
+       "abs_error_units": 272.4,
+       "naive_abs_error_units": 229.0
+      }
+     ]
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "HOUSEHOLD_2",
+     "n": 3
+    },
+    "output": {
+     "dept": "HOUSEHOLD_2",
+     "worst_days": [
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 159.9,
+       "naive_units": 135.0,
+       "abs_error_units": 159.9,
+       "naive_abs_error_units": 135.0
+      },
+      {
+       "date": "2013-12-21",
+       "actual_units": 273,
+       "model_units": 159.9,
+       "naive_units": 250.0,
+       "abs_error_units": 113.1,
+       "naive_abs_error_units": 23.0
+      },
+      {
+       "date": "2013-09-17",
+       "actual_units": 93,
+       "model_units": 189.2,
+       "naive_units": 127.0,
+       "abs_error_units": 96.2,
+       "naive_abs_error_units": 34.0
+      }
+     ]
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "HOBBIES_2",
+     "n": 3
+    },
+    "output": {
+     "dept": "HOBBIES_2",
+     "worst_days": [
+      {
+       "date": "2013-09-08",
+       "actual_units": 69,
+       "model_units": 18.6,
+       "naive_units": 18.0,
+       "abs_error_units": 50.4,
+       "naive_abs_error_units": 51.0
+      },
+      {
+       "date": "2013-12-07",
+       "actual_units": 64,
+       "model_units": 27.6,
+       "naive_units": 24.0,
+       "abs_error_units": 36.4,
+       "naive_abs_error_units": 40.0
+      },
+      {
+       "date": "2013-08-17",
+       "actual_units": 50,
+       "model_units": 18.6,
+       "naive_units": 20.0,
+       "abs_error_units": 31.4,
+       "naive_abs_error_units": 30.0
+      }
+     ]
+    }
+   }
+  ],
+  "answer": "FOODS_3, on 2013-12-25 (Christmas Day): the model forecast 2,431.5 units against actual sales of 0 \u2014 an absolute error of 2,431.5 units, the largest single-day error in the whole backtest. The store was closed that day, so every department recorded zero sales and every department's worst day was 25 Dec (HOUSEHOLD_1 646.9 units, HOBBIES_1 481.3, FOODS_2 382.2, HOUSEHOLD_2 159.9); FOODS_3 is the biggest simply because it is by far the largest department (615,655 units over the window). This is a calendar-closure miss, not a demand-modelling failure \u2014 the seasonal-naive baseline made the same mistake (1,755 units of error on FOODS_3 that day). The one exception is HOBBIES_2, whose worst day was 2013-09-08 (69 actual vs 18.6 forecast, 50.4 units).",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-06",
+  "category": "multi_hop",
+  "q": "FOODS_1 loses to the naive baseline over the whole backtest \u2014 was that also true in December 2013?",
+  "tools_called": [
+   "get_accuracy",
+   "get_value_add",
+   "get_window_accuracy",
+   "get_worst_days"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 2411,
+   "output_tokens": 1477,
+   "cache_read_tokens": 14565,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0563,
+   "seconds": 19.3,
+   "iterations": 3,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "get_accuracy",
+    "input": {
+     "dept": "FOODS_1"
+    },
+    "output": {
+     "dept": "FOODS_1",
+     "forecast_accuracy_pct": 75.0,
+     "naive_accuracy_pct": 82.2
+    }
+   },
+   {
+    "tool": "get_value_add",
+    "input": {
+     "dept": "FOODS_1"
+    },
+    "output": {
+     "dept": "FOODS_1",
+     "forecast_value_add_pp": -7.3,
+     "beats_naive": false
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "FOODS_1",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 72.0,
+     "naive_accuracy_pct": 61.8,
+     "forecast_value_add_pp": 10.2,
+     "dept": "FOODS_1",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "FOODS_1",
+     "n": 3
+    },
+    "output": {
+     "dept": "FOODS_1",
+     "worst_days": [
+      {
+       "date": "2013-12-21",
+       "actual_units": 625,
+       "model_units": 298.6,
+       "naive_units": 443.0,
+       "abs_error_units": 326.4,
+       "naive_abs_error_units": 182.0
+      },
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 298.6,
+       "naive_units": 436.0,
+       "abs_error_units": 298.6,
+       "naive_abs_error_units": 436.0
+      },
+      {
+       "date": "2013-12-22",
+       "actual_units": 571,
+       "model_units": 298.6,
+       "naive_units": 342.0,
+       "abs_error_units": 272.4,
+       "naive_abs_error_units": 229.0
+      }
+     ]
+    }
+   }
+  ],
+  "answer": "No \u2014 December 2013 is the one stretch where FOODS_1 beats the baseline. Over the full 263-day backtest FOODS_1 scores 75.0% forecast accuracy against 82.2% for seasonal-naive, an FVA of -7.3pp. In the 2013-12-01 to 2013-12-31 window the ranking flips: model 72.0% vs naive 61.8%, FVA +10.2pp. Note how it flips: the model didn't get better (72.0% in December is below its own 75.0% full-backtest accuracy) \u2014 the naive collapsed, from 82.2% to 61.8%, because holiday weeks break the same-weekday-last-week assumption. The clearest case is Christmas Day, 2013-12-25, when actual sales were 0 units: naive carried forward 436 units (absolute error 436) while the model's 298.6 was less wrong. The model still had bad December days of its own (2013-12-21: actual 625 vs model 298.6, error 326.4, worse than naive's 182.0), but on net the holiday disruption penalised the baseline more. So the full-backtest verdict stands in general; December is a holiday-driven exception, not evidence the model is stronger.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-07",
+  "category": "multi_hop",
+  "q": "Does FOODS_1 ever beat the naive baseline in any single backtest fold?",
+  "tools_called": [
+   "get_accuracy",
+   "get_fold_accuracy",
+   "get_value_add"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 1576,
+   "output_tokens": 1175,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0421,
+   "seconds": 12.9,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_1",
+     "fold": 1
+    },
+    "output": {
+     "days": 83,
+     "forecast_accuracy_pct": 71.5,
+     "naive_accuracy_pct": 87.8,
+     "forecast_value_add_pp": -16.3,
+     "dept": "FOODS_1",
+     "fold": 1,
+     "window": {
+      "from": "2013-05-05",
+      "to": "2013-07-26"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_1",
+     "fold": 2
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 77.5,
+     "naive_accuracy_pct": 85.9,
+     "forecast_value_add_pp": -8.4,
+     "dept": "FOODS_1",
+     "fold": 2,
+     "window": {
+      "from": "2013-07-27",
+      "to": "2013-10-24"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_1",
+     "fold": 3
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 75.9,
+     "naive_accuracy_pct": 71.6,
+     "forecast_value_add_pp": 4.3,
+     "dept": "FOODS_1",
+     "fold": 3,
+     "window": {
+      "from": "2013-10-25",
+      "to": "2014-01-22"
+     }
+    }
+   },
+   {
+    "tool": "get_value_add",
+    "input": {
+     "dept": "FOODS_1"
+    },
+    "output": {
+     "dept": "FOODS_1",
+     "forecast_value_add_pp": -7.3,
+     "beats_naive": false
+    }
+   },
+   {
+    "tool": "get_accuracy",
+    "input": {
+     "dept": "FOODS_1"
+    },
+    "output": {
+     "dept": "FOODS_1",
+     "forecast_accuracy_pct": 75.0,
+     "naive_accuracy_pct": 82.2
+    }
+   }
+  ],
+  "answer": "Yes \u2014 in fold 3 only. FOODS_1 loses to the baseline in folds 1 and 2 but wins in fold 3: fold 1 FVA -16.3pp (FA 71.5% vs naive 87.8%), fold 2 FVA -8.4pp (77.5% vs 85.9%), fold 3 FVA +4.3pp (75.9% vs 71.6%). Note that the fold-3 win comes mostly from the baseline degrading (naive drops from 85.9% to 71.6%) rather than the model improving. Over the full 263-day backtest FOODS_1 is still negative: FA 75.0% vs naive 82.2%, FVA -7.3pp.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-08",
+  "category": "multi_hop",
+  "q": "Several departments share the same worst forecast day. What date is it, and what does the data show happened?",
+  "tools_called": [
+   "get_overall",
+   "get_worst_days",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 6236,
+   "output_tokens": 1967,
+   "cache_read_tokens": 14565,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0876,
+   "seconds": 24.0,
+   "iterations": 3,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "list_departments",
+    "input": {},
+    "output": {
+     "departments": [
+      {
+       "dept": "FOODS_3",
+       "volume_units": 615655
+      },
+      {
+       "dept": "HOUSEHOLD_1",
+       "volume_units": 163737
+      },
+      {
+       "dept": "HOBBIES_1",
+       "volume_units": 121662
+      },
+      {
+       "dept": "FOODS_2",
+       "volume_units": 113746
+      },
+      {
+       "dept": "FOODS_1",
+       "volume_units": 86718
+      },
+      {
+       "dept": "HOUSEHOLD_2",
+       "volume_units": 45480
+      },
+      {
+       "dept": "HOBBIES_2",
+       "volume_units": 6227
+      }
+     ],
+     "note": "volume_units is total units sold over the 263-day backtest window"
+    }
+   },
+   {
+    "tool": "get_overall",
+    "input": {},
+    "output": {
+     "forecast_accuracy_pct": 79.5,
+     "naive_accuracy_pct": 85.2,
+     "forecast_value_add_pp": -5.7,
+     "bias_pct": -0.3,
+     "total_units": 1153225,
+     "departments_beating_naive": 2,
+     "departments_total": 7
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "FOODS_3",
+     "n": 5
+    },
+    "output": {
+     "dept": "FOODS_3",
+     "worst_days": [
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 2431.5,
+       "naive_units": 1755.0,
+       "abs_error_units": 2431.5,
+       "naive_abs_error_units": 1755.0
+      },
+      {
+       "date": "2013-08-25",
+       "actual_units": 4042,
+       "model_units": 2497.5,
+       "naive_units": 3400.0,
+       "abs_error_units": 1544.5,
+       "naive_abs_error_units": 642.0
+      },
+      {
+       "date": "2013-09-08",
+       "actual_units": 3960,
+       "model_units": 2497.5,
+       "naive_units": 3751.0,
+       "abs_error_units": 1462.5,
+       "naive_abs_error_units": 209.0
+      },
+      {
+       "date": "2013-09-29",
+       "actual_units": 3759,
+       "model_units": 2497.5,
+       "naive_units": 3583.0,
+       "abs_error_units": 1261.5,
+       "naive_abs_error_units": 176.0
+      },
+      {
+       "date": "2013-09-01",
+       "actual_units": 3751,
+       "model_units": 2497.5,
+       "naive_units": 4042.0,
+       "abs_error_units": 1253.5,
+       "naive_abs_error_units": 291.0
+      }
+     ]
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "HOUSEHOLD_1",
+     "n": 5
+    },
+    "output": {
+     "dept": "HOUSEHOLD_1",
+     "worst_days": [
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 646.9,
+       "naive_units": 392.0,
+       "abs_error_units": 646.9,
+       "naive_abs_error_units": 392.0
+      },
+      {
+       "date": "2013-07-21",
+       "actual_units": 1038,
+       "model_units": 610.7,
+       "naive_units": 930.0,
+       "abs_error_units": 427.3,
+       "naive_abs_error_units": 108.0
+      },
+      {
+       "date": "2013-06-02",
+       "actual_units": 1018,
+       "model_units": 610.7,
+       "naive_units": 679.0,
+       "abs_error_units": 407.3,
+       "naive_abs_error_units": 339.0
+      },
+      {
+       "date": "2013-11-28",
+       "actual_units": 264,
+       "model_units": 646.9,
+       "naive_units": 425.0,
+       "abs_error_units": 382.9,
+       "naive_abs_error_units": 161.0
+      },
+      {
+       "date": "2013-06-09",
+       "actual_units": 974,
+       "model_units": 610.7,
+       "naive_units": 1018.0,
+       "abs_error_units": 363.3,
+       "naive_abs_error_units": 44.0
+      }
+     ]
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "HOBBIES_1",
+     "n": 5
+    },
+    "output": {
+     "dept": "HOBBIES_1",
+     "worst_days": [
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 481.3,
+       "naive_units": 392.0,
+       "abs_error_units": 481.3,
+       "naive_abs_error_units": 392.0
+      },
+      {
+       "date": "2013-11-28",
+       "actual_units": 170,
+       "model_units": 481.3,
+       "naive_units": 353.0,
+       "abs_error_units": 311.3,
+       "naive_abs_error_units": 183.0
+      },
+      {
+       "date": "2013-12-02",
+       "actual_units": 741,
+       "model_units": 481.3,
+       "naive_units": 461.0,
+       "abs_error_units": 259.7,
+       "naive_abs_error_units": 280.0
+      },
+      {
+       "date": "2013-07-21",
+       "actual_units": 730,
+       "model_units": 478.9,
+       "naive_units": 673.0,
+       "abs_error_units": 251.1,
+       "naive_abs_error_units": 57.0
+      },
+      {
+       "date": "2013-10-20",
+       "actual_units": 698,
+       "model_units": 447.5,
+       "naive_units": 557.0,
+       "abs_error_units": 250.5,
+       "naive_abs_error_units": 141.0
+      }
+     ]
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "FOODS_2",
+     "n": 5
+    },
+    "output": {
+     "dept": "FOODS_2",
+     "worst_days": [
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 382.2,
+       "naive_units": 326.0,
+       "abs_error_units": 382.2,
+       "naive_abs_error_units": 326.0
+      },
+      {
+       "date": "2013-11-10",
+       "actual_units": 700,
+       "model_units": 382.2,
+       "naive_units": 648.0,
+       "abs_error_units": 317.8,
+       "naive_abs_error_units": 52.0
+      },
+      {
+       "date": "2013-06-09",
+       "actual_units": 704,
+       "model_units": 399.5,
+       "naive_units": 632.0,
+       "abs_error_units": 304.5,
+       "naive_abs_error_units": 72.0
+      },
+      {
+       "date": "2014-01-11",
+       "actual_units": 684,
+       "model_units": 382.2,
+       "naive_units": 565.0,
+       "abs_error_units": 301.8,
+       "naive_abs_error_units": 119.0
+      },
+      {
+       "date": "2013-07-07",
+       "actual_units": 700,
+       "model_units": 399.5,
+       "naive_units": 480.0,
+       "abs_error_units": 300.5,
+       "naive_abs_error_units": 220.0
+      }
+     ]
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "FOODS_1",
+     "n": 5
+    },
+    "output": {
+     "dept": "FOODS_1",
+     "worst_days": [
+      {
+       "date": "2013-12-21",
+       "actual_units": 625,
+       "model_units": 298.6,
+       "naive_units": 443.0,
+       "abs_error_units": 326.4,
+       "naive_abs_error_units": 182.0
+      },
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 298.6,
+       "naive_units": 436.0,
+       "abs_error_units": 298.6,
+       "naive_abs_error_units": 436.0
+      },
+      {
+       "date": "2013-12-22",
+       "actual_units": 571,
+       "model_units": 298.6,
+       "naive_units": 342.0,
+       "abs_error_units": 272.4,
+       "naive_abs_error_units": 229.0
+      },
+      {
+       "date": "2013-07-05",
+       "actual_units": 495,
+       "model_units": 258.2,
+       "naive_units": 318.0,
+       "abs_error_units": 236.8,
+       "naive_abs_error_units": 177.0
+      },
+      {
+       "date": "2013-12-23",
+       "actual_units": 535,
+       "model_units": 298.6,
+       "naive_units": 306.0,
+       "abs_error_units": 236.4,
+       "naive_abs_error_units": 229.0
+      }
+     ]
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "HOUSEHOLD_2",
+     "n": 5
+    },
+    "output": {
+     "dept": "HOUSEHOLD_2",
+     "worst_days": [
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 159.9,
+       "naive_units": 135.0,
+       "abs_error_units": 159.9,
+       "naive_abs_error_units": 135.0
+      },
+      {
+       "date": "2013-12-21",
+       "actual_units": 273,
+       "model_units": 159.9,
+       "naive_units": 250.0,
+       "abs_error_units": 113.1,
+       "naive_abs_error_units": 23.0
+      },
+      {
+       "date": "2013-09-17",
+       "actual_units": 93,
+       "model_units": 189.2,
+       "naive_units": 127.0,
+       "abs_error_units": 96.2,
+       "naive_abs_error_units": 34.0
+      },
+      {
+       "date": "2013-06-02",
+       "actual_units": 282,
+       "model_units": 186.0,
+       "naive_units": 224.0,
+       "abs_error_units": 96.0,
+       "naive_abs_error_units": 58.0
+      },
+      {
+       "date": "2013-12-14",
+       "actual_units": 250,
+       "model_units": 159.9,
+       "naive_units": 194.0,
+       "abs_error_units": 90.1,
+       "naive_abs_error_units": 56.0
+      }
+     ]
+    }
+   },
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "HOBBIES_2",
+     "n": 5
+    },
+    "output": {
+     "dept": "HOBBIES_2",
+     "worst_days": [
+      {
+       "date": "2013-09-08",
+       "actual_units": 69,
+       "model_units": 18.6,
+       "naive_units": 18.0,
+       "abs_error_units": 50.4,
+       "naive_abs_error_units": 51.0
+      },
+      {
+       "date": "2013-12-07",
+       "actual_units": 64,
+       "model_units": 27.6,
+       "naive_units": 24.0,
+       "abs_error_units": 36.4,
+       "naive_abs_error_units": 40.0
+      },
+      {
+       "date": "2013-08-17",
+       "actual_units": 50,
+       "model_units": 18.6,
+       "naive_units": 20.0,
+       "abs_error_units": 31.4,
+       "naive_abs_error_units": 30.0
+      },
+      {
+       "date": "2013-12-02",
+       "actual_units": 59,
+       "model_units": 27.6,
+       "naive_units": 27.0,
+       "abs_error_units": 31.4,
+       "naive_abs_error_units": 32.0
+      },
+      {
+       "date": "2013-10-12",
+       "actual_units": 47,
+       "model_units": 18.6,
+       "naive_units": 28.0,
+       "abs_error_units": 28.4,
+       "naive_abs_error_units": 19.0
+      }
+     ]
+    }
+   }
+  ],
+  "answer": "The shared worst day is 2013-12-25 (Christmas Day), when the store was closed \u2014 actual sales were 0 units in every department. It is the single largest-error day for five of the seven departments (FOODS_3, HOUSEHOLD_1, HOBBIES_1, FOODS_2, HOUSEHOLD_2) and the second-largest for FOODS_1; only HOBBIES_2 is unaffected.\n\nThe model forecast a normal trading day: FOODS_3 2,431.5 units vs 0 actual (abs error 2,431.5), HOUSEHOLD_1 646.9, HOBBIES_1 481.3, FOODS_2 382.2, FOODS_1 298.6, HOUSEHOLD_2 159.9 \u2014 each error equal to the full forecast. The seasonal-naive baseline made the same mistake but smaller, since it just repeated the prior Wednesday (FOODS_3 1,755.0, HOUSEHOLD_1 392.0, HOBBIES_1 392.0, FOODS_2 326.0, HOUSEHOLD_2 135.0); the one exception is FOODS_1, where naive was worse (436.0 vs the model's 298.6). So neither method has a closed-store calendar flag, and the model's higher baseline level makes its miss larger.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-09",
+  "category": "multi_hop",
+  "q": "Is HOBBIES_2's edge over the naive baseline consistent across the three folds, and what happens to its raw accuracy over the same period?",
+  "tools_called": [
+   "get_accuracy",
+   "get_fold_accuracy",
+   "get_value_add",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 2398,
+   "output_tokens": 1325,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.05,
+   "seconds": 14.4,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "get_accuracy",
+    "input": {
+     "dept": "HOBBIES_2"
+    },
+    "output": {
+     "dept": "HOBBIES_2",
+     "forecast_accuracy_pct": 65.6,
+     "naive_accuracy_pct": 54.9
+    }
+   },
+   {
+    "tool": "get_value_add",
+    "input": {
+     "dept": "HOBBIES_2"
+    },
+    "output": {
+     "dept": "HOBBIES_2",
+     "forecast_value_add_pp": 10.6,
+     "beats_naive": true
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOBBIES_2",
+     "fold": 1
+    },
+    "output": {
+     "days": 83,
+     "forecast_accuracy_pct": 72.3,
+     "naive_accuracy_pct": 60.6,
+     "forecast_value_add_pp": 11.7,
+     "dept": "HOBBIES_2",
+     "fold": 1,
+     "window": {
+      "from": "2013-05-05",
+      "to": "2013-07-26"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOBBIES_2",
+     "fold": 2
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 65.8,
+     "naive_accuracy_pct": 57.6,
+     "forecast_value_add_pp": 8.2,
+     "dept": "HOBBIES_2",
+     "fold": 2,
+     "window": {
+      "from": "2013-07-27",
+      "to": "2013-10-24"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOBBIES_2",
+     "fold": 3
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 60.6,
+     "naive_accuracy_pct": 48.3,
+     "forecast_value_add_pp": 12.3,
+     "dept": "HOBBIES_2",
+     "fold": 3,
+     "window": {
+      "from": "2013-10-25",
+      "to": "2014-01-22"
+     }
+    }
+   },
+   {
+    "tool": "list_departments",
+    "input": {},
+    "output": {
+     "departments": [
+      {
+       "dept": "FOODS_3",
+       "volume_units": 615655
+      },
+      {
+       "dept": "HOUSEHOLD_1",
+       "volume_units": 163737
+      },
+      {
+       "dept": "HOBBIES_1",
+       "volume_units": 121662
+      },
+      {
+       "dept": "FOODS_2",
+       "volume_units": 113746
+      },
+      {
+       "dept": "FOODS_1",
+       "volume_units": 86718
+      },
+      {
+       "dept": "HOUSEHOLD_2",
+       "volume_units": 45480
+      },
+      {
+       "dept": "HOBBIES_2",
+       "volume_units": 6227
+      }
+     ],
+     "note": "volume_units is total units sold over the 263-day backtest window"
+    }
+   }
+  ],
+  "answer": "Yes \u2014 the edge holds in all three folds, but raw accuracy decays steadily. FVA: fold 1 +11.7pp, fold 2 +8.2pp, fold 3 +12.3pp (dips mid-backtest, recovers at the end); full-window FVA is +10.6pp, so the model beats naive throughout. Raw forecast accuracy, however, falls monotonically: 72.3% (2013-05-05\u219207-26) \u2192 65.8% (07-27\u219210-24) \u2192 60.6% (10-25\u21922014-01-22), against a full-window 65.6%. The naive baseline falls in step (60.6% \u2192 57.6% \u2192 48.3%), so the deterioration looks like the series itself becoming harder to predict rather than a model-specific failure. Caveat: HOBBIES_2 is the smallest department at 6,227 units over 263 days, so these percentages sit on a very thin volume base.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-10",
+  "category": "multi_hop",
+  "q": "What's HOUSEHOLD_2's value add in fold 2, and is that better or worse than its overall figure?",
+  "tools_called": [
+   "get_accuracy",
+   "get_fold_accuracy",
+   "get_value_add"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 3894,
+   "output_tokens": 1212,
+   "cache_read_tokens": 14565,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0571,
+   "seconds": 14.5,
+   "iterations": 3,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_2",
+     "fold": 2
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 75.4,
+     "naive_accuracy_pct": 88.4,
+     "forecast_value_add_pp": -13.0,
+     "dept": "HOUSEHOLD_2",
+     "fold": 2,
+     "window": {
+      "from": "2013-07-27",
+      "to": "2013-10-24"
+     }
+    }
+   },
+   {
+    "tool": "get_value_add",
+    "input": {
+     "dept": "HOUSEHOLD_2"
+    },
+    "output": {
+     "dept": "HOUSEHOLD_2",
+     "forecast_value_add_pp": -7.6,
+     "beats_naive": false
+    }
+   },
+   {
+    "tool": "get_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_2"
+    },
+    "output": {
+     "dept": "HOUSEHOLD_2",
+     "forecast_accuracy_pct": 79.0,
+     "naive_accuracy_pct": 86.6
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_2",
+     "fold": 1
+    },
+    "output": {
+     "days": 83,
+     "forecast_accuracy_pct": 83.1,
+     "naive_accuracy_pct": 87.9,
+     "forecast_value_add_pp": -4.8,
+     "dept": "HOUSEHOLD_2",
+     "fold": 1,
+     "window": {
+      "from": "2013-05-05",
+      "to": "2013-07-26"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_2",
+     "fold": 3
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 78.2,
+     "naive_accuracy_pct": 83.2,
+     "forecast_value_add_pp": -5.0,
+     "dept": "HOUSEHOLD_2",
+     "fold": 3,
+     "window": {
+      "from": "2013-10-25",
+      "to": "2014-01-22"
+     }
+    }
+   }
+  ],
+  "answer": "HOUSEHOLD_2's fold-2 value add is -13.0 pp (2013-07-27 to 2013-10-24: model 75.4% FA vs naive 88.4%) \u2014 worse than its overall backtest figure of -7.6 pp (model 79.0% vs naive 86.6%). Fold 2 is the department's worst stretch: fold 1 was -4.8 pp and fold 3 -5.0 pp, so the mid-backtest window drags the pooled number down. The model trails the seasonal-naive baseline in every fold.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-11",
+  "category": "multi_hop",
+  "q": "Of the departments that beat the naive baseline in December 2013, which one has the highest total volume over the backtest?",
+  "tools_called": [
+   "get_overall",
+   "get_window_accuracy",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 3878,
+   "output_tokens": 2244,
+   "cache_read_tokens": 14565,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0828,
+   "seconds": 22.4,
+   "iterations": 3,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "list_departments",
+    "input": {},
+    "output": {
+     "departments": [
+      {
+       "dept": "FOODS_3",
+       "volume_units": 615655
+      },
+      {
+       "dept": "HOUSEHOLD_1",
+       "volume_units": 163737
+      },
+      {
+       "dept": "HOBBIES_1",
+       "volume_units": 121662
+      },
+      {
+       "dept": "FOODS_2",
+       "volume_units": 113746
+      },
+      {
+       "dept": "FOODS_1",
+       "volume_units": 86718
+      },
+      {
+       "dept": "HOUSEHOLD_2",
+       "volume_units": 45480
+      },
+      {
+       "dept": "HOBBIES_2",
+       "volume_units": 6227
+      }
+     ],
+     "note": "volume_units is total units sold over the 263-day backtest window"
+    }
+   },
+   {
+    "tool": "get_overall",
+    "input": {},
+    "output": {
+     "forecast_accuracy_pct": 79.5,
+     "naive_accuracy_pct": 85.2,
+     "forecast_value_add_pp": -5.7,
+     "bias_pct": -0.3,
+     "total_units": 1153225,
+     "departments_beating_naive": 2,
+     "departments_total": 7
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "FOODS_3",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 80.8,
+     "naive_accuracy_pct": 81.1,
+     "forecast_value_add_pp": -0.3,
+     "dept": "FOODS_3",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_1",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 72.6,
+     "naive_accuracy_pct": 83.8,
+     "forecast_value_add_pp": -11.2,
+     "dept": "HOUSEHOLD_1",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "HOBBIES_1",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 81.5,
+     "naive_accuracy_pct": 77.3,
+     "forecast_value_add_pp": 4.2,
+     "dept": "HOBBIES_1",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "FOODS_2",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 78.7,
+     "naive_accuracy_pct": 79.6,
+     "forecast_value_add_pp": -0.9,
+     "dept": "FOODS_2",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "FOODS_1",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 72.0,
+     "naive_accuracy_pct": 61.8,
+     "forecast_value_add_pp": 10.2,
+     "dept": "FOODS_1",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_2",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 79.7,
+     "naive_accuracy_pct": 80.8,
+     "forecast_value_add_pp": -1.1,
+     "dept": "HOUSEHOLD_2",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "HOBBIES_2",
+     "start_date": "2013-12-01",
+     "end_date": "2013-12-31"
+    },
+    "output": {
+     "days": 31,
+     "forecast_accuracy_pct": 59.2,
+     "naive_accuracy_pct": 52.9,
+     "forecast_value_add_pp": 6.3,
+     "dept": "HOBBIES_2",
+     "window": {
+      "from": "2013-12-01",
+      "to": "2013-12-31"
+     }
+    }
+   }
+  ],
+  "answer": "HOBBIES_1. Three departments beat the seasonal-naive baseline in the 2013-12-01 to 2013-12-31 window: HOBBIES_1 (+4.2pp FVA, 81.5% vs 77.3% naive), FOODS_1 (+10.2pp, 72.0% vs 61.8%) and HOBBIES_2 (+6.3pp, 59.2% vs 52.9%). Of those, HOBBIES_1 has the largest backtest volume at 121,662 units, ahead of FOODS_1 (86,718) and HOBBIES_2 (6,227). Note the December window is scoped to calendar December 2013; the big-volume departments (FOODS_3 615,655 units at -0.3pp, HOUSEHOLD_1 163,737 units at -11.2pp) all lost to naive that month.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-12",
+  "category": "ambiguous",
+  "q": "Is the model getting better over time?",
+  "tools_called": [
+   "get_fold_accuracy",
+   "get_overall",
+   "get_weekly_trend",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 6701,
+   "output_tokens": 2424,
+   "cache_read_tokens": 14565,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.1014,
+   "seconds": 25.9,
+   "iterations": 3,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "get_overall",
+    "input": {},
+    "output": {
+     "forecast_accuracy_pct": 79.5,
+     "naive_accuracy_pct": 85.2,
+     "forecast_value_add_pp": -5.7,
+     "bias_pct": -0.3,
+     "total_units": 1153225,
+     "departments_beating_naive": 2,
+     "departments_total": 7
+    }
+   },
+   {
+    "tool": "get_weekly_trend",
+    "input": {
+     "weeks": 38
+    },
+    "output": {
+     "weeks_returned": 38,
+     "rows": [
+      {
+       "week_starting": "2013-05-06",
+       "forecast_accuracy_pct": 82.3,
+       "naive_accuracy_pct": 84.4
+      },
+      {
+       "week_starting": "2013-05-13",
+       "forecast_accuracy_pct": 85.0,
+       "naive_accuracy_pct": 86.4
+      },
+      {
+       "week_starting": "2013-05-20",
+       "forecast_accuracy_pct": 86.4,
+       "naive_accuracy_pct": 89.2
+      },
+      {
+       "week_starting": "2013-05-27",
+       "forecast_accuracy_pct": 77.4,
+       "naive_accuracy_pct": 85.9
+      },
+      {
+       "week_starting": "2013-06-03",
+       "forecast_accuracy_pct": 78.4,
+       "naive_accuracy_pct": 88.9
+      },
+      {
+       "week_starting": "2013-06-10",
+       "forecast_accuracy_pct": 84.5,
+       "naive_accuracy_pct": 86.4
+      },
+      {
+       "week_starting": "2013-06-17",
+       "forecast_accuracy_pct": 82.6,
+       "naive_accuracy_pct": 88.2
+      },
+      {
+       "week_starting": "2013-06-24",
+       "forecast_accuracy_pct": 79.9,
+       "naive_accuracy_pct": 88.2
+      },
+      {
+       "week_starting": "2013-07-01",
+       "forecast_accuracy_pct": 75.5,
+       "naive_accuracy_pct": 79.6
+      },
+      {
+       "week_starting": "2013-07-08",
+       "forecast_accuracy_pct": 79.6,
+       "naive_accuracy_pct": 83.6
+      },
+      {
+       "week_starting": "2013-07-15",
+       "forecast_accuracy_pct": 81.9,
+       "naive_accuracy_pct": 90.4
+      },
+      {
+       "week_starting": "2013-07-22",
+       "forecast_accuracy_pct": 89.5,
+       "naive_accuracy_pct": 89.2
+      },
+      {
+       "week_starting": "2013-07-29",
+       "forecast_accuracy_pct": 81.1,
+       "naive_accuracy_pct": 86.7
+      },
+      {
+       "week_starting": "2013-08-05",
+       "forecast_accuracy_pct": 84.8,
+       "naive_accuracy_pct": 84.5
+      },
+      {
+       "week_starting": "2013-08-12",
+       "forecast_accuracy_pct": 83.4,
+       "naive_accuracy_pct": 88.2
+      },
+      {
+       "week_starting": "2013-08-19",
+       "forecast_accuracy_pct": 79.8,
+       "naive_accuracy_pct": 87.1
+      },
+      {
+       "week_starting": "2013-08-26",
+       "forecast_accuracy_pct": 74.3,
+       "naive_accuracy_pct": 85.0
+      },
+      {
+       "week_starting": "2013-09-02",
+       "forecast_accuracy_pct": 77.7,
+       "naive_accuracy_pct": 80.1
+      },
+      {
+       "week_starting": "2013-09-09",
+       "forecast_accuracy_pct": 83.1,
+       "naive_accuracy_pct": 81.3
+      },
+      {
+       "week_starting": "2013-09-16",
+       "forecast_accuracy_pct": 79.5,
+       "naive_accuracy_pct": 91.8
+      },
+      {
+       "week_starting": "2013-09-23",
+       "forecast_accuracy_pct": 73.2,
+       "naive_accuracy_pct": 89.7
+      },
+      {
+       "week_starting": "2013-09-30",
+       "forecast_accuracy_pct": 80.5,
+       "naive_accuracy_pct": 85.3
+      },
+      {
+       "week_starting": "2013-10-07",
+       "forecast_accuracy_pct": 86.0,
+       "naive_accuracy_pct": 85.9
+      },
+      {
+       "week_starting": "2013-10-14",
+       "forecast_accuracy_pct": 75.4,
+       "naive_accuracy_pct": 85.1
+      },
+      {
+       "week_starting": "2013-10-21",
+       "forecast_accuracy_pct": 72.0,
+       "naive_accuracy_pct": 89.6
+      },
+      {
+       "week_starting": "2013-10-28",
+       "forecast_accuracy_pct": 76.3,
+       "naive_accuracy_pct": 88.8
+      },
+      {
+       "week_starting": "2013-11-04",
+       "forecast_accuracy_pct": 79.8,
+       "naive_accuracy_pct": 87.2
+      },
+      {
+       "week_starting": "2013-11-11",
+       "forecast_accuracy_pct": 74.7,
+       "naive_accuracy_pct": 88.9
+      },
+      {
+       "week_starting": "2013-11-18",
+       "forecast_accuracy_pct": 74.7,
+       "naive_accuracy_pct": 92.0
+      },
+      {
+       "week_starting": "2013-11-25",
+       "forecast_accuracy_pct": 74.0,
+       "naive_accuracy_pct": 70.1
+      },
+      {
+       "week_starting": "2013-12-02",
+       "forecast_accuracy_pct": 83.0,
+       "naive_accuracy_pct": 72.7
+      },
+      {
+       "week_starting": "2013-12-09",
+       "forecast_accuracy_pct": 82.0,
+       "naive_accuracy_pct": 84.3
+      },
+      {
+       "week_starting": "2013-12-16",
+       "forecast_accuracy_pct": 76.5,
+       "naive_accuracy_pct": 89.9
+      },
+      {
+       "week_starting": "2013-12-23",
+       "forecast_accuracy_pct": 66.3,
+       "naive_accuracy_pct": 67.7
+      },
+      {
+       "week_starting": "2013-12-30",
+       "forecast_accuracy_pct": 84.1,
+       "naive_accuracy_pct": 73.9
+      },
+      {
+       "week_starting": "2014-01-06",
+       "forecast_accuracy_pct": 79.9,
+       "naive_accuracy_pct": 83.6
+      },
+      {
+       "week_starting": "2014-01-13",
+       "forecast_accuracy_pct": 76.0,
+       "naive_accuracy_pct": 87.4
+      },
+      {
+       "week_starting": "2014-01-20",
+       "forecast_accuracy_pct": 68.8,
+       "naive_accuracy_pct": 89.9
+      }
+     ]
+    }
+   },
+   {
+    "tool": "list_departments",
+    "input": {},
+    "output": {
+     "departments": [
+      {
+       "dept": "FOODS_3",
+       "volume_units": 615655
+      },
+      {
+       "dept": "HOUSEHOLD_1",
+       "volume_units": 163737
+      },
+      {
+       "dept": "HOBBIES_1",
+       "volume_units": 121662
+      },
+      {
+       "dept": "FOODS_2",
+       "volume_units": 113746
+      },
+      {
+       "dept": "FOODS_1",
+       "volume_units": 86718
+      },
+      {
+       "dept": "HOUSEHOLD_2",
+       "volume_units": 45480
+      },
+      {
+       "dept": "HOBBIES_2",
+       "volume_units": 6227
+      }
+     ],
+     "note": "volume_units is total units sold over the 263-day backtest window"
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_3",
+     "fold": 1
+    },
+    "output": {
+     "days": 83,
+     "forecast_accuracy_pct": 81.8,
+     "naive_accuracy_pct": 87.8,
+     "forecast_value_add_pp": -6.0,
+     "dept": "FOODS_3",
+     "fold": 1,
+     "window": {
+      "from": "2013-05-05",
+      "to": "2013-07-26"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_3",
+     "fold": 2
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 80.4,
+     "naive_accuracy_pct": 88.1,
+     "forecast_value_add_pp": -7.7,
+     "dept": "FOODS_3",
+     "fold": 2,
+     "window": {
+      "from": "2013-07-27",
+      "to": "2013-10-24"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "FOODS_3",
+     "fold": 3
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 78.2,
+     "naive_accuracy_pct": 85.3,
+     "forecast_value_add_pp": -7.1,
+     "dept": "FOODS_3",
+     "fold": 3,
+     "window": {
+      "from": "2013-10-25",
+      "to": "2014-01-22"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_1",
+     "fold": 1
+    },
+    "output": {
+     "days": 83,
+     "forecast_accuracy_pct": 83.8,
+     "naive_accuracy_pct": 88.8,
+     "forecast_value_add_pp": -5.0,
+     "dept": "HOUSEHOLD_1",
+     "fold": 1,
+     "window": {
+      "from": "2013-05-05",
+      "to": "2013-07-26"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_1",
+     "fold": 2
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 77.3,
+     "naive_accuracy_pct": 88.4,
+     "forecast_value_add_pp": -11.1,
+     "dept": "HOUSEHOLD_1",
+     "fold": 2,
+     "window": {
+      "from": "2013-07-27",
+      "to": "2013-10-24"
+     }
+    }
+   },
+   {
+    "tool": "get_fold_accuracy",
+    "input": {
+     "dept": "HOUSEHOLD_1",
+     "fold": 3
+    },
+    "output": {
+     "days": 90,
+     "forecast_accuracy_pct": 73.6,
+     "naive_accuracy_pct": 85.9,
+     "forecast_value_add_pp": -12.3,
+     "dept": "HOUSEHOLD_1",
+     "fold": 3,
+     "window": {
+      "from": "2013-10-25",
+      "to": "2014-01-22"
+     }
+    }
+   }
+  ],
+  "answer": "No \u2014 if anything it's drifting worse. Scoped to the backtest window (2013-05-05 to 2014-01-22), measured two ways:\n\n1) Weekly trend (pooled, all 7 departments): early weeks ran in the low-to-mid 80s (week of 2013-05-20: 86.4% forecast vs 89.2% naive), while the closing weeks are lower (2014-01-13: 76.0% vs 87.4% naive; 2014-01-20: 68.8% vs 89.9% naive). The naive baseline stays roughly flat in the mid-to-high 80s, so the gap widens rather than closes.\n\n2) Walk-forward folds for the two biggest departments: FOODS_3 goes 81.8% \u2192 80.4% \u2192 78.2% across folds 1-3 (FVA -6.0pp \u2192 -7.7pp \u2192 -7.1pp), and HOUSEHOLD_1 goes 83.8% \u2192 77.3% \u2192 73.6% (FVA -5.0pp \u2192 -11.1pp \u2192 -12.3pp).\n\nContext: pooled over the whole window the model is at 79.5% accuracy vs 85.2% for seasonal-naive (FVA -5.7pp), with only 2 of 7 departments beating the baseline. The one bright spot is the holiday stretch \u2014 weeks of 2013-12-02 (83.0% vs 72.7%) and 2013-12-30 (84.1% vs 73.9%) \u2014 where the model held up while the naive baseline broke down. Caveat: week-to-week accuracy is noisy, so read the fold numbers as the firmer evidence.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-13",
+  "category": "unanswerable",
+  "q": "What was the forecast accuracy in February 2014?",
+  "tools_called": [
+   "get_overall",
+   "get_window_accuracy"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 2385,
+   "output_tokens": 1204,
+   "cache_read_tokens": 14565,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0493,
+   "seconds": 16.5,
+   "iterations": 3,
+   "corrections": 1
+  },
+  "trace": [
+   {
+    "tool": "get_overall",
+    "input": {},
+    "output": {
+     "forecast_accuracy_pct": 79.5,
+     "naive_accuracy_pct": 85.2,
+     "forecast_value_add_pp": -5.7,
+     "bias_pct": -0.3,
+     "total_units": 1153225,
+     "departments_beating_naive": 2,
+     "departments_total": 7
+    }
+   },
+   {
+    "tool": "get_window_accuracy",
+    "input": {
+     "dept": "FOODS_3",
+     "start_date": "2014-02-01",
+     "end_date": "2014-02-28"
+    },
+    "output": {
+     "error": "No data in 2014-02-01..2014-02-28.",
+     "data_range": {
+      "from": "2013-05-05",
+      "to": "2014-01-22"
+     }
+    }
+   }
+  ],
+  "answer": "There is no February 2014 data in this backtest, so the question can't be answered. A window query for 2014-02-01 to 2014-02-28 returns an explicit 'no data' error, with the stored daily series covering 2013-05-05 through 2014-01-22. For context on what the backtest does cover: pooled across all seven departments, forecast accuracy was 79.5% versus a seasonal-naive 85.2%, i.e. FVA of -5.7pp \u2014 but that is the full backtest window, not February 2014.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "hard-14",
+  "category": "unanswerable",
+  "q": "What caused the spike in FOODS_1 sales on December 21st 2013?",
+  "tools_called": [
+   "get_series",
+   "get_worst_days"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 3778,
+   "output_tokens": 981,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0483,
+   "seconds": 12.5,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "get_worst_days",
+    "input": {
+     "dept": "FOODS_1",
+     "n": 10
+    },
+    "output": {
+     "dept": "FOODS_1",
+     "worst_days": [
+      {
+       "date": "2013-12-21",
+       "actual_units": 625,
+       "model_units": 298.6,
+       "naive_units": 443.0,
+       "abs_error_units": 326.4,
+       "naive_abs_error_units": 182.0
+      },
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 298.6,
+       "naive_units": 436.0,
+       "abs_error_units": 298.6,
+       "naive_abs_error_units": 436.0
+      },
+      {
+       "date": "2013-12-22",
+       "actual_units": 571,
+       "model_units": 298.6,
+       "naive_units": 342.0,
+       "abs_error_units": 272.4,
+       "naive_abs_error_units": 229.0
+      },
+      {
+       "date": "2013-07-05",
+       "actual_units": 495,
+       "model_units": 258.2,
+       "naive_units": 318.0,
+       "abs_error_units": 236.8,
+       "naive_abs_error_units": 177.0
+      },
+      {
+       "date": "2013-12-23",
+       "actual_units": 535,
+       "model_units": 298.6,
+       "naive_units": 306.0,
+       "abs_error_units": 236.4,
+       "naive_abs_error_units": 229.0
+      },
+      {
+       "date": "2013-07-06",
+       "actual_units": 490,
+       "model_units": 258.2,
+       "naive_units": 404.0,
+       "abs_error_units": 231.8,
+       "naive_abs_error_units": 86.0
+      },
+      {
+       "date": "2013-07-20",
+       "actual_units": 484,
+       "model_units": 258.2,
+       "naive_units": 465.0,
+       "abs_error_units": 225.8,
+       "naive_abs_error_units": 19.0
+      },
+      {
+       "date": "2013-05-24",
+       "actual_units": 474,
+       "model_units": 258.2,
+       "naive_units": 368.0,
+       "abs_error_units": 215.8,
+       "naive_abs_error_units": 106.0
+      },
+      {
+       "date": "2013-06-08",
+       "actual_units": 473,
+       "model_units": 258.2,
+       "naive_units": 431.0,
+       "abs_error_units": 214.8,
+       "naive_abs_error_units": 42.0
+      },
+      {
+       "date": "2013-10-23",
+       "actual_units": 175,
+       "model_units": 388.9,
+       "naive_units": 346.0,
+       "abs_error_units": 213.9,
+       "naive_abs_error_units": 171.0
+      }
+     ]
+    }
+   },
+   {
+    "tool": "get_series",
+    "input": {
+     "dept": "FOODS_1",
+     "days": 45
+    },
+    "output": {
+     "dept": "FOODS_1",
+     "days_returned": 45,
+     "window": {
+      "from": "2013-12-09",
+      "to": "2014-01-22"
+     },
+     "rows": [
+      {
+       "date": "2013-12-09",
+       "actual_units": 295,
+       "model_units": 298.6,
+       "naive_units": 218.0,
+       "abs_error_units": 3.6
+      },
+      {
+       "date": "2013-12-10",
+       "actual_units": 317,
+       "model_units": 298.6,
+       "naive_units": 245.0,
+       "abs_error_units": 18.4
+      },
+      {
+       "date": "2013-12-11",
+       "actual_units": 316,
+       "model_units": 298.6,
+       "naive_units": 251.0,
+       "abs_error_units": 17.4
+      },
+      {
+       "date": "2013-12-12",
+       "actual_units": 307,
+       "model_units": 298.6,
+       "naive_units": 261.0,
+       "abs_error_units": 8.4
+      },
+      {
+       "date": "2013-12-13",
+       "actual_units": 422,
+       "model_units": 298.6,
+       "naive_units": 375.0,
+       "abs_error_units": 123.4
+      },
+      {
+       "date": "2013-12-14",
+       "actual_units": 443,
+       "model_units": 298.6,
+       "naive_units": 413.0,
+       "abs_error_units": 144.4
+      },
+      {
+       "date": "2013-12-15",
+       "actual_units": 342,
+       "model_units": 298.6,
+       "naive_units": 387.0,
+       "abs_error_units": 43.4
+      },
+      {
+       "date": "2013-12-16",
+       "actual_units": 306,
+       "model_units": 298.6,
+       "naive_units": 295.0,
+       "abs_error_units": 7.4
+      },
+      {
+       "date": "2013-12-17",
+       "actual_units": 361,
+       "model_units": 298.6,
+       "naive_units": 317.0,
+       "abs_error_units": 62.4
+      },
+      {
+       "date": "2013-12-18",
+       "actual_units": 436,
+       "model_units": 298.6,
+       "naive_units": 316.0,
+       "abs_error_units": 137.4
+      },
+      {
+       "date": "2013-12-19",
+       "actual_units": 471,
+       "model_units": 298.6,
+       "naive_units": 307.0,
+       "abs_error_units": 172.4
+      },
+      {
+       "date": "2013-12-20",
+       "actual_units": 465,
+       "model_units": 298.6,
+       "naive_units": 422.0,
+       "abs_error_units": 166.4
+      },
+      {
+       "date": "2013-12-21",
+       "actual_units": 625,
+       "model_units": 298.6,
+       "naive_units": 443.0,
+       "abs_error_units": 326.4
+      },
+      {
+       "date": "2013-12-22",
+       "actual_units": 571,
+       "model_units": 298.6,
+       "naive_units": 342.0,
+       "abs_error_units": 272.4
+      },
+      {
+       "date": "2013-12-23",
+       "actual_units": 535,
+       "model_units": 298.6,
+       "naive_units": 306.0,
+       "abs_error_units": 236.4
+      },
+      {
+       "date": "2013-12-24",
+       "actual_units": 486,
+       "model_units": 298.6,
+       "naive_units": 361.0,
+       "abs_error_units": 187.4
+      },
+      {
+       "date": "2013-12-25",
+       "actual_units": 0,
+       "model_units": 298.6,
+       "naive_units": 436.0,
+       "abs_error_units": 298.6
+      },
+      {
+       "date": "2013-12-26",
+       "actual_units": 179,
+       "model_units": 298.6,
+       "naive_units": 471.0,
+       "abs_error_units": 119.6
+      },
+      {
+       "date": "2013-12-27",
+       "actual_units": 247,
+       "model_units": 298.6,
+       "naive_units": 465.0,
+       "abs_error_units": 51.6
+      },
+      {
+       "date": "2013-12-28",
+       "actual_units": 303,
+       "model_units": 298.6,
+       "naive_units": 625.0,
+       "abs_error_units": 4.4
+      },
+      {
+       "date": "2013-12-29",
+       "actual_units": 344,
+       "model_units": 298.6,
+       "naive_units": 571.0,
+       "abs_error_units": 45.4
+      },
+      {
+       "date": "2013-12-30",
+       "actual_units": 303,
+       "model_units": 298.6,
+       "naive_units": 535.0,
+       "abs_error_units": 4.4
+      },
+      {
+       "date": "2013-12-31",
+       "actual_units": 333,
+       "model_units": 298.6,
+       "naive_units": 486.0,
+       "abs_error_units": 34.4
+      },
+      {
+       "date": "2014-01-01",
+       "actual_units": 191,
+       "model_units": 298.6,
+       "naive_units": 0.0,
+       "abs_error_units": 107.6
+      },
+      {
+       "date": "2014-01-02",
+       "actual_units": 242,
+       "model_units": 298.6,
+       "naive_units": 179.0,
+       "abs_error_units": 56.6
+      },
+      {
+       "date": "2014-01-03",
+       "actual_units": 349,
+       "model_units": 298.6,
+       "naive_units": 247.0,
+       "abs_error_units": 50.4
+      },
+      {
+       "date": "2014-01-04",
+       "actual_units": 312,
+       "model_units": 298.6,
+       "naive_units": 303.0,
+       "abs_error_units": 13.4
+      },
+      {
+       "date": "2014-01-05",
+       "actual_units": 269,
+       "model_units": 298.6,
+       "naive_units": 344.0,
+       "abs_error_units": 29.6
+      },
+      {
+       "date": "2014-01-06",
+       "actual_units": 230,
+       "model_units": 298.6,
+       "naive_units": 303.0,
+       "abs_error_units": 68.6
+      },
+      {
+       "date": "2014-01-07",
+       "actual_units": 282,
+       "model_units": 298.6,
+       "naive_units": 333.0,
+       "abs_error_units": 16.6
+      },
+      {
+       "date": "2014-01-08",
+       "actual_units": 277,
+       "model_units": 298.6,
+       "naive_units": 191.0,
+       "abs_error_units": 21.6
+      },
+      {
+       "date": "2014-01-09",
+       "actual_units": 294,
+       "model_units": 298.6,
+       "naive_units": 242.0,
+       "abs_error_units": 4.6
+      },
+      {
+       "date": "2014-01-10",
+       "actual_units": 334,
+       "model_units": 298.6,
+       "naive_units": 349.0,
+       "abs_error_units": 35.4
+      },
+      {
+       "date": "2014-01-11",
+       "actual_units": 311,
+       "model_units": 298.6,
+       "naive_units": 312.0,
+       "abs_error_units": 12.4
+      },
+      {
+       "date": "2014-01-12",
+       "actual_units": 321,
+       "model_units": 298.6,
+       "naive_units": 269.0,
+       "abs_error_units": 22.4
+      },
+      {
+       "date": "2014-01-13",
+       "actual_units": 211,
+       "model_units": 298.6,
+       "naive_units": 230.0,
+       "abs_error_units": 87.6
+      },
+      {
+       "date": "2014-01-14",
+       "actual_units": 217,
+       "model_units": 298.6,
+       "naive_units": 282.0,
+       "abs_error_units": 81.6
+      },
+      {
+       "date": "2014-01-15",
+       "actual_units": 200,
+       "model_units": 298.6,
+       "naive_units": 277.0,
+       "abs_error_units": 98.6
+      },
+      {
+       "date": "2014-01-16",
+       "actual_units": 198,
+       "model_units": 298.6,
+       "naive_units": 294.0,
+       "abs_error_units": 100.6
+      },
+      {
+       "date": "2014-01-17",
+       "actual_units": 342,
+       "model_units": 298.6,
+       "naive_units": 334.0,
+       "abs_error_units": 43.4
+      },
+      {
+       "date": "2014-01-18",
+       "actual_units": 343,
+       "model_units": 298.6,
+       "naive_units": 311.0,
+       "abs_error_units": 44.4
+      },
+      {
+       "date": "2014-01-19",
+       "actual_units": 324,
+       "model_units": 298.6,
+       "naive_units": 321.0,
+       "abs_error_units": 25.4
+      },
+      {
+       "date": "2014-01-20",
+       "actual_units": 334,
+       "model_units": 298.6,
+       "naive_units": 211.0,
+       "abs_error_units": 35.4
+      },
+      {
+       "date": "2014-01-21",
+       "actual_units": 224,
+       "model_units": 298.6,
+       "naive_units": 217.0,
+       "abs_error_units": 74.6
+      },
+      {
+       "date": "2014-01-22",
+       "actual_units": 180,
+       "model_units": 298.6,
+       "naive_units": 200.0,
+       "abs_error_units": 118.6
+      }
+     ]
+    }
+   }
+  ],
+  "answer": "I can confirm the spike but not its cause \u2014 the backtest holds only actual/model/naive unit series, with no price, promotion, event, or weather fields, so causality is not answerable from this data.\n\nWhat the data does show for FOODS_1 (CA_1): 2013-12-21 hit 625 actual units, the department's single largest error day (model 298.6, error 326.4 units; naive 443.0). It was the peak of a multi-day pre-Christmas run \u2014 465 on 12-20, 571 on 12-22, 535 on 12-23, 486 on 12-24 \u2014 against a flat model forecast of 298.6 units/day. The store then recorded 0 units on 2013-12-25 (closure) and 179 on 12-26, with levels back near 300 by late December. So the shape is consistent with a holiday build-up, but that is an interpretation of the pattern, not a cause the tools can verify.",
+  "unanswerable": true,
+  "confidence": "high"
+ }
+]

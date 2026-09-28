@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: forecast
+  labels:
+    # The restricted Pod Security Standard. The Deployment is written to pass
+    # it, and the cluster refuses the pods if it ever stops doing so.
+    pod-security.kubernetes.io/enforce: restricted

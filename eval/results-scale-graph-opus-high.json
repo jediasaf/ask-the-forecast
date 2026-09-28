@@ -1,0 +1,1342 @@
+[
+ {
+  "id": "scale-01",
+  "category": "single_lookup",
+  "q": "Which store sells the most units?",
+  "tools_called": [
+   "list_stores"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 1841,
+   "output_tokens": 330,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0223,
+   "seconds": 14.3,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "list_stores",
+    "input": {},
+    "output": {
+     "stores": [
+      {
+       "store": "CA_3",
+       "state": "CA",
+       "volume_units": 1677378,
+       "naive_fa_pct": 90.2
+      },
+      {
+       "store": "CA_1",
+       "state": "CA",
+       "volume_units": 1153225,
+       "naive_fa_pct": 89.6
+      },
+      {
+       "store": "TX_2",
+       "state": "TX",
+       "volume_units": 1108145,
+       "naive_fa_pct": 89.4
+      },
+      {
+       "store": "WI_2",
+       "state": "WI",
+       "volume_units": 1009371,
+       "naive_fa_pct": 79.0
+      },
+      {
+       "store": "TX_3",
+       "state": "TX",
+       "volume_units": 833069,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "WI_3",
+       "state": "WI",
+       "volume_units": 828531,
+       "naive_fa_pct": 83.0
+      },
+      {
+       "store": "CA_2",
+       "state": "CA",
+       "volume_units": 825174,
+       "naive_fa_pct": 91.2
+      },
+      {
+       "store": "TX_1",
+       "state": "TX",
+       "volume_units": 804633,
+       "naive_fa_pct": 88.7
+      },
+      {
+       "store": "WI_1",
+       "state": "WI",
+       "volume_units": 747911,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "CA_4",
+       "state": "CA",
+       "volume_units": 613234,
+       "naive_fa_pct": 91.1
+      }
+     ],
+     "note": "scale-layer metric computed from raw M5 data; the portfolio's model forecasts do not exist at this level, so only actuals and the seasonal-naive baseline are available"
+    }
+   }
+  ],
+  "answer": "CA_3 is the largest store by units, with 1,677,378 units over the 263-day backtest window \u2014 ahead of CA_1 (1,153,225) and TX_2 (1,108,145). Note this is units only; no revenue or price data exists, and the model's own forecasts exist only for CA_1, so CA_3 carries baseline (seasonal-naive) metrics only \u2014 its naive accuracy is 90.2%.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "scale-02",
+  "category": "single_lookup",
+  "q": "What's the biggest-selling individual SKU at CA_1, and how many units did it move?",
+  "tools_called": [
+   "find_skus"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 1907,
+   "output_tokens": 522,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0274,
+   "seconds": 8.4,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "find_skus",
+    "input": {
+     "dept": "ALL",
+     "sort_by": "volume",
+     "top_n": 5,
+     "min_volume": 0
+    },
+    "output": {
+     "dept": "ALL",
+     "sort_by": "volume",
+     "min_volume": 0,
+     "matched": 2652,
+     "skus": [
+      {
+       "item": "FOODS_3_090",
+       "dept": "FOODS_3",
+       "volume_units": 25367,
+       "zero_day_pct": 16.0,
+       "naive_fa_pct": 45.1
+      },
+      {
+       "item": "FOODS_3_252",
+       "dept": "FOODS_3",
+       "volume_units": 12879,
+       "zero_day_pct": 0.4,
+       "naive_fa_pct": 71.1
+      },
+      {
+       "item": "FOODS_3_586",
+       "dept": "FOODS_3",
+       "volume_units": 12801,
+       "zero_day_pct": 0.4,
+       "naive_fa_pct": 78.3
+      },
+      {
+       "item": "FOODS_3_120",
+       "dept": "FOODS_3",
+       "volume_units": 10620,
+       "zero_day_pct": 22.4,
+       "naive_fa_pct": 42.4
+      },
+      {
+       "item": "FOODS_3_808",
+       "dept": "FOODS_3",
+       "volume_units": 10612,
+       "zero_day_pct": 6.8,
+       "naive_fa_pct": 62.3
+      }
+     ],
+     "note": "scale-layer metric computed from raw M5 data; the portfolio's model forecasts do not exist at this level, so only actuals and the seasonal-naive baseline are available"
+    }
+   }
+  ],
+  "answer": "The biggest-selling SKU at CA_1 is FOODS_3_090, with 25,367 units over the 263-day backtest window \u2014 roughly double the next-largest item (FOODS_3_252 at 12,879 units). Note it's a lumpy seller despite the volume: 16.0% of days had zero sales and its seasonal-naive accuracy is only 45.1% (SKU-level accuracy is not comparable to department-level figures). No model forecast exists at SKU level, so only actuals and the naive baseline are available.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "scale-03",
+  "category": "comparison",
+  "q": "Which store has the best seasonal-naive accuracy, and which the worst?",
+  "tools_called": [
+   "list_stores"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 1703,
+   "output_tokens": 416,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0238,
+   "seconds": 7.7,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "list_stores",
+    "input": {},
+    "output": {
+     "stores": [
+      {
+       "store": "CA_3",
+       "state": "CA",
+       "volume_units": 1677378,
+       "naive_fa_pct": 90.2
+      },
+      {
+       "store": "CA_1",
+       "state": "CA",
+       "volume_units": 1153225,
+       "naive_fa_pct": 89.6
+      },
+      {
+       "store": "TX_2",
+       "state": "TX",
+       "volume_units": 1108145,
+       "naive_fa_pct": 89.4
+      },
+      {
+       "store": "WI_2",
+       "state": "WI",
+       "volume_units": 1009371,
+       "naive_fa_pct": 79.0
+      },
+      {
+       "store": "TX_3",
+       "state": "TX",
+       "volume_units": 833069,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "WI_3",
+       "state": "WI",
+       "volume_units": 828531,
+       "naive_fa_pct": 83.0
+      },
+      {
+       "store": "CA_2",
+       "state": "CA",
+       "volume_units": 825174,
+       "naive_fa_pct": 91.2
+      },
+      {
+       "store": "TX_1",
+       "state": "TX",
+       "volume_units": 804633,
+       "naive_fa_pct": 88.7
+      },
+      {
+       "store": "WI_1",
+       "state": "WI",
+       "volume_units": 747911,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "CA_4",
+       "state": "CA",
+       "volume_units": 613234,
+       "naive_fa_pct": 91.1
+      }
+     ],
+     "note": "scale-layer metric computed from raw M5 data; the portfolio's model forecasts do not exist at this level, so only actuals and the seasonal-naive baseline are available"
+    }
+   }
+  ],
+  "answer": "Best: CA_2 at 91.2% seasonal-naive accuracy (CA_4 is a close second at 91.1%). Worst: WI_2 at 79.0%, with WI_3 next-worst at 83.0%. This is baseline-only \u2014 the model's own forecasts exist only for CA_1, so no model accuracy can be compared across stores. Note the Wisconsin stores are the least weekly-predictable; CA_1, the store the model runs on, sits at 89.6% naive.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "scale-04",
+  "category": "comparison",
+  "q": "Is HOBBIES_2 hard for the naive baseline everywhere, or is that specific to the CA_1 store?",
+  "tools_called": [
+   "compare_departments",
+   "compare_stores",
+   "get_accuracy",
+   "list_departments"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 3947,
+   "output_tokens": 1415,
+   "cache_read_tokens": 14565,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0624,
+   "seconds": 19.2,
+   "iterations": 3,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "compare_stores",
+    "input": {
+     "dept": "HOBBIES_2"
+    },
+    "output": {
+     "dept": "HOBBIES_2",
+     "order": "highest naive accuracy first",
+     "stores": [
+      {
+       "store": "CA_2",
+       "naive_fa_pct": 64.0,
+       "volume_units": 8362
+      },
+      {
+       "store": "CA_3",
+       "naive_fa_pct": 61.8,
+       "volume_units": 8147
+      },
+      {
+       "store": "TX_2",
+       "naive_fa_pct": 58.3,
+       "volume_units": 9303
+      },
+      {
+       "store": "TX_3",
+       "naive_fa_pct": 56.5,
+       "volume_units": 7321
+      },
+      {
+       "store": "WI_1",
+       "naive_fa_pct": 56.5,
+       "volume_units": 6169
+      },
+      {
+       "store": "WI_2",
+       "naive_fa_pct": 55.1,
+       "volume_units": 5538
+      },
+      {
+       "store": "CA_1",
+       "naive_fa_pct": 54.9,
+       "volume_units": 6227
+      },
+      {
+       "store": "WI_3",
+       "naive_fa_pct": 54.0,
+       "volume_units": 4021
+      },
+      {
+       "store": "TX_1",
+       "naive_fa_pct": 52.6,
+       "volume_units": 4318
+      },
+      {
+       "store": "CA_4",
+       "naive_fa_pct": 40.4,
+       "volume_units": 2618
+      }
+     ],
+     "note": "scale-layer metric computed from raw M5 data; the portfolio's model forecasts do not exist at this level, so only actuals and the seasonal-naive baseline are available"
+    }
+   },
+   {
+    "tool": "get_accuracy",
+    "input": {
+     "dept": "HOBBIES_2"
+    },
+    "output": {
+     "dept": "HOBBIES_2",
+     "forecast_accuracy_pct": 65.6,
+     "naive_accuracy_pct": 54.9
+    }
+   },
+   {
+    "tool": "list_departments",
+    "input": {},
+    "output": {
+     "departments": [
+      {
+       "dept": "FOODS_3",
+       "volume_units": 615655
+      },
+      {
+       "dept": "HOUSEHOLD_1",
+       "volume_units": 163737
+      },
+      {
+       "dept": "HOBBIES_1",
+       "volume_units": 121662
+      },
+      {
+       "dept": "FOODS_2",
+       "volume_units": 113746
+      },
+      {
+       "dept": "FOODS_1",
+       "volume_units": 86718
+      },
+      {
+       "dept": "HOUSEHOLD_2",
+       "volume_units": 45480
+      },
+      {
+       "dept": "HOBBIES_2",
+       "volume_units": 6227
+      }
+     ],
+     "note": "volume_units is total units sold over the 263-day backtest window"
+    }
+   },
+   {
+    "tool": "compare_departments",
+    "input": {
+     "metric": "naive_fa"
+    },
+    "output": {
+     "metric": "naive_fa",
+     "metric_description": "seasonal-naive forecast accuracy (%)",
+     "order": "best first",
+     "ranking": [
+      {
+       "dept": "HOUSEHOLD_1",
+       "value": 87.8
+      },
+      {
+       "dept": "FOODS_3",
+       "value": 87.1
+      },
+      {
+       "dept": "HOUSEHOLD_2",
+       "value": 86.6
+      },
+      {
+       "dept": "FOODS_1",
+       "value": 82.2
+      },
+      {
+       "dept": "FOODS_2",
+       "value": 80.2
+      },
+      {
+       "dept": "HOBBIES_1",
+       "value": 79.3
+      },
+      {
+       "dept": "HOBBIES_2",
+       "value": 54.9
+      }
+     ]
+    }
+   }
+  ],
+  "answer": "It's hard everywhere \u2014 not a CA_1 quirk. Seasonal-naive accuracy for HOBBIES_2 is in the 40-64% band at all ten stores: best CA_2 at 64.0%, then CA_3 61.8%, TX_2 58.3%, TX_3 and WI_1 both 56.5%, WI_2 55.1%, CA_1 54.9%, WI_3 54.0%, TX_1 52.6%, worst CA_4 40.4%. CA_1 sits mid-to-low in that pack, so its 54.9% is typical of the department rather than a store-specific problem. For context, within CA_1 HOBBIES_2 is the clear naive-baseline outlier: every other department's naive accuracy is 79.3% (HOBBIES_1) to 87.8% (HOUSEHOLD_1). The driver is scale \u2014 HOBBIES_2 sells only 2,618-9,303 units per store over the window (6,227 at CA_1), the smallest department in the CA_1 portfolio, so the weekly repeat is noisy everywhere. Caveat: the portfolio model's own forecasts exist only for CA_1 (65.6% FA there); other stores carry baseline metrics only.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "scale-05",
+  "category": "multi_hop",
+  "q": "Of the three states, which one contains the store with the weakest naive baseline?",
+  "tools_called": [
+   "list_stores"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 1677,
+   "output_tokens": 377,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0227,
+   "seconds": 7.5,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "list_stores",
+    "input": {},
+    "output": {
+     "stores": [
+      {
+       "store": "CA_3",
+       "state": "CA",
+       "volume_units": 1677378,
+       "naive_fa_pct": 90.2
+      },
+      {
+       "store": "CA_1",
+       "state": "CA",
+       "volume_units": 1153225,
+       "naive_fa_pct": 89.6
+      },
+      {
+       "store": "TX_2",
+       "state": "TX",
+       "volume_units": 1108145,
+       "naive_fa_pct": 89.4
+      },
+      {
+       "store": "WI_2",
+       "state": "WI",
+       "volume_units": 1009371,
+       "naive_fa_pct": 79.0
+      },
+      {
+       "store": "TX_3",
+       "state": "TX",
+       "volume_units": 833069,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "WI_3",
+       "state": "WI",
+       "volume_units": 828531,
+       "naive_fa_pct": 83.0
+      },
+      {
+       "store": "CA_2",
+       "state": "CA",
+       "volume_units": 825174,
+       "naive_fa_pct": 91.2
+      },
+      {
+       "store": "TX_1",
+       "state": "TX",
+       "volume_units": 804633,
+       "naive_fa_pct": 88.7
+      },
+      {
+       "store": "WI_1",
+       "state": "WI",
+       "volume_units": 747911,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "CA_4",
+       "state": "CA",
+       "volume_units": 613234,
+       "naive_fa_pct": 91.1
+      }
+     ],
+     "note": "scale-layer metric computed from raw M5 data; the portfolio's model forecasts do not exist at this level, so only actuals and the seasonal-naive baseline are available"
+    }
+   }
+  ],
+  "answer": "Wisconsin. WI_2 has the weakest seasonal-naive baseline of all ten stores at 79.0% naive accuracy \u2014 the lowest in the panel, and well below the next-weakest store, WI_3 at 83.0%. For contrast, the strongest baselines are in California (CA_2 at 91.2%, CA_4 at 91.1%). Note this is baseline-only: the model's own forecasts exist only for CA_1, so no model accuracy can be quoted for WI_2.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "scale-06",
+  "category": "multi_hop",
+  "q": "Which FOODS_3 SKU has the worst naive accuracy among items that sold at least 1,000 units, and what is that accuracy?",
+  "tools_called": [
+   "find_skus"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 1660,
+   "output_tokens": 649,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0294,
+   "seconds": 9.1,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "find_skus",
+    "input": {
+     "dept": "FOODS_3",
+     "sort_by": "worst_naive_fa",
+     "top_n": 3,
+     "min_volume": 1000
+    },
+    "output": {
+     "dept": "FOODS_3",
+     "sort_by": "worst_naive_fa",
+     "min_volume": 1000,
+     "matched": 157,
+     "skus": [
+      {
+       "item": "FOODS_3_007",
+       "dept": "FOODS_3",
+       "volume_units": 1462,
+       "zero_day_pct": 28.1,
+       "naive_fa_pct": -30.7
+      },
+      {
+       "item": "FOODS_3_580",
+       "dept": "FOODS_3",
+       "volume_units": 1294,
+       "zero_day_pct": 41.8,
+       "naive_fa_pct": -26.8
+      },
+      {
+       "item": "FOODS_3_454",
+       "dept": "FOODS_3",
+       "volume_units": 1127,
+       "zero_day_pct": 44.5,
+       "naive_fa_pct": -26.0
+      }
+     ],
+     "note": "scale-layer metric computed from raw M5 data; the portfolio's model forecasts do not exist at this level, so only actuals and the seasonal-naive baseline are available"
+    }
+   }
+  ],
+  "answer": "FOODS_3_007 is the worst: seasonal-naive accuracy of -30.7% (i.e. WAPE above 100%) on 1,462 units sold, with 28.1% zero-sale days. Next worst are FOODS_3_580 at -26.8% and FOODS_3_454 at -26.0%. Caveat: this is SKU-level seasonal-naive accuracy computed on each item's own daily series (157 FOODS_3 SKUs cleared the 1,000-unit floor) \u2014 the model's own forecasts don't exist at SKU level, and these figures are not comparable to department-level accuracy.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "scale-07",
+  "category": "multi_hop",
+  "q": "Take the most intermittent SKU that still sold at least 100 units \u2014 on what share of days does it sell nothing at all?",
+  "tools_called": [
+   "find_skus"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 1328,
+   "output_tokens": 548,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0252,
+   "seconds": 8.9,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "find_skus",
+    "input": {
+     "dept": "ALL",
+     "sort_by": "intermittency",
+     "top_n": 3,
+     "min_volume": 100
+    },
+    "output": {
+     "dept": "ALL",
+     "sort_by": "intermittency",
+     "min_volume": 100,
+     "matched": 1769,
+     "skus": [
+      {
+       "item": "HOUSEHOLD_1_541",
+       "dept": "HOUSEHOLD_1",
+       "volume_units": 108,
+       "zero_day_pct": 85.2,
+       "naive_fa_pct": 4.6
+      },
+      {
+       "item": "HOUSEHOLD_1_177",
+       "dept": "HOUSEHOLD_1",
+       "volume_units": 126,
+       "zero_day_pct": 84.0,
+       "naive_fa_pct": -4.0
+      },
+      {
+       "item": "HOUSEHOLD_1_310",
+       "dept": "HOUSEHOLD_1",
+       "volume_units": 132,
+       "zero_day_pct": 83.7,
+       "naive_fa_pct": 5.3
+      }
+     ],
+     "note": "scale-layer metric computed from raw M5 data; the portfolio's model forecasts do not exist at this level, so only actuals and the seasonal-naive baseline are available"
+    }
+   }
+  ],
+  "answer": "HOUSEHOLD_1_541 is the most intermittent SKU with at least 100 units sold: it sells nothing on 85.2% of days. Over the backtest window it moved 108 units, and its seasonal-naive accuracy is just 4.6% \u2014 typical of a mostly-zero series where repeating last week's same weekday is near-useless. (Scope: CA_1 SKUs, all departments, 100-unit minimum. Note SKU-level accuracy is not comparable to department-level planning accuracy, and the model's own forecasts don't exist at this level.)",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "scale-08",
+  "category": "ambiguous",
+  "q": "CA_1's naive accuracy is around 90% but its biggest SKU's naive accuracy is only 45% \u2014 which number is wrong?",
+  "tools_called": [
+   "find_skus",
+   "list_stores"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 2204,
+   "output_tokens": 731,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0341,
+   "seconds": 10.2,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "list_stores",
+    "input": {},
+    "output": {
+     "stores": [
+      {
+       "store": "CA_3",
+       "state": "CA",
+       "volume_units": 1677378,
+       "naive_fa_pct": 90.2
+      },
+      {
+       "store": "CA_1",
+       "state": "CA",
+       "volume_units": 1153225,
+       "naive_fa_pct": 89.6
+      },
+      {
+       "store": "TX_2",
+       "state": "TX",
+       "volume_units": 1108145,
+       "naive_fa_pct": 89.4
+      },
+      {
+       "store": "WI_2",
+       "state": "WI",
+       "volume_units": 1009371,
+       "naive_fa_pct": 79.0
+      },
+      {
+       "store": "TX_3",
+       "state": "TX",
+       "volume_units": 833069,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "WI_3",
+       "state": "WI",
+       "volume_units": 828531,
+       "naive_fa_pct": 83.0
+      },
+      {
+       "store": "CA_2",
+       "state": "CA",
+       "volume_units": 825174,
+       "naive_fa_pct": 91.2
+      },
+      {
+       "store": "TX_1",
+       "state": "TX",
+       "volume_units": 804633,
+       "naive_fa_pct": 88.7
+      },
+      {
+       "store": "WI_1",
+       "state": "WI",
+       "volume_units": 747911,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "CA_4",
+       "state": "CA",
+       "volume_units": 613234,
+       "naive_fa_pct": 91.1
+      }
+     ],
+     "note": "scale-layer metric computed from raw M5 data; the portfolio's model forecasts do not exist at this level, so only actuals and the seasonal-naive baseline are available"
+    }
+   },
+   {
+    "tool": "find_skus",
+    "input": {
+     "dept": "ALL",
+     "sort_by": "volume",
+     "top_n": 3,
+     "min_volume": 0
+    },
+    "output": {
+     "dept": "ALL",
+     "sort_by": "volume",
+     "min_volume": 0,
+     "matched": 2652,
+     "skus": [
+      {
+       "item": "FOODS_3_090",
+       "dept": "FOODS_3",
+       "volume_units": 25367,
+       "zero_day_pct": 16.0,
+       "naive_fa_pct": 45.1
+      },
+      {
+       "item": "FOODS_3_252",
+       "dept": "FOODS_3",
+       "volume_units": 12879,
+       "zero_day_pct": 0.4,
+       "naive_fa_pct": 71.1
+      },
+      {
+       "item": "FOODS_3_586",
+       "dept": "FOODS_3",
+       "volume_units": 12801,
+       "zero_day_pct": 0.4,
+       "naive_fa_pct": 78.3
+      }
+     ],
+     "note": "scale-layer metric computed from raw M5 data; the portfolio's model forecasts do not exist at this level, so only actuals and the seasonal-naive baseline are available"
+    }
+   }
+  ],
+  "answer": "Neither is wrong \u2014 they're measured at different granularities and aren't comparable. CA_1's seasonal-naive accuracy of 89.6% is computed on the store's aggregated daily series (1,153,225 units), where the idiosyncratic noise of thousands of items cancels out. FOODS_3_090, CA_1's biggest SKU (25,367 units), scores 45.1% naive accuracy on its own daily series, where nothing cancels \u2014 it has 16.0% zero-sale days and week-to-week swings that a same-weekday-last-week repeat can't track. Aggregation is what raises accuracy; a store near 90% and its top SKU near 45% are both correct readings. (Note: these are baseline figures only \u2014 the portfolio model's own forecasts exist only at CA_1 department level, not per store or per SKU.)",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "scale-09",
+  "category": "unanswerable",
+  "q": "Which store has the best model forecast accuracy?",
+  "tools_called": [
+   "get_overall",
+   "list_stores"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 2019,
+   "output_tokens": 787,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0346,
+   "seconds": 15.5,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "list_stores",
+    "input": {},
+    "output": {
+     "stores": [
+      {
+       "store": "CA_3",
+       "state": "CA",
+       "volume_units": 1677378,
+       "naive_fa_pct": 90.2
+      },
+      {
+       "store": "CA_1",
+       "state": "CA",
+       "volume_units": 1153225,
+       "naive_fa_pct": 89.6
+      },
+      {
+       "store": "TX_2",
+       "state": "TX",
+       "volume_units": 1108145,
+       "naive_fa_pct": 89.4
+      },
+      {
+       "store": "WI_2",
+       "state": "WI",
+       "volume_units": 1009371,
+       "naive_fa_pct": 79.0
+      },
+      {
+       "store": "TX_3",
+       "state": "TX",
+       "volume_units": 833069,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "WI_3",
+       "state": "WI",
+       "volume_units": 828531,
+       "naive_fa_pct": 83.0
+      },
+      {
+       "store": "CA_2",
+       "state": "CA",
+       "volume_units": 825174,
+       "naive_fa_pct": 91.2
+      },
+      {
+       "store": "TX_1",
+       "state": "TX",
+       "volume_units": 804633,
+       "naive_fa_pct": 88.7
+      },
+      {
+       "store": "WI_1",
+       "state": "WI",
+       "volume_units": 747911,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "CA_4",
+       "state": "CA",
+       "volume_units": 613234,
+       "naive_fa_pct": 91.1
+      }
+     ],
+     "note": "scale-layer metric computed from raw M5 data; the portfolio's model forecasts do not exist at this level, so only actuals and the seasonal-naive baseline are available"
+    }
+   },
+   {
+    "tool": "get_overall",
+    "input": {},
+    "output": {
+     "forecast_accuracy_pct": 79.5,
+     "naive_accuracy_pct": 85.2,
+     "forecast_value_add_pp": -5.7,
+     "bias_pct": -0.3,
+     "total_units": 1153225,
+     "departments_beating_naive": 2,
+     "departments_total": 7
+    }
+   }
+  ],
+  "answer": "This can't be ranked \\u2014 the model only has forecasts for one store. The backtest's model forecasts exist solely for CA_1's seven departments; the other nine stores carry actuals and seasonal-naive baseline metrics only, so there is no model accuracy to compare across stores. For CA_1, the pooled model accuracy across its seven departments is 79.5% against a departmental seasonal-naive of 85.2% (FVA -5.7pp). If you instead want the best store on the seasonal-naive baseline (a different metric, computed on each store's aggregated daily series), that is CA_2 at 91.2%, ahead of CA_4 at 91.1% and CA_3 at 90.2%; CA_1's store-level naive is 89.6%.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "scale-10",
+  "category": "unanswerable",
+  "q": "What's the naive accuracy of the SKUs at the Texas stores?",
+  "tools_called": [
+   "list_stores"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 1693,
+   "output_tokens": 555,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.0272,
+   "seconds": 9.0,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "list_stores",
+    "input": {},
+    "output": {
+     "stores": [
+      {
+       "store": "CA_3",
+       "state": "CA",
+       "volume_units": 1677378,
+       "naive_fa_pct": 90.2
+      },
+      {
+       "store": "CA_1",
+       "state": "CA",
+       "volume_units": 1153225,
+       "naive_fa_pct": 89.6
+      },
+      {
+       "store": "TX_2",
+       "state": "TX",
+       "volume_units": 1108145,
+       "naive_fa_pct": 89.4
+      },
+      {
+       "store": "WI_2",
+       "state": "WI",
+       "volume_units": 1009371,
+       "naive_fa_pct": 79.0
+      },
+      {
+       "store": "TX_3",
+       "state": "TX",
+       "volume_units": 833069,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "WI_3",
+       "state": "WI",
+       "volume_units": 828531,
+       "naive_fa_pct": 83.0
+      },
+      {
+       "store": "CA_2",
+       "state": "CA",
+       "volume_units": 825174,
+       "naive_fa_pct": 91.2
+      },
+      {
+       "store": "TX_1",
+       "state": "TX",
+       "volume_units": 804633,
+       "naive_fa_pct": 88.7
+      },
+      {
+       "store": "WI_1",
+       "state": "WI",
+       "volume_units": 747911,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "CA_4",
+       "state": "CA",
+       "volume_units": 613234,
+       "naive_fa_pct": 91.1
+      }
+     ],
+     "note": "scale-layer metric computed from raw M5 data; the portfolio's model forecasts do not exist at this level, so only actuals and the seasonal-naive baseline are available"
+    }
+   }
+  ],
+  "answer": "Not available. SKU-level metrics (volume, zero-day share, naive accuracy) exist only for the 2,652 traded SKUs of store CA_1 \u2014 there is no item-level data for TX_1, TX_2 or TX_3, so the naive accuracy of Texas SKUs cannot be given.\n\nThe only Texas figures in the data are store-level (aggregated daily series, not comparable to SKU-level accuracy): TX_2 89.4%, TX_1 88.7%, TX_3 87.8% seasonal-naive accuracy. These answer a different question \u2014 aggregation cancels noise, so store accuracy runs far above item accuracy.",
+  "unanswerable": true,
+  "confidence": "high"
+ },
+ {
+  "id": "scale-11",
+  "category": "multi_hop",
+  "q": "Does the biggest store also have the most accurate naive baseline?",
+  "tools_called": [
+   "list_stores"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 1631,
+   "output_tokens": 519,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.026,
+   "seconds": 8.5,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "list_stores",
+    "input": {},
+    "output": {
+     "stores": [
+      {
+       "store": "CA_3",
+       "state": "CA",
+       "volume_units": 1677378,
+       "naive_fa_pct": 90.2
+      },
+      {
+       "store": "CA_1",
+       "state": "CA",
+       "volume_units": 1153225,
+       "naive_fa_pct": 89.6
+      },
+      {
+       "store": "TX_2",
+       "state": "TX",
+       "volume_units": 1108145,
+       "naive_fa_pct": 89.4
+      },
+      {
+       "store": "WI_2",
+       "state": "WI",
+       "volume_units": 1009371,
+       "naive_fa_pct": 79.0
+      },
+      {
+       "store": "TX_3",
+       "state": "TX",
+       "volume_units": 833069,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "WI_3",
+       "state": "WI",
+       "volume_units": 828531,
+       "naive_fa_pct": 83.0
+      },
+      {
+       "store": "CA_2",
+       "state": "CA",
+       "volume_units": 825174,
+       "naive_fa_pct": 91.2
+      },
+      {
+       "store": "TX_1",
+       "state": "TX",
+       "volume_units": 804633,
+       "naive_fa_pct": 88.7
+      },
+      {
+       "store": "WI_1",
+       "state": "WI",
+       "volume_units": 747911,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "CA_4",
+       "state": "CA",
+       "volume_units": 613234,
+       "naive_fa_pct": 91.1
+      }
+     ],
+     "note": "scale-layer metric computed from raw M5 data; the portfolio's model forecasts do not exist at this level, so only actuals and the seasonal-naive baseline are available"
+    }
+   }
+  ],
+  "answer": "No. The biggest store by volume is CA_3 (1,677,378 units over the 263-day window) with a seasonal-naive accuracy of 90.2% \u2014 good, but only third best. The most accurate naive baseline belongs to CA_2 at 91.2%, which is one of the smaller stores (825,174 units), followed by CA_4 at 91.1% on the smallest volume of all (613,234 units). Scope: these are scale-layer, store-aggregated seasonal-naive figures; the model's own forecasts exist only for CA_1, so this comparison is baseline-only.",
+  "unanswerable": false,
+  "confidence": "high"
+ },
+ {
+  "id": "scale-12",
+  "category": "single_lookup",
+  "q": "How many units of HOBBIES_2 were sold at the CA_4 store over the backtest window?",
+  "tools_called": [
+   "compare_stores",
+   "list_stores"
+  ],
+  "error": null,
+  "checks": {
+   "tool_selection": true,
+   "numeric": true,
+   "refusal": true,
+   "fabrication": true
+  },
+  "failures": [],
+  "pass": true,
+  "usage": {
+   "input_tokens": 2228,
+   "output_tokens": 482,
+   "cache_read_tokens": 9710,
+   "cache_write_tokens": 0,
+   "cost_usd": 0.028,
+   "seconds": 8.6,
+   "iterations": 2,
+   "corrections": 0
+  },
+  "trace": [
+   {
+    "tool": "compare_stores",
+    "input": {
+     "dept": "HOBBIES_2"
+    },
+    "output": {
+     "dept": "HOBBIES_2",
+     "order": "highest naive accuracy first",
+     "stores": [
+      {
+       "store": "CA_2",
+       "naive_fa_pct": 64.0,
+       "volume_units": 8362
+      },
+      {
+       "store": "CA_3",
+       "naive_fa_pct": 61.8,
+       "volume_units": 8147
+      },
+      {
+       "store": "TX_2",
+       "naive_fa_pct": 58.3,
+       "volume_units": 9303
+      },
+      {
+       "store": "TX_3",
+       "naive_fa_pct": 56.5,
+       "volume_units": 7321
+      },
+      {
+       "store": "WI_1",
+       "naive_fa_pct": 56.5,
+       "volume_units": 6169
+      },
+      {
+       "store": "WI_2",
+       "naive_fa_pct": 55.1,
+       "volume_units": 5538
+      },
+      {
+       "store": "CA_1",
+       "naive_fa_pct": 54.9,
+       "volume_units": 6227
+      },
+      {
+       "store": "WI_3",
+       "naive_fa_pct": 54.0,
+       "volume_units": 4021
+      },
+      {
+       "store": "TX_1",
+       "naive_fa_pct": 52.6,
+       "volume_units": 4318
+      },
+      {
+       "store": "CA_4",
+       "naive_fa_pct": 40.4,
+       "volume_units": 2618
+      }
+     ],
+     "note": "scale-layer metric computed from raw M5 data; the portfolio's model forecasts do not exist at this level, so only actuals and the seasonal-naive baseline are available"
+    }
+   },
+   {
+    "tool": "list_stores",
+    "input": {},
+    "output": {
+     "stores": [
+      {
+       "store": "CA_3",
+       "state": "CA",
+       "volume_units": 1677378,
+       "naive_fa_pct": 90.2
+      },
+      {
+       "store": "CA_1",
+       "state": "CA",
+       "volume_units": 1153225,
+       "naive_fa_pct": 89.6
+      },
+      {
+       "store": "TX_2",
+       "state": "TX",
+       "volume_units": 1108145,
+       "naive_fa_pct": 89.4
+      },
+      {
+       "store": "WI_2",
+       "state": "WI",
+       "volume_units": 1009371,
+       "naive_fa_pct": 79.0
+      },
+      {
+       "store": "TX_3",
+       "state": "TX",
+       "volume_units": 833069,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "WI_3",
+       "state": "WI",
+       "volume_units": 828531,
+       "naive_fa_pct": 83.0
+      },
+      {
+       "store": "CA_2",
+       "state": "CA",
+       "volume_units": 825174,
+       "naive_fa_pct": 91.2
+      },
+      {
+       "store": "TX_1",
+       "state": "TX",
+       "volume_units": 804633,
+       "naive_fa_pct": 88.7
+      },
+      {
+       "store": "WI_1",
+       "state": "WI",
+       "volume_units": 747911,
+       "naive_fa_pct": 87.8
+      },
+      {
+       "store": "CA_4",
+       "state": "CA",
+       "volume_units": 613234,
+       "naive_fa_pct": 91.1
+      }
+     ],
+     "note": "scale-layer metric computed from raw M5 data; the portfolio's model forecasts do not exist at this level, so only actuals and the seasonal-naive baseline are available"
+    }
+   }
+  ],
+  "answer": "2,618 units. HOBBIES_2 at CA_4 sold 2,618 units over the 263-day backtest window \u2014 the smallest HOBBIES_2 volume of the ten stores (largest is TX_2 at 9,303). Note this is a scale-layer figure from raw M5 actuals; the portfolio model's own forecasts exist only for CA_1, so CA_4 carries only the seasonal-naive baseline (40.4% accuracy for this department).",
+  "unanswerable": false,
+  "confidence": "high"
+ }
+]

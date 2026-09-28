@@ -15,6 +15,22 @@
     "refusal": 37,
     "fabrication": 37
   },
+  "results-graph-opus-high.json": {
+    "questions": 37,
+    "passed": 35,
+    "tool_selection": 37,
+    "numeric": 37,
+    "refusal": 35,
+    "fabrication": 37
+  },
+  "results-hard-graph-opus-high.json": {
+    "questions": 14,
+    "passed": 14,
+    "tool_selection": 14,
+    "numeric": 14,
+    "refusal": 14,
+    "fabrication": 14
+  },
   "results-hard-opus-high-v2.json": {
     "questions": 14,
     "passed": 14,
@@ -46,6 +62,14 @@
     "numeric": 37,
     "refusal": 37,
     "fabrication": 36
+  },
+  "results-scale-graph-opus-high.json": {
+    "questions": 12,
+    "passed": 12,
+    "tool_selection": 12,
+    "numeric": 12,
+    "refusal": 12,
+    "fabrication": 12
   },
   "results-scale-opus-high.json": {
     "questions": 12,

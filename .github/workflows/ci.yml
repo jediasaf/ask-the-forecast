@@ -12,7 +12,7 @@ on:
 
 jobs:
   test:
-    name: tools, MCP adapter, eval floors
+    name: tools, MCP adapter, graph, eval floors
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,6 +27,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install "mcp>=2" pytest
+          pip install "langgraph>=1.0" "langchain-anthropic>=1.0"
 
       - name: Unit tests
         # The agent's honesty guarantee rests on the tools: the model is

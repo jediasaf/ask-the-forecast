@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ask-the-forecast-mcp
+data:
+  MCP_TRANSPORT: "http"
+  MCP_HOST: "0.0.0.0"
+  MCP_PORT: "8000"
+  # The server checks the Host header on the protocol route and refuses names it
+  # was not told about. These are the names it is reached by inside the cluster,
+  # plus localhost for a port-forward.
+  MCP_ALLOWED_HOSTS: "ask-the-forecast-mcp:8000,ask-the-forecast-mcp.forecast:8000,ask-the-forecast-mcp.forecast.svc.cluster.local:8000,localhost:8000,127.0.0.1:8000"

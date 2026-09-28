@@ -9,6 +9,7 @@ Scores four things per question:
 
 Usage:
     python -m eval.run_eval [--limit N] [--only ID_OR_CATEGORY] [--model MODEL] [--effort LEVEL]
+                            [--engine loop|graph]
 
 Writes eval/results.md (the failure analysis) and eval/results.json (raw).
 """
@@ -162,10 +163,26 @@ def score_question(q: dict, result: AgentResult, universe: set[float]) -> dict:
 # ------------------------------------------------------------------ running
 
 
-def run_one(q: dict, model: str, effort: str, retries: int = 2) -> AgentResult:
+def _engine(name: str):
+    """The loop engine is the SDK tool runner; the graph engine is LangGraph.
+
+    Imported on demand so the default path needs nothing beyond the SDK.
+    """
+    if name == "graph":
+        from agent_graph import ask as graph_ask
+
+        return graph_ask
+    return ask
+
+
+_TRANSIENT = ("rate_limited", "connection_error", "api_error_5",
+              "RateLimitError", "APIConnectionError", "InternalServerError", "OverloadedError")
+
+
+def run_one(q: dict, model: str, effort: str, retries: int = 2, engine: str = "loop") -> AgentResult:
     for attempt in range(retries + 1):
-        result = ask(q["q"], model=model, effort=effort)
-        if result.error and result.error.startswith(("rate_limited", "connection_error", "api_error_5")):
+        result = _engine(engine)(q["q"], model=model, effort=effort)
+        if result.error and result.error.startswith(_TRANSIENT):
             wait = 15 * (attempt + 1)
             print(f"  {result.error.split(':')[0]}, retrying in {wait}s")
             time.sleep(wait)
@@ -276,6 +293,8 @@ def main() -> None:
     parser.add_argument("--effort", default="high", choices=["low", "medium", "high", "xhigh", "max"])
     parser.add_argument("--questions", default=None, help="path to a questions .jsonl (default: eval/questions.jsonl)")
     parser.add_argument("--tag", default="", help="suffix for the results files, e.g. opus-high")
+    parser.add_argument("--engine", default="loop", choices=["loop", "graph"],
+                        help="loop: the SDK tool runner. graph: the LangGraph state machine")
     args = parser.parse_args()
 
     qpath = Path(args.questions) if args.questions else QUESTIONS
@@ -289,7 +308,7 @@ def main() -> None:
     rows = []
     for i, q in enumerate(questions, 1):
         print(f"[{i}/{len(questions)}] {q['id']}: {q['q']}")
-        result = run_one(q, args.model, args.effort)
+        result = run_one(q, args.model, args.effort, engine=args.engine)
         row = score_question(q, result, universe)
         status = "PASS" if row["pass"] else "FAIL — " + "; ".join(row["failures"])
         print(f"  {status}")
