@@ -99,7 +99,7 @@ jobs:
           done
           python -m scripts.smoke_mcp_http http://localhost:8000
 
-      - name: A rolling restart keeps the Service answering
+      - name: The Service answers after a rolling restart
         run: |
           kubectl -n forecast rollout restart deployment/ask-the-forecast-mcp
           kubectl -n forecast rollout status deployment/ask-the-forecast-mcp --timeout=120s

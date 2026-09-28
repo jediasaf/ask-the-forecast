@@ -294,9 +294,113 @@ ask-the-forecast-mcp        # stdio
 The adapter reads `ALL_TOOLS` and forwards each tool's name, description and
 schema, so the MCP contract and the agent's own contract cannot drift apart.
 
+## The same agent as a graph
+
+`agent/` lets the SDK's tool runner drive the loop. `agent_graph/` spells the
+same loop out as a [LangGraph](https://github.com/langchain-ai/langgraph) state
+machine, so each step is a node that can be traced, tested alone and replaced:
+
+```
+retrieve -> model <-> tools
+              |
+            parse -> guard -> END
+                       |
+                       +--> model   (one correction, then it must stand)
+```
+
+The system prompt, the seventeen tool contracts and the output schema are
+imported from `agent/`, not copied, so the two engines can be scored on the same
+questions by the same harness:
+
+```bash
+python -m eval.run_eval --engine graph --tag graph-opus-high
+```
+
+| Set | Loop engine | Graph engine | Graph cost per question | Guard fired |
+|---|---|---|---|---|
+| Main, 37 questions | 37/37 | **35/37** | $0.043 | 1 |
+| Hard, 14 questions | 14/14 | **14/14** | $0.067 | 1 |
+| Scale, 12 questions | 12/12 | **12/12** | $0.030 | 0 |
+
+`opus-5` at high effort, one run per set, 29 Sep 2026. Cost and latency are
+within a few percent of the loop engine, which is what should happen when the
+model, prompt and tools are the same.
+
+### The two misses
+
+Both are refusal failures on questions the main set labels unanswerable, and
+they are not the same kind of miss.
+
+- **"Which individual SKUs have the worst forecast accuracy?"** The label is
+  stale. It was written before the scale layer added `find_skus`, and the
+  question is now answerable for the baseline. The loop engine, run again today
+  with all seventeen tools, fails it the same way. The committed 37/37 was
+  measured before those tools existed.
+- **"How does this store compare to the other California stores?"** A real
+  difference in this run. The graph engine answered with the seasonal-naive
+  comparison and said plainly that no model forecast exists outside CA_1. The
+  loop engine, run again today, refused. One run each, so this is an
+  observation and not a rate.
+
+The question set has been left as it is. Relabelling two questions on the day a
+new engine fails them is how a score improves by accident.
+
+### What the guard caught
+
+`guard` is the one thing the graph adds. It is a deterministic check that every
+figure in the answer appears in a tool return from the same conversation. A miss
+is sent back once with the figures named, and reported as an error if it happens
+again.
+
+It fired on 2 of 63 questions, both date questions, and both times for the same
+reason: the model recorded the backtest's start and end dates as cited figures
+with a **placeholder value of 0.0**, because the schema requires a number even
+when the fact is a date. The existing fabrication check cannot see that, because
+0.0 occurs in the data. The guard can, because no tool returned it in that
+conversation. Rerun four times, it fired four times on the same fields.
+
+It did not catch an invented accuracy figure, because in this run the model did
+not invent one. That is the honest size of the result: one real schema defect
+found, none of the failures it was built for observed.
+
+### Tracing
+
+Every run carries a name, tags and metadata. With `LANGSMITH_TRACING=true` and a
+`LANGSMITH_API_KEY` in the environment they appear in LangSmith as one trace per
+question with each node as a span. Without a key nothing is sent and nothing
+breaks. **No traced run has been recorded yet**, so nothing here claims one.
+
+## Run it as a service
+
+The MCP server also speaks HTTP, for when it runs as a service and not as a
+desktop subprocess:
+
+```bash
+ask-the-forecast-mcp --transport http --host 0.0.0.0 --port 8000
+curl localhost:8000/healthz        # {"status":"ok","tools":17}
+```
+
+It is stateless over HTTP. These tools are pure lookups with nothing to remember
+between calls, so sessions would buy nothing and would pin each client to one
+replica. Host header checking stays on: the protocol route refuses any name it
+was not given in `MCP_ALLOWED_HOSTS`.
+
+```bash
+docker build -t ask-the-forecast-mcp .
+docker run -p 8000:8000 --read-only \
+  -e MCP_ALLOWED_HOSTS=localhost:8000 ask-the-forecast-mcp
+
+kubectl apply -k deploy/k8s        # namespace, config, 2 replicas, Service
+```
+
+The image is built in two stages and runs as a non-root user on a read-only
+filesystem. The manifests pass the restricted Pod Security Standard, which the
+namespace enforces, so a change that weakens them is refused by the cluster and
+not by a reviewer.
+
 ## CI
 
-Two workflows, split by what they cost.
+Three workflows, split by what they cost.
 
 `ci.yml` runs on every push and pull request and is free and deterministic: no
 API key, no model call, nothing that can flake. It runs the tool contract tests,
@@ -312,6 +416,18 @@ The gate reads `eval/baselines.json`, a floor for each committed results file,
 and fails if any run drops below it **or if a question set shrinks** — a
 shrinking eval is how a score improves by accident. Raise a floor only when a
 live run has genuinely beaten it (`--update` rewrites them).
+
+`container.yml` is also free and needs no key. It builds the image, speaks MCP
+to the running container, creates a Kubernetes cluster with
+[kind](https://kind.sigs.k8s.io), deploys the manifests, speaks MCP to the
+Service, restarts the rollout and checks again. Only an image that passed all of
+that is published to `ghcr.io/jediasaf/ask-the-forecast-mcp`. The smoke test
+lists the tools and makes a real call, then compares the answer with the tool
+function called directly, so healthy means the tools answer and not that a port
+is open.
+
+This pipeline is where the container and the cluster have been run. They have
+not been run against a cloud provider's Kubernetes service.
 
 `eval-live.yml` is the real thing and is manual only, because it calls a paid
 API. Trigger it after a change to the agent, the prompt or the tools; it needs

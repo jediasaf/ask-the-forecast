@@ -12,3 +12,7 @@ pytest>=8.0
 
 # vision path: renders the charts the agent is asked to verify
 matplotlib>=3.8
+
+# graph engine: the same agent as a LangGraph state machine (agent_graph/)
+langgraph>=1.0
+langchain-anthropic>=1.0
