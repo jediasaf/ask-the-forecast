@@ -178,6 +178,56 @@ export ANTHROPIC_API_KEY=...              # or `ant auth login`; never committed
 
 The full grid above cost about $10 in API spend to measure.
 
+## Reading a chart, and checking it
+
+The agent also takes an image. It is not asked to read the chart; it is asked to
+**verify** it.
+
+```python
+from agent.agent import ask
+from agent.charts import render
+
+ask("Does every figure on this slide match the system of record?",
+    image=render(metric="fa"))
+```
+
+A chart from a review deck is a claim someone else made. It can be stale, or
+edited, or simply wrong. So the vision rules tell the model to treat the image
+as a claim and the tools as the record: read what the slide states, call the
+tools for the same figures, and report any disagreement with both numbers and
+which one is authoritative. A figure read off an image may never enter
+`figures_cited` — that field is for numbers a tool returned, and a number that
+exists only in a picture is a claim about data, not data.
+
+### How it is scored
+
+`agent/charts.py` renders charts **from the same JSON the tools serve**, so the
+true value behind every bar is known exactly. `tamper=("FOODS_3", 91.4)` then
+alters one bar's label and leaves the underlying data untouched. Nothing marks
+the altered bar.
+
+```bash
+.venv/bin/python -m eval.run_vision_eval
+```
+
+Ten cases, half faithful and half with a planted error, scoring three things:
+
+| | |
+| --- | --- |
+| **detection** | on a tampered chart, did it flag the altered figure? |
+| **correctness** | did it report the real value, which can only come from a tool? |
+| **false alarms** | on a **clean** chart, did it stay quiet? |
+
+The third is the one that is usually missing. A detector that shouts
+"discrepancy" at every chart scores 100% on detection and is useless; precision
+only means anything if the clean cases are scored too.
+
+It earned its place on the first run. A correct answer — *"Every number on the
+slide matches the system of record. No discrepancies."* — was failed as a false
+alarm, because the keyword check saw "discrepanc" inside "No discrepancies".
+The bug was in the scorer, not the agent. It is negation-aware now and
+`tests/test_charts.py` locks that in.
+
 ## Use the tools from any MCP client
 
 The seventeen tools are also exposed over the [Model Context

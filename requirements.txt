@@ -9,3 +9,6 @@ mcp>=2.0
 
 # CI: tool contracts and the eval regression gate
 pytest>=8.0
+
+# vision path: renders the charts the agent is asked to verify
+matplotlib>=3.8

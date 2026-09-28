@@ -10,6 +10,7 @@ must come from a tool return, and the eval harness checks that it does.
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import sys
 import time
@@ -92,7 +93,7 @@ def _cost_usd(totals: dict, model: str) -> float | None:
     )
 
 
-def _build_system(question: str) -> list[dict]:
+def _build_system(question: str, has_image: bool = False) -> list[dict]:
     system: list[dict] = [
         {
             "type": "text",
@@ -100,14 +101,59 @@ def _build_system(question: str) -> list[dict]:
             "cache_control": {"type": "ephemeral"},
         }
     ]
+    # The vision rules go in their own block, after the cached prefix, so
+    # attaching an image does not invalidate the cache on the main prompt.
+    if has_image:
+        system.append({"type": "text", "text": VISION_RULES})
     glossary = format_entries(retrieve(question, k=3))
     if glossary:
         system.append({"type": "text", "text": glossary})
     return system
 
 
+VISION_RULES = """\
+
+The user has attached an image, normally a chart or a slide from a review deck.
+Treat it as a CLAIM, not as evidence. It was produced by someone else and may be
+wrong, stale, or edited.
+
+Your job is verification, in this order:
+1. Read every figure the image states, and say which department each belongs to.
+2. Call the tools to get the same figures from the system of record.
+3. Compare them. Report any figure where the image and the data disagree, giving
+   both numbers and naming the source of truth.
+4. If they all agree, say so plainly. Do not invent a discrepancy to seem useful.
+
+Never cite a number read off an image as if it were data. Every figure in
+figures_cited must come from a tool return, exactly as it does for any other
+question. A number that exists only in the image is a claim about data, not data.
+"""
+
+
+def _content_blocks(question: str, image: bytes | None) -> list[dict] | str:
+    """Build the user turn, with an image block first when one is attached.
+
+    The image goes before the text because the question almost always refers to
+    it, and a model reads the turn in order.
+    """
+    if image is None:
+        return question
+    return [
+        {
+            "type": "image",
+            "source": {
+                "type": "base64",
+                "media_type": "image/png",
+                "data": base64.standard_b64encode(image).decode(),
+            },
+        },
+        {"type": "text", "text": question},
+    ]
+
+
 def ask(
     question: str,
+    image: bytes | None = None,
     client: Anthropic | None = None,
     model: str = MODEL,
     effort: str = "high",
@@ -132,9 +178,9 @@ def ask(
             thinking={"type": "adaptive"},
             output_config={"effort": effort, **output_format()},
             max_iterations=MAX_ITERATIONS,
-            system=_build_system(question),
+            system=_build_system(question, image is not None),
             tools=tools.ALL_TOOLS,
-            messages=[{"role": "user", "content": question}],
+            messages=[{"role": "user", "content": _content_blocks(question, image)}],
         )
         final = None
         for message in runner:  # equivalent to until_done, but captures per-turn usage
