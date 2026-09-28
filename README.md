@@ -228,6 +228,28 @@ alarm, because the keyword check saw "discrepanc" inside "No discrepancies".
 The bug was in the scorer, not the agent. It is negation-aware now and
 `tests/test_charts.py` locks that in.
 
+### Result
+
+`claude-opus-5`, effort high, 2026-09-28:
+
+| Check | Result |
+| --- | --- |
+| Detected the planted error | 6/6 |
+| Reported the real figure too | 6/6 |
+| Stayed quiet on a clean chart | 4/4 |
+| **Passed everything** | **10/10** |
+
+Full breakdown in [`eval/results-vision.md`](eval/results-vision.md).
+
+**Calibrate that properly.** Ten cases is a small set and a clean sweep on it is
+encouraging, not conclusive. The planted errors are deliberately unambiguous —
+a bar relabelled by several points, not by a rounding — because the task under
+test is *verification against a system of record*, not anomaly spotting. A
+harder set would move a figure by less than a point, alter a total rather than a
+bar, or tamper with a chart whose metric has no tool behind it at all. The
+interesting number would be where it starts to fail, and this set does not find
+that edge.
+
 ## Use the tools from any MCP client
 
 The seventeen tools are also exposed over the [Model Context

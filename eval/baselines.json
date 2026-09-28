@@ -62,5 +62,13 @@
     "numeric": 36,
     "refusal": 37,
     "fabrication": 37
+  },
+  "results-vision.json": {
+    "questions": 10,
+    "passed": 10,
+    "tool_selection": 0,
+    "numeric": 0,
+    "refusal": 0,
+    "fabrication": 0
   }
 }

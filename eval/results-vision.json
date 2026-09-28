@@ -1,0 +1,223 @@
+[
+  {
+    "id": "fa-clean",
+    "metric": "fa",
+    "tampered": false,
+    "seconds": 19.9,
+    "tools_called": [
+      "compare_departments",
+      "list_departments",
+      "compare_departments",
+      "compare_departments"
+    ],
+    "error": null,
+    "answer": "{\"answer\": \"Every figure on the slide matches the system of record. The slide states forecast accuracy by department: HOBBIES_1 82.2, FOODS_3 80.1, FOODS_2 79.3, HOUSEHOLD_2 79.0, HOUSEHOLD_1 78.3, FOODS_1 75.0, HOBBIES_2 65.6 \\u2014 all seven values and the best-first ordering agree exactly with the backtest data. No discrepancies.\\n\\nOne framing caveat, not an error: FA alone inverts the real story because the slide omits the seasonal-naive baseline. Against it, only HOBBIES_2 (+10.6 pp FVA, FA 65.6 vs naive 54.9) and HOBBIES_1 (+2.8 pp, 82.2 vs 79.3) add value. The top-of-chart performers are the worst on value add: HOUSEHOLD_1 -9.4 pp (78.3 vs naive 87.8), HOUSEHOLD_2 -7.6 pp (79.0 vs 86.6), FOODS_1 -7.3 pp (75.0 vs 82.2), FOODS_3 -7.0 pp (80.1 vs 87.1), FOODS_2 -0.9 pp (79.3 vs 80.2). Recommend adding the naive bar or an FVA panel so the deck doesn't read HOBBIES_2 as the problem department.\", \"departments_referenced\": [\"HOBBIES_1\", \"FOODS_3\", \"FOODS_2\", \"HOUSEHOLD_2\", \"HOUSEHOLD_1\", \"FOODS_1\", \"HOBBIES_2\"], \"figures_cited\": [{\"metric\": \"forecast accuracy (%)\", \"dept\": \"HOBBIES_1\", \"value\": 82.2, \"date\": null}, {\"metric\": \"forecast accuracy (%)\", \"dept\": \"FOODS_3\", \"value\": 80",
+    "checks": {
+      "detection": true,
+      "correctness": true,
+      "no_false_alarm": true
+    },
+    "pass": true
+  },
+  {
+    "id": "fa-foods3",
+    "metric": "fa",
+    "tampered": true,
+    "seconds": 22.2,
+    "tools_called": [
+      "compare_departments",
+      "list_departments",
+      "get_accuracy",
+      "get_accuracy",
+      "get_value_add"
+    ],
+    "error": null,
+    "answer": "{\"answer\": \"Six of the seven bars match; one does not. FOODS_3 is wrong, and the error flips the story of the slide.\\n\\nMatches (slide vs system of record, forecast accuracy %): HOBBIES_1 82.2 vs 82.2; FOODS_2 79.3 vs 79.3; HOUSEHOLD_2 79.0 vs 79.0; HOUSEHOLD_1 78.3 vs 78.3; FOODS_1 75.0 vs 75.0; HOBBIES_2 65.6 vs 65.6.\\n\\nDiscrepancy \\u2014 FOODS_3: the slide claims 91.4% forecast accuracy; the system of record says 80.1%. The data is the source of truth. Two consequences: (1) the ranking on the slide is wrong \\u2014 the most accurate department is HOBBIES_1 at 82.2%, not FOODS_3; FOODS_3 is second at 80.1%. (2) FOODS_3 is the store's biggest department (615,655 units) and its model is actually losing to the baseline: naive accuracy is 87.1%, so FVA is -7.0 pp. A 91.4% bar hides that.\", \"departments_referenced\": [\"FOODS_3\", \"HOBBIES_1\", \"FOODS_2\", \"HOUSEHOLD_2\", \"HOUSEHOLD_1\", \"FOODS_1\", \"HOBBIES_2\"], \"figures_cited\": [{\"metric\": \"forecast accuracy (%)\", \"dept\": \"FOODS_3\", \"value\": 80.1, \"date\": null}, {\"metric\": \"seasonal-naive accuracy (%)\", \"dept\": \"FOODS_3\", \"value\": 87.1, \"date\": null}, {\"metric\": \"forecast value add (pp)\", \"dept\": \"FOODS_3\", \"value\": -7.0, \"date\": null}, {\"m",
+    "expected": {
+      "dept": "FOODS_3",
+      "slide_says": 91.4,
+      "data_says": 80.1
+    },
+    "checks": {
+      "detection": true,
+      "correctness": true,
+      "no_false_alarm": true
+    },
+    "pass": true
+  },
+  {
+    "id": "fa-hobbies2",
+    "metric": "fa",
+    "tampered": true,
+    "seconds": 19.3,
+    "tools_called": [
+      "compare_departments",
+      "list_departments",
+      "get_accuracy"
+    ],
+    "error": null,
+    "answer": "{\"answer\": \"Six of the seven bars match the system of record exactly; one does not.\\n\\nMatches (slide = data): HOBBIES_1 82.2%, FOODS_3 80.1%, FOODS_2 79.3%, HOUSEHOLD_2 79.0%, HOUSEHOLD_1 78.3%, FOODS_1 75.0%. The rank order shown is also correct.\\n\\nDiscrepancy \\u2014 HOBBIES_2: the slide claims 55.0% forecast accuracy; the system of record shows 65.6%. The slide understates it by a wide margin. The 55.0 figure looks like it was taken from the wrong series: HOBBIES_2's seasonal-naive baseline accuracy is 54.9%, which is close to the number on the slide. The system of record (get_accuracy / compare_departments) is the source of truth here.\\n\\nOne caveat on the chart as a whole: it plots forecast accuracy with no baseline beside it, so it cannot show whether the model beats seasonal-naive in any department \\u2014 FA alone is not interpretable for the planning view.\", \"departments_referenced\": [\"HOBBIES_1\", \"FOODS_3\", \"FOODS_2\", \"HOUSEHOLD_2\", \"HOUSEHOLD_1\", \"FOODS_1\", \"HOBBIES_2\"], \"figures_cited\": [{\"metric\": \"forecast accuracy (%)\", \"dept\": \"HOBBIES_1\", \"value\": 82.2, \"date\": null}, {\"metric\": \"forecast accuracy (%)\", \"dept\": \"FOODS_3\", \"value\": 80.1, \"date\": null}, {\"metric\": \"f",
+    "expected": {
+      "dept": "HOBBIES_2",
+      "slide_says": 55.0,
+      "data_says": 65.6
+    },
+    "checks": {
+      "detection": true,
+      "correctness": true,
+      "no_false_alarm": true
+    },
+    "pass": true
+  },
+  {
+    "id": "naive-clean",
+    "metric": "naiveFa",
+    "tampered": false,
+    "seconds": 14.6,
+    "tools_called": [
+      "compare_departments",
+      "list_departments"
+    ],
+    "error": null,
+    "answer": "{\"answer\": \"Every figure on the slide matches the system of record. The chart plots seasonal-naive accuracy by department, and all seven values and their rank order agree exactly with the backtest data: HOUSEHOLD_1 87.8%, FOODS_3 87.1%, HOUSEHOLD_2 86.6%, FOODS_1 82.2%, FOODS_2 80.2%, HOBBIES_1 79.3%, HOBBIES_2 54.9%. No discrepancies found. One caveat on interpretation rather than accuracy: the chart shows only the baseline, so it says nothing about whether the model beats it \\u2014 naive accuracy should be read alongside model FA / FVA, and HOBBIES_2's low 54.9% partly reflects its tiny volume (6,227 units over the 263-day window, the smallest of the seven).\", \"departments_referenced\": [\"HOUSEHOLD_1\", \"FOODS_3\", \"HOUSEHOLD_2\", \"FOODS_1\", \"FOODS_2\", \"HOBBIES_1\", \"HOBBIES_2\"], \"figures_cited\": [{\"metric\": \"seasonal-naive accuracy (%)\", \"dept\": \"HOUSEHOLD_1\", \"value\": 87.8, \"date\": null}, {\"metric\": \"seasonal-naive accuracy (%)\", \"dept\": \"FOODS_3\", \"value\": 87.1, \"date\": null}, {\"metric\": \"seasonal-naive accuracy (%)\", \"dept\": \"HOUSEHOLD_2\", \"value\": 86.6, \"date\": null}, {\"metric\": \"seasonal-naive accuracy (%)\", \"dept\": \"FOODS_1\", \"value\": 82.2, \"date\": null}, {\"metric\": \"seasonal-n",
+    "checks": {
+      "detection": true,
+      "correctness": true,
+      "no_false_alarm": true
+    },
+    "pass": true
+  },
+  {
+    "id": "naive-household1",
+    "metric": "naiveFa",
+    "tampered": true,
+    "seconds": 16.2,
+    "tools_called": [
+      "compare_departments",
+      "list_departments",
+      "get_accuracy"
+    ],
+    "error": null,
+    "answer": "{\"answer\": \"One figure disagrees: HOUSEHOLD_1. The slide shows HOUSEHOLD_1 with a seasonal-naive accuracy of 70.2% (second from the right, 6th of 7). The system of record says HOUSEHOLD_1's naive accuracy is 87.8% \\u2014 which makes it the BEST department on this metric, not the second-worst. So both the value and the ranking position on the slide are wrong, and the bar order is therefore also wrong (correct order best-first: HOUSEHOLD_1 87.8, FOODS_3 87.1, HOUSEHOLD_2 86.6, FOODS_1 82.2, FOODS_2 80.2, HOBBIES_1 79.3, HOBBIES_2 54.9).\\n\\nEvery other figure matches exactly: FOODS_3 87.1, HOUSEHOLD_2 86.6, FOODS_1 82.2, FOODS_2 80.2, HOBBIES_1 79.3, HOBBIES_2 54.9.\\n\\nNote on interpretation: a high naive baseline is not a compliment to the model \\u2014 for HOUSEHOLD_1 the model's own accuracy is 78.3% against that 87.8% baseline, i.e. the baseline wins there. Source of truth is the backtest metrics store, not the slide.\", \"departments_referenced\": [\"HOUSEHOLD_1\", \"FOODS_3\", \"HOUSEHOLD_2\", \"FOODS_1\", \"FOODS_2\", \"HOBBIES_1\", \"HOBBIES_2\"], \"figures_cited\": [{\"metric\": \"seasonal-naive accuracy (%)\", \"dept\": \"HOUSEHOLD_1\", \"value\": 87.8, \"date\": null}, {\"metric\": \"forecast accuracy (%)\", ",
+    "expected": {
+      "dept": "HOUSEHOLD_1",
+      "slide_says": 70.2,
+      "data_says": 87.8
+    },
+    "checks": {
+      "detection": true,
+      "correctness": true,
+      "no_false_alarm": true
+    },
+    "pass": true
+  },
+  {
+    "id": "fva-clean",
+    "metric": "fva",
+    "tampered": false,
+    "seconds": 17.4,
+    "tools_called": [
+      "compare_departments",
+      "list_departments",
+      "get_overall"
+    ],
+    "error": null,
+    "answer": "{\"answer\": \"Every figure on the slide matches the system of record. All seven FVA values and their rank order are correct: HOBBIES_2 +10.6 pp, HOBBIES_1 +2.8 pp, FOODS_2 -0.9 pp, FOODS_3 -7.0 pp, FOODS_1 -7.3 pp, HOUSEHOLD_2 -7.6 pp, HOUSEHOLD_1 -9.4 pp. No discrepancies.\\n\\nTwo caveats on reading, not on accuracy: (1) the chart omits the pooled result \\u2014 overall FVA is -5.7 pp (model 79.5% vs naive 85.2%), with only 2 of 7 departments beating the baseline; (2) the one big positive bar, HOBBIES_2, is the smallest department at 6,227 units over the window, while the worst bar, HOUSEHOLD_1, is 163,737 units and FOODS_3 (-7.0 pp) is 615,655 units. Unweighted bars make the picture look more balanced than the volume-weighted reality.\", \"departments_referenced\": [\"HOBBIES_2\", \"HOBBIES_1\", \"FOODS_2\", \"FOODS_3\", \"FOODS_1\", \"HOUSEHOLD_2\", \"HOUSEHOLD_1\"], \"figures_cited\": [{\"metric\": \"forecast value add (pp)\", \"dept\": \"HOBBIES_2\", \"value\": 10.6, \"date\": null}, {\"metric\": \"forecast value add (pp)\", \"dept\": \"HOBBIES_1\", \"value\": 2.8, \"date\": null}, {\"metric\": \"forecast value add (pp)\", \"dept\": \"FOODS_2\", \"value\": -0.9, \"date\": null}, {\"metric\": \"forecast value add (pp)\", \"dept\": \"FOODS_3\",",
+    "checks": {
+      "detection": true,
+      "correctness": true,
+      "no_false_alarm": true
+    },
+    "pass": true
+  },
+  {
+    "id": "fva-foods1",
+    "metric": "fva",
+    "tampered": true,
+    "seconds": 18.2,
+    "tools_called": [
+      "compare_departments",
+      "get_overall",
+      "get_value_add",
+      "get_accuracy"
+    ],
+    "error": null,
+    "answer": "{\"answer\": \"One figure on the slide is wrong, and it's the headline bar. FOODS_1: the slide claims +12.5 pp FVA (ranked best department); the system of record says -7.3 pp (FA 75.0% vs naive 82.2%, beats_naive = false). So FOODS_1 is actually the third-worst department, not the best, and the slide's left-to-right ranking is misleading as a result.\\n\\nEvery other bar matches exactly: HOBBIES_2 +10.6, HOBBIES_1 +2.8, FOODS_2 -0.9, FOODS_3 -7.0, HOUSEHOLD_2 -7.6, HOUSEHOLD_1 -9.4.\\n\\nOne implication the slide obscures: with FOODS_1 negative, only 2 of 7 departments beat the seasonal-naive baseline (HOBBIES_2 and HOBBIES_1), and pooled FVA is -5.7 pp (model FA 79.5% vs naive 85.2%). Source of truth is the backtest metrics store, not the deck.\", \"departments_referenced\": [\"FOODS_1\", \"FOODS_2\", \"FOODS_3\", \"HOBBIES_1\", \"HOBBIES_2\", \"HOUSEHOLD_1\", \"HOUSEHOLD_2\"], \"figures_cited\": [{\"metric\": \"forecast value add (pp)\", \"dept\": \"FOODS_1\", \"value\": -7.3, \"date\": null}, {\"metric\": \"forecast accuracy (%)\", \"dept\": \"FOODS_1\", \"value\": 75.0, \"date\": null}, {\"metric\": \"seasonal-naive accuracy (%)\", \"dept\": \"FOODS_1\", \"value\": 82.2, \"date\": null}, {\"metric\": \"forecast value add (pp)\", \"dept\": \"HOBB",
+    "expected": {
+      "dept": "FOODS_1",
+      "slide_says": 12.5,
+      "data_says": -7.3
+    },
+    "checks": {
+      "detection": true,
+      "correctness": true,
+      "no_false_alarm": true
+    },
+    "pass": true
+  },
+  {
+    "id": "bias-clean",
+    "metric": "bias",
+    "tampered": false,
+    "seconds": 12.9,
+    "tools_called": [
+      "compare_departments",
+      "list_departments"
+    ],
+    "error": null,
+    "answer": "{\"answer\": \"Every figure on the slide matches the system of record. All seven bias values agree exactly: HOUSEHOLD_1 +4.1%, HOUSEHOLD_2 +3.0%, HOBBIES_1 +1.4%, FOODS_3 -0.7%, FOODS_1 -3.9%, FOODS_2 -4.2%, HOBBIES_2 -7.5%. The sort order (most over-forecast to most under-forecast) is also consistent with the data. No discrepancies found. One piece of context the slide omits: the largest bias, HOBBIES_2 at -7.5%, sits on the smallest department by far (6,227 units over the 263-day window), versus FOODS_3's near-zero -0.7% on 615,655 units \\u2014 so the visual ranking overweights a very small department.\", \"departments_referenced\": [\"HOUSEHOLD_1\", \"HOUSEHOLD_2\", \"HOBBIES_1\", \"FOODS_3\", \"FOODS_1\", \"FOODS_2\", \"HOBBIES_2\"], \"figures_cited\": [{\"metric\": \"signed bias (%)\", \"dept\": \"HOUSEHOLD_1\", \"value\": 4.1, \"date\": null}, {\"metric\": \"signed bias (%)\", \"dept\": \"HOUSEHOLD_2\", \"value\": 3.0, \"date\": null}, {\"metric\": \"signed bias (%)\", \"dept\": \"HOBBIES_1\", \"value\": 1.4, \"date\": null}, {\"metric\": \"signed bias (%)\", \"dept\": \"FOODS_3\", \"value\": -0.7, \"date\": null}, {\"metric\": \"signed bias (%)\", \"dept\": \"FOODS_1\", \"value\": -3.9, \"date\": null}, {\"metric\": \"signed bias (%)\", \"dept\": \"FOODS_2\", \"va",
+    "checks": {
+      "detection": true,
+      "correctness": true,
+      "no_false_alarm": true
+    },
+    "pass": true
+  },
+  {
+    "id": "bias-foods2",
+    "metric": "bias",
+    "tampered": true,
+    "seconds": 14.5,
+    "tools_called": [
+      "compare_departments",
+      "list_departments",
+      "get_bias"
+    ],
+    "error": null,
+    "answer": "{\"answer\": \"Six of the seven bars match the system of record; one does not.\\n\\nDiscrepancy \\u2014 FOODS_2: the slide claims a bias of -18.0%; the system of record shows -4.2% (under-forecast). The slide overstates FOODS_2's under-forecast bias by a wide margin, and it also misplaces FOODS_2 as the most-biased department \\u2014 HOBBIES_2 (-7.5%) is actually the largest-magnitude bias in the set.\\n\\nMatching figures (slide vs data, all identical): HOUSEHOLD_1 +4.1%, HOUSEHOLD_2 +3.0%, HOBBIES_1 +1.4%, FOODS_3 -0.7%, FOODS_1 -3.9%, HOBBIES_2 -7.5%.\\n\\nSource of truth: the backtest bias metrics for store CA_1 over 2013-05-05 \\u2192 2014-01-22.\", \"departments_referenced\": [\"FOODS_1\", \"FOODS_2\", \"FOODS_3\", \"HOBBIES_1\", \"HOBBIES_2\", \"HOUSEHOLD_1\", \"HOUSEHOLD_2\"], \"figures_cited\": [{\"metric\": \"signed bias (%)\", \"dept\": \"HOUSEHOLD_1\", \"value\": 4.1, \"date\": null}, {\"metric\": \"signed bias (%)\", \"dept\": \"HOUSEHOLD_2\", \"value\": 3.0, \"date\": null}, {\"metric\": \"signed bias (%)\", \"dept\": \"HOBBIES_1\", \"value\": 1.4, \"date\": null}, {\"metric\": \"signed bias (%)\", \"dept\": \"FOODS_3\", \"value\": -0.7, \"date\": null}, {\"metric\": \"signed bias (%)\", \"dept\": \"FOODS_1\", \"value\": -3.9, \"date\": null}, {\"metric\": \"s",
+    "expected": {
+      "dept": "FOODS_2",
+      "slide_says": -18.0,
+      "data_says": -4.2
+    },
+    "checks": {
+      "detection": true,
+      "correctness": true,
+      "no_false_alarm": true
+    },
+    "pass": true
+  },
+  {
+    "id": "volume-foods3",
+    "metric": "volume",
+    "tampered": true,
+    "seconds": 11.7,
+    "tools_called": [
+      "list_departments",
+      "compare_departments"
+    ],
+    "error": null,
+    "answer": "{\"answer\": \"Almost \\u2014 one figure is wrong. Six of the seven bars match the system of record exactly (HOUSEHOLD_1 163,737; HOBBIES_1 121,662; FOODS_2 113,746; FOODS_1 86,718; HOUSEHOLD_2 45,480; HOBBIES_2 6,227), and the rank order is correct. The discrepancy is FOODS_3: the slide labels it 415,655 units, but the backtest data says 615,655 units over the 263-day window \\u2014 a 2 vs 6 in the leading digit, likely a transcription error. Note the bar height on the slide is also inconsistent with its own label relative to the y-axis scale, which supports a mislabelled number rather than a different dataset. Source of truth: the department volume table (list_departments / compare_departments on volume).\", \"departments_referenced\": [\"FOODS_3\", \"HOUSEHOLD_1\", \"HOBBIES_1\", \"FOODS_2\", \"FOODS_1\", \"HOUSEHOLD_2\", \"HOBBIES_2\"], \"figures_cited\": [{\"metric\": \"volume_units\", \"dept\": \"FOODS_3\", \"value\": 615655.0, \"date\": null}, {\"metric\": \"volume_units\", \"dept\": \"HOUSEHOLD_1\", \"value\": 163737.0, \"date\": null}, {\"metric\": \"volume_units\", \"dept\": \"HOBBIES_1\", \"value\": 121662.0, \"date\": null}, {\"metric\": \"volume_units\", \"dept\": \"FOODS_2\", \"value\": 113746.0, \"date\": null}, {\"metric\": \"volume_units\"",
+    "expected": {
+      "dept": "FOODS_3",
+      "slide_says": 415655.0,
+      "data_says": 615655
+    },
+    "checks": {
+      "detection": true,
+      "correctness": true,
+      "no_false_alarm": true
+    },
+    "pass": true
+  }
+]
