@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ask-the-forecast-mcp"
+version = "0.1.0"
+description = "MCP server exposing seventeen read-only tools over a demand-forecasting backtest, so an assistant can answer questions about forecast accuracy without inventing numbers."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "Jedidiah Asaf Tallulembang" }]
+keywords = ["mcp", "model-context-protocol", "forecasting", "demand-planning", "supply-chain", "agent-tools"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Intended Audience :: Developers",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+# The MCP server itself needs no model and no API key: every tool is a lookup
+# over the bundled JSON. anthropic is required only because the tool functions
+# are declared with the SDK's decorator, which is what keeps the MCP contract
+# and the agent's own contract identical rather than two hand-kept copies.
+dependencies = ["mcp>=2.0", "anthropic>=1.1.0", "pydantic>=2.0"]
+
+[project.urls]
+Homepage = "https://github.com/jediasaf/ask-the-forecast"
+Source = "https://github.com/jediasaf/ask-the-forecast"
+
+[project.scripts]
+ask-the-forecast-mcp = "mcp_server.server:main"
+
+[tool.hatch.build.targets.wheel]
+# The data ships with the package. Without it the tools have nothing to read and
+# an install would succeed and then fail on first call.
+packages = ["agent", "mcp_server"]
+artifacts = ["data/*.json"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"data/comparison.json" = "data/comparison.json"
+"data/deptSeries.json" = "data/deptSeries.json"
+"data/pareto.json" = "data/pareto.json"
+"data/planningDepts.json" = "data/planningDepts.json"
+"data/planningOverall.json" = "data/planningOverall.json"
+"data/planningTrend.json" = "data/planningTrend.json"
+"data/scale/skuIndex.json" = "data/scale/skuIndex.json"
+"data/scale/storeDept.json" = "data/scale/storeDept.json"
+"data/scale/storeSummary.json" = "data/scale/storeSummary.json"
